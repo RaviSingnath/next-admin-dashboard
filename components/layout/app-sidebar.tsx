@@ -299,29 +299,28 @@ const AppSidebar: React.FC = () => {
             <div className='flex items-center gap-2'>
               <Image
                 className="dark:hidden"
-                src="/images/logo/college-diary.svg"
+                src="/images/logo/logo.svg"
                 alt="Logo"
-                width={32}
-                height={32}
+                width={150}
+                height={40}
                 unoptimized
                 loading="eager"
               />
               <Image
                 className="hidden dark:block"
-                src="/images/logo/college-diary.svg"
+                src="/images/logo/logo.svg"
                 alt="Logo"
-                width={32}
-                height={32}
+                width={150}
+                height={40}
                 unoptimized
                 loading="eager"
               />
-              <h2 className="text-xl font-semibold text-[#139077] dark:text-white/90">College diary</h2>
             </div>
           ) : (
             <Image
-              src="/images/logo/college-diary.svg"
+              src="/images/logo/logo-icon.svg"
               alt="Logo"
-              width={32}
+              width={150}
               height={32}
               unoptimized
             />
