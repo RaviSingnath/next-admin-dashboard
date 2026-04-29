@@ -35,12 +35,13 @@ export const createClient = async (request: NextRequest) => {
 
   const { data } = await supabase.auth.getClaims();
   const user = data?.claims;
+  const pathname = request.nextUrl.pathname;
+  const isAuthPage = pathname === "/login" || pathname.startsWith("/auth");
 
   if (
-    request.nextUrl.pathname !== "/" &&
+    pathname !== "/" &&
     !user &&
-    !request.nextUrl.pathname.startsWith("/login") &&
-    !request.nextUrl.pathname.startsWith("/auth")
+    !isAuthPage
   ) {
     // no user, potentially respond by redirecting the user to the login page
     const url = request.nextUrl.clone();
@@ -48,5 +49,11 @@ export const createClient = async (request: NextRequest) => {
     return NextResponse.redirect(url);
   }
 
-  return supabaseResponse
+  if (user && isAuthPage) {
+    const url = request.nextUrl.clone();
+    url.pathname = "/dashboard";
+    return NextResponse.redirect(url);
+  }
+
+  return supabaseResponse;
 };
