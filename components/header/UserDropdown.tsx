@@ -3,7 +3,7 @@ import Image from "next/image";
 import React, { useState } from "react";
 import { Dropdown } from "@/components/ui/dropdown/Dropdown";
 import { DropdownItem } from "@/components/ui/dropdown/DropdownItem";
-// import SignOutButton from "@/components/auth/SignOutButton";
+import SignOutButton from "@/components/auth/SignOutButton";
 
 export default function UserDropdown() {
   const [isOpen, setIsOpen] = useState(false);
@@ -67,7 +67,6 @@ export default function UserDropdown() {
             ravisingnath@gmail.com
           </span>
         </div>
-
         <ul className="flex flex-col gap-1 pt-4 pb-3 border-b border-gray-200 dark:border-gray-800">
           <li>
             <DropdownItem
@@ -145,7 +144,8 @@ export default function UserDropdown() {
             </DropdownItem>
           </li>
         </ul>
-        {/* <SignOutBu  tton /> */}
+
+        <SignOutButton />
       </Dropdown>
     </div>
   );

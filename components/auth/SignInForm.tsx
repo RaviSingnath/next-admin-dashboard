@@ -5,7 +5,7 @@ import Button from "@/components/ui/button/Button";
 import { EyeCloseIcon, EyeIcon } from "@/components/icons";
 import Link from "next/link";
 import React, { useState } from "react";
-import { loginUser } from "@/lib/services/auth.service";
+import { signinUser } from "@/lib/services/auth.service";
 import { useRouter } from "next/navigation";
 
 export default function SignInForm() {
@@ -14,7 +14,7 @@ export default function SignInForm() {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const router = useRouter();
 
-  async function handleUserLogin(event: React.FormEvent<HTMLFormElement>) {
+  async function handleUserSignin(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault();
     setErrorMessage(null);
 
@@ -29,7 +29,7 @@ export default function SignInForm() {
 
     try {
       setIsSubmitting(true);
-      await loginUser(email, password);
+      await signinUser(email, password);
       router.push("/dashboard");
       router.refresh();
     } catch (error) {
@@ -54,7 +54,7 @@ export default function SignInForm() {
             </p>
           </div>
           <div>
-            <form onSubmit={handleUserLogin}>
+            <form onSubmit={handleUserSignin}>
               <div className="space-y-6">
                 <div>
                   <Label>
