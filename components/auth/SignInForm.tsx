@@ -5,7 +5,7 @@ import Button from "@/components/ui/button/Button";
 import { EyeCloseIcon, EyeIcon } from "@/components/icons";
 import Link from "next/link";
 import React, { useState } from "react";
-import { loginUser } from "@/lib/api/auth";
+import { loginUser } from "@/lib/services/auth.service";
 import { useRouter } from "next/navigation";
 
 export default function SignInForm() {
@@ -107,7 +107,9 @@ export default function SignInForm() {
                     {isSubmitting ? "Signing in..." : "Sign in"}
                   </Button>
                   {errorMessage && (
-                    <p className="mt-3 text-sm text-error-500">{errorMessage}</p>
+                    <p className="mt-3 text-sm text-error-500">
+                      {errorMessage}
+                    </p>
                   )}
                 </div>
               </div>
