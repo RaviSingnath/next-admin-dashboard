@@ -1,9 +1,11 @@
 "use client";
 
+import { useState } from "react";
 import { Modal } from "@/components/ui/modal";
 import Button from "@/components/ui/button/Button";
 import Input from "@/components/form/input/InputField";
 import Label from "@/components/form/Label";
+import { CollegeSchema, College } from "@/lib/zod/admin/college-schema";
 
 type AddCollegeModalProps = {
   isOpen: boolean;
@@ -11,9 +13,43 @@ type AddCollegeModalProps = {
 };
 
 export function AddCollegeModal({ isOpen, closeModal }: AddCollegeModalProps) {
-  const handleAddCollege = () => {
-    // Handle save logic here
-    console.log("Saving changes...");
+  const [formData, setFormData] = useState<College>({
+    college_name: "",
+    college_email: "",
+    phone: "",
+    country: "",
+    state: "",
+    city: "",
+    postal_code: "",
+  });
+  const [errors, setErrors] = useState<Record<string, string>>({});
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const handleAddCollege = (e: React.MouseEvent<HTMLButtonElement>) => {
+    e.preventDefault();
+    const result = CollegeSchema.safeParse(formData);
+
+    if (!result.success) {
+      const errorMessages: Partial<Record<keyof College, string>> = {};
+
+      result.error.issues.forEach((issue) => {
+        const field = issue.path[0] as keyof College;
+        if (field) {
+          errorMessages[field] = issue.message;
+        }
+      });
+
+      setErrors(errorMessages);
+      console.log(errorMessages);
+      return;
+    }
+
+    // result.data is fully typed here
+    console.log("Form submitted:", result.data);
+    setErrors({});
   };
 
   return (
@@ -43,37 +79,79 @@ export function AddCollegeModal({ isOpen, closeModal }: AddCollegeModalProps) {
               <div className="grid grid-cols-1 gap-x-6 gap-y-5 lg:grid-cols-2">
                 <div className="col-span-2 ">
                   <Label>College Name</Label>
-                  <Input type="text" defaultValue="Musharof" />
+                  <Input
+                    type="text"
+                    name="college_name"
+                    onChange={handleChange}
+                    error={!formData.college_name}
+                    hint={errors.college_name}
+                  />
                 </div>
 
                 <div className="col-span-2 lg:col-span-1">
                   <Label>Email Address</Label>
-                  <Input type="text" defaultValue="randomuser@pimjo.com" />
+                  <Input
+                    type="text"
+                    name="college_email"
+                    onChange={handleChange}
+                    error={!formData.college_email}
+                    hint={errors.college_email}
+                  />
                 </div>
 
                 <div className="col-span-2 lg:col-span-1">
                   <Label>Phone</Label>
-                  <Input type="text" defaultValue="+09 363 398 46" />
+                  <Input
+                    type="text"
+                    name="phone"
+                    onChange={handleChange}
+                    error={!formData.phone}
+                    hint={errors.phone}
+                  />
                 </div>
 
                 <div className="col-span-2 lg:col-span-1">
                   <Label>Country</Label>
-                  <Input type="text" defaultValue="United States" />
+                  <Input
+                    type="text"
+                    name="country"
+                    onChange={handleChange}
+                    error={!formData.country}
+                    hint={errors.country}
+                  />
                 </div>
 
                 <div className="col-span-2 lg:col-span-1">
                   <Label>State</Label>
-                  <Input type="text" defaultValue="United States" />
+                  <Input
+                    type="text"
+                    name="state"
+                    onChange={handleChange}
+                    error={!formData.state}
+                    hint={errors.state}
+                  />
                 </div>
 
                 <div className="col-span-2 lg:col-span-1">
                   <Label>City</Label>
-                  <Input type="text" defaultValue="United States" />
+                  <Input
+                    type="text"
+                    name="city"
+                    onChange={handleChange}
+                    error={!formData.city}
+                    hint={errors.city}
+                  />
                 </div>
 
                 <div className="col-span-2 lg:col-span-1">
                   <Label>Postal Code</Label>
-                  <Input type="text" defaultValue="United States" />
+                  <Input
+                    type="text"
+                    name="postal_code"
+                    onChange={handleChange}
+                    error={!formData.postal_code}
+                    hint={errors.postal_code}
+                  />
                 </div>
               </div>
             </div>
