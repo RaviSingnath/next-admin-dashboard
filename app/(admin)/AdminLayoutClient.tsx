@@ -1,7 +1,7 @@
 "use client";
 
 import { useSidebar } from "@/context/SidebarContext";
-import AppSidebar from "@/components/layout/app-sidebar";
+import AppSidebar from "@/components/layout/sidebar/app-sidebar";
 import Backdrop from "@/components/layout/Backdrop";
 import AppHeader from "@/components/layout/AppHeader";
 

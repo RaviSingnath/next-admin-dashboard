@@ -1,7 +1,7 @@
 import { redirect } from "next/navigation";
 import createClient from "@/lib/supabase/server";
 
-export async function requireRole(role: string) {
+export async function requireRole() {
   const supabase = await createClient();
 
   const {
