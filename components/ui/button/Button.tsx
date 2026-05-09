@@ -3,17 +3,19 @@ import { twMerge } from "tailwind-merge";
 
 interface ButtonProps {
   children: ReactNode; // Button text or content
+  type?: "button" | "submit" | "reset";
   size?: "sm" | "md"; // Button size
   variant?: "primary" | "outline" | "plain"; // Button variant
   startIcon?: ReactNode; // Icon before the text
   endIcon?: ReactNode; // Icon after the text
-  onClick: (e: React.MouseEvent<HTMLButtonElement>) => void; // Click handler
+  onClick?: (e: React.MouseEvent<HTMLButtonElement>) => void; // Click handler
   disabled?: boolean; // Disabled state
   className?: string; // Disabled state
 }
 
 const Button: React.FC<ButtonProps> = ({
   children,
+  type = "button",
   size = "md",
   variant = "primary",
   startIcon,
@@ -49,6 +51,7 @@ const Button: React.FC<ButtonProps> = ({
       )}
       onClick={onClick}
       disabled={disabled}
+      type={type}
     >
       {startIcon && <span className="flex items-center">{startIcon}</span>}
       {children}
