@@ -3,7 +3,7 @@
 import { Plus } from "lucide-react";
 import Button from "../ui/button/Button";
 import { useModal } from "@/hooks/useModal";
-import { AddCollegeModal } from "./modala/add-college-modal";
+import { AddCollegeModal } from "./modal/add-college-modal";
 
 export function AddCollegeButton() {
   const { isOpen, openModal, closeModal } = useModal();
