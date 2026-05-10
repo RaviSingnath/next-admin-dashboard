@@ -1,8 +1,8 @@
 import { Building2 } from "lucide-react";
 import { twMerge } from "tailwind-merge";
-import { AddCollegeAdminButton } from "./add-college-admin-button";
-import { Title } from "../ui/text/title";
-import { Description } from "../ui/text/description";
+import { AddCollegeAdminButton } from "../add-college-admin-button";
+import { Title } from "@/components/ui/text/title";
+import { Description } from "@/components/ui/text/description";
 
 type EmptyCollegeAdminListProps = {
   className?: string;
@@ -24,8 +24,8 @@ export function EmptyCollegeAdminList({
 
       <Title>No college admin added yet</Title>
       <Description>
-        No admin accounts have been configured for the system. Add an admin
-        to allow them to oversee operations, manage staff, and control access
+        No admin accounts have been configured for the system. Add an admin to
+        allow them to oversee operations, manage staff, and control access
         permissions.
       </Description>
 

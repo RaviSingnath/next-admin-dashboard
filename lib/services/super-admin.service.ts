@@ -1,5 +1,5 @@
 import createClient from "@/lib/supabase/server";
-
+import { QueryData } from "@supabase/supabase-js";
 import type { TCollege } from "@/lib/validations/admin/college-schema";
 
 export async function createCollege(data: TCollege) {
@@ -42,3 +42,45 @@ export async function createCollege(data: TCollege) {
 
   return college;
 }
+
+export async function getColleges() {
+  const supabase = await createClient();
+
+  const query = supabase.from("colleges").select(`
+    id,
+    college_name,
+    official_email,
+    phone,
+    logo_url,
+    country,
+    status,
+    stripe_connected_account_id,
+    created_at,
+    profiles (
+      id,
+      full_name,
+      avatar,
+      is_active
+    )
+  `);
+
+  type RawCollegesResponse = QueryData<typeof query>;
+
+  const { data, error } = await query;
+
+  if (error) {
+    throw error;
+  }
+
+  const collegesData: RawCollegesResponse =
+    data?.map((college) => ({
+      ...college,
+      profiles: college.profiles?.filter((profile) => profile.is_active) ?? [],
+    })) ?? [];
+
+  return collegesData;
+}
+
+export type CollegesListResponse = Awaited<ReturnType<typeof getColleges>>;
+
+export type CollegeListItem = CollegesListResponse[number];
