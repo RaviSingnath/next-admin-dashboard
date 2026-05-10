@@ -1,13 +1,13 @@
 import { Metadata } from "next";
 import PageBreadcrumb from "@/components/common/PageBreadCrumb";
-import { EmptyCollegeAdminList } from "@/components/admin/empty-college-admin-list";
+import { EmptyCollegeAdminList } from "@/components/admin/college-admin/empty-college-admin-list";
 
 export const metadata: Metadata = {
   title: "Next.js Blank Page | Next.js Dashboard Template",
   description: "This is Next.js Blank Page Dashboard Template",
 };
 
-export default function CollegesAdminPage() {
+export default async function CollegesAdminPage() {
   return (
     <div>
       <PageBreadcrumb pageTitle="Colleges Admin" />
