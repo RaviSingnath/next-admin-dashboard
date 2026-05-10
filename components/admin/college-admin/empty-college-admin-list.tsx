@@ -1,6 +1,6 @@
 import { Building2 } from "lucide-react";
 import { twMerge } from "tailwind-merge";
-import { AddCollegeAdminButton } from "../add-college-admin-button";
+import { InviteCollegeAdminButton } from "../invite-college-admin-button";
 import { Title } from "@/components/ui/text/title";
 import { Description } from "@/components/ui/text/description";
 import { getColleges } from "@/lib/services/super-admin.service";
@@ -35,7 +35,7 @@ export async function EmptyCollegeAdminList({
             access permissions.
           </Description>
 
-          <AddCollegeAdminButton />
+          <InviteCollegeAdminButton />
         </>
       ) : (
         <>
