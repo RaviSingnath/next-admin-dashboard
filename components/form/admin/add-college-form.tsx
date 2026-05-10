@@ -6,7 +6,10 @@ import Label from "@/components/form/Label";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
-import { zCollege, type TCollege } from "@/lib/zod/admin/college-schema";
+import {
+  zCollege,
+  type TCollege,
+} from "@/lib/validations/admin/college-schema";
 
 type AddCollegeFormProps = {
   closeModal: () => void;
@@ -17,13 +20,14 @@ export default function AddCollegeForm({ closeModal }: AddCollegeFormProps) {
     register,
     handleSubmit,
     reset,
+    setError,
     formState: { errors, isSubmitting },
   } = useForm<TCollege>({
     resolver: zodResolver(zCollege),
 
     defaultValues: {
       college_name: "",
-      college_email: "",
+      official_email: "",
       phone: "",
       country: "",
       state: "",
@@ -32,15 +36,34 @@ export default function AddCollegeForm({ closeModal }: AddCollegeFormProps) {
     },
   });
 
-  const onSubmit = async (data: TCollege) => {
+  const onSubmit = async (formData: TCollege) => {
     try {
-      console.log("Validated Data:", data);
+      const response = await fetch("/api/admin/create-college", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
 
-      // TODO:
-      // insert into supabase
+      const data = await response.json();
+
+      if (!response.ok) {
+        if (data.errors) {
+          Object.entries(data.errors).forEach(([field, messages]) => {
+            setError(field as keyof TCollege, {
+              type: "server",
+              message: (messages as string[])[0],
+            });
+          });
+        }
+
+        return;
+      }
 
       reset();
       closeModal();
+      console.log("Success", data);
     } catch (error) {
       console.error(error);
     }
@@ -71,9 +94,9 @@ export default function AddCollegeForm({ closeModal }: AddCollegeFormProps) {
 
               <Input
                 type="email"
-                error={!!errors.college_email}
-                hint={errors.college_email?.message}
-                {...register("college_email")}
+                error={!!errors.official_email}
+                hint={errors.official_email?.message}
+                {...register("official_email")}
               />
             </div>
 

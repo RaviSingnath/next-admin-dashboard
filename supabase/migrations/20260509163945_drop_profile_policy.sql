@@ -1,0 +1,1 @@
+DROP POLICY IF EXISTS "super admin full access profiles" ON "profiles";

@@ -7,7 +7,7 @@ export const metadata: Metadata = {
   description: "This is Next.js Blank Page Dashboard Template",
 };
 
-export default function CollegesPage() {
+export default async function CollegesPage() {
   return (
     <div>
       <PageBreadcrumb pageTitle="Colleges" />

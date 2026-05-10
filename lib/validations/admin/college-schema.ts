@@ -3,7 +3,7 @@ import * as z from "zod";
 export const zCollege = z.object({
   college_name: z.string().trim().min(1, "College name is required"),
 
-  college_email: z
+  official_email: z
     .email({ error: "Enter a valid email address" })
     .trim()
     .toLowerCase(),
