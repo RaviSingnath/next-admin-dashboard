@@ -15,6 +15,11 @@ export async function EmptyCollegeAdminList({
 }: EmptyCollegeAdminListProps) {
   const colleges = await getColleges();
 
+  const collegeList = colleges.map((college) => ({
+    value: college.id,
+    label: college.college_name,
+  }));
+
   return (
     <div
       className={twMerge(
@@ -35,7 +40,7 @@ export async function EmptyCollegeAdminList({
             access permissions.
           </Description>
 
-          <InviteCollegeAdminButton />
+          <InviteCollegeAdminButton colleges={collegeList} />
         </>
       ) : (
         <>

@@ -23,11 +23,12 @@ export const zCollege = z.object({
 
 export type TCollege = z.infer<typeof zCollege>;
 
-export const zCollegeAdmin = z.object({
+export const zCollegeAdminInvite = z.object({
   invite_email: z
     .email({ error: "Enter a valid email address" })
     .trim()
     .toLowerCase(),
+  college_id: z.string().trim().min(1, "College is required"),
 });
 
-export type TCollegeAdmin = z.infer<typeof zCollegeAdmin>;
+export type TCollegeAdminInvite = z.infer<typeof zCollegeAdminInvite>;

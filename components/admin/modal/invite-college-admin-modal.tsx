@@ -1,16 +1,15 @@
-"use client";
-
 import { Modal } from "@/components/ui/modal";
-import InviteCollegeAdminForm from "@/components/form/admin/invite-college-admin-form";
 
 type InviteCollegeAdminModalProps = {
   isOpen: boolean;
   closeModal: () => void;
+  children: React.ReactNode;
 };
 
 export function InviteCollegeAdminModal({
   isOpen,
   closeModal,
+  children,
 }: InviteCollegeAdminModalProps) {
   return (
     <Modal
@@ -29,7 +28,7 @@ export function InviteCollegeAdminModal({
           </p>
         </div>
 
-        <InviteCollegeAdminForm closeModal={closeModal} />
+        {children}
       </div>
     </Modal>
   );

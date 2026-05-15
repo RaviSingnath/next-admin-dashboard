@@ -2,39 +2,44 @@
 import Button from "@/components/ui/button/Button";
 import Input from "@/components/form/input/InputField";
 import Label from "@/components/form/Label";
+import SelectInputs from "@/components/ui/form/form-elements/SelectInputs";
 
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import {
-  zCollegeAdmin,
-  type TCollegeAdmin,
+  zCollegeAdminInvite,
+  type TCollegeAdminInvite,
 } from "@/lib/validations/admin/college-schema";
 
 type InviteCollegeAdminFormProps = {
   closeModal: () => void;
+  options: { value: string; label: string }[];
 };
 
 export default function InviteCollegeAdminForm({
+  options,
   closeModal,
 }: InviteCollegeAdminFormProps) {
+  const token = crypto.randomUUID().toString();
+  console.log(token, options);
   const {
     register,
     handleSubmit,
     reset,
     setError,
     formState: { errors, isSubmitting },
-  } = useForm<TCollegeAdmin>({
-    resolver: zodResolver(zCollegeAdmin),
+  } = useForm<TCollegeAdminInvite>({
+    resolver: zodResolver(zCollegeAdminInvite),
 
     defaultValues: {
       invite_email: "",
     },
   });
 
-  const onSubmit = async (formData: TCollegeAdmin) => {
+  const onSubmit = async (formData: TCollegeAdminInvite) => {
     try {
-      const response = await fetch("/api/admin/create-college", {
+      const response = await fetch("/api/admin/invite-college-admin", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -47,7 +52,7 @@ export default function InviteCollegeAdminForm({
       if (!response.ok) {
         if (data.errors) {
           Object.entries(data.errors).forEach(([field, messages]) => {
-            setError(field as keyof TCollegeAdmin, {
+            setError(field as keyof TCollegeAdminInvite, {
               type: "server",
               message: (messages as string[])[0],
             });
@@ -82,6 +87,14 @@ export default function InviteCollegeAdminForm({
                 error={!!errors.invite_email}
                 hint={errors.invite_email?.message}
                 {...register("invite_email")}
+              />
+            </div>
+            <div className="col-span-2">
+              <SelectInputs
+                label="Select College"
+                placeholder="select college"
+                options={options}
+                {...register("college_id")}
               />
             </div>
           </div>
