@@ -1,7 +1,6 @@
 "use client";
 import React, { useState } from "react";
 import Button from "@/components/ui/button/Button";
-import { signoutUser } from "@/lib/services/auth.service";
 import { useRouter } from "next/navigation";
 
 export default function SignOutButton() {
@@ -14,7 +13,7 @@ export default function SignOutButton() {
 
     try {
       setIsSubmitting(true);
-      await signoutUser();
+      await fetch("/api/auth/signout", { method: "POST" });
       router.push("/login");
       router.refresh();
     } catch (error) {
@@ -29,7 +28,6 @@ export default function SignOutButton() {
   }
 
   return (
-    // <form onSubmit={handleSignoutUser} className="flex">
     <>
       <Button
         className="justify-start group ring-0 px-3 py-2 mt-3"
@@ -58,6 +56,5 @@ export default function SignOutButton() {
         <p className="mt-3 text-sm text-error-500">{errorMessage}</p>
       )}
     </>
-    // </form>
   );
 }

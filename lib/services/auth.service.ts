@@ -1,105 +1,115 @@
-export async function signinUser(email: string, password: string) {
-  const res = await fetch("/api/auth/signin", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      email,
-      password,
-    }),
-  });
+import createClient from "@/lib/supabase/server";
+import {
+  TAcceptInvite,
+  TSignIn,
+  TResetPassword,
+  TUpdatePassword,
+} from "@/lib/validations/admin/college-schema";
 
-  let payload: { data?: unknown; error?: string } = {};
+export async function signinUser(data: TSignIn) {
+  const supabase = await createClient();
 
-  try {
-    payload = await res.json();
-  } catch {
-    if (!res.ok) {
-      throw new Error("Login failed. Please try again.");
-    }
+  const { data: singInData, error: signInError } =
+    await supabase.auth.signInWithPassword({
+      email: data.email,
+      password: data.password,
+    });
+
+  if (signInError) {
+    throw new Error("Error occured while singing in.");
   }
 
-  if (!res.ok) {
-    throw new Error(payload.error || "Login failed");
-  }
-
-  return payload.data;
+  return singInData;
 }
 
-export async function signoutUser() {
-  const res = await fetch("/api/auth/signout", { method: "POST" });
+export async function signOut(): Promise<null> {
+  const supabase = await createClient();
 
-  let payload: { data?: unknown; error?: string } = {};
+  const { error } = await supabase.auth.signOut();
 
-  try {
-    payload = await res.json();
-  } catch {
-    if (!res.ok) {
-      throw new Error("Signout failed. Please try again.");
-    }
+  if (error) {
+    throw new Error(error.message ?? "Signout failed. Please try again.");
   }
 
-  if (!res.ok) {
-    throw new Error(payload.error || "Signout failed");
-  }
-
-  return payload.data;
+  return null;
 }
 
-export async function resetPassword(email: string) {
-  const res = await fetch("/api/auth/reset-password", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      email,
-    }),
-  });
+export async function resetPassword(data: TResetPassword) {
+  const supabase = await createClient();
 
-  let payload: { data?: unknown; success?: boolean; error?: string } = {};
+  const { data: resetPassworddata, error } =
+    await supabase.auth.resetPasswordForEmail(data.email, {
+      redirectTo: `${origin}/callback?next=/update-password`,
+    });
 
-  try {
-    payload = await res.json();
-    console.log(payload);
-  } catch {
-    if (!res.ok) {
-      throw new Error("Send reset password failed. Please try again.");
-    }
+  if (error) {
+    throw new Error("Error occured while singing in.");
   }
 
-  if (!res.ok) {
-    throw new Error(payload.error || "Reset password failed");
-  }
-
-  return payload;
+  return resetPassworddata;
 }
 
-export async function updatePassword(password: string) {
-  const res = await fetch("/api/auth/update-password", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      password,
-    }),
+export async function updatePassword(data: TUpdatePassword) {
+  const supabase = await createClient();
+
+  const { data: updatePasswordData, error } = await supabase.auth.updateUser({
+    password: data.confirm_password,
   });
 
-  let payload: { data?: unknown; error?: string } = {};
-
-  try {
-    payload = await res.json();
-  } catch {
-    if (!res.ok) {
-      throw new Error("Update password failed. Please try again.");
-    }
+  if (error) {
+    throw new Error("Error occured while singing in.");
   }
 
-  if (!res.ok) {
-    throw new Error(payload.error || "Update password failed");
+  return updatePasswordData;
+}
+
+export async function acceptInvite(data: TAcceptInvite) {
+  const supabase = await createClient();
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    throw new Error("Invalid invite");
   }
 
-  return payload.data;
+  const { data: invitation, error: invitationError } = await supabase
+    .from("invitations")
+    .select("*")
+    .eq("email", user.email)
+    .eq("status", "pending")
+    .single();
+
+  if (invitationError) {
+    throw new Error("Invite not found.");
+  }
+
+  const { error: updateUserError } = await supabase.auth.updateUser({
+    password: data.confirm_password,
+  });
+
+  if (updateUserError) {
+    throw new Error("Error occured while updating the info.");
+  }
+
+  await supabase.from("profiles").insert({
+    id: user.id,
+    email: user.email,
+    role: invitation.role,
+    college_id: invitation.college_id,
+    created_by: invitation.invited_by,
+    full_name: data.full_name,
+    is_active: true,
+  });
+
+  const invite = await supabase
+    .from("invitations")
+    .update({
+      status: "accepted",
+      accepted_at: new Date().toISOString(),
+    })
+    .eq("id", invitation.id);
+
+  return invite;
 }

@@ -5,39 +5,61 @@ import Button from "@/components/ui/button/Button";
 import { EyeCloseIcon, EyeIcon } from "@/components/icons";
 import Link from "next/link";
 import React, { useState } from "react";
-import { signinUser } from "@/lib/services/auth.service";
 import { useRouter } from "next/navigation";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { zSignIn, TSignIn } from "@/lib/validations/admin/college-schema";
 
 export default function SignInForm() {
   const [showPassword, setShowPassword] = useState(false);
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const router = useRouter();
 
-  async function handleUserSignin(event: React.FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    setErrorMessage(null);
+  const {
+    register,
+    handleSubmit,
+    reset,
+    setError,
+    formState: { errors, isSubmitting },
+  } = useForm<TSignIn>({
+    resolver: zodResolver(zSignIn),
 
-    const formData = new FormData(event.currentTarget);
-    const email = String(formData.get("email") ?? "").trim();
-    const password = String(formData.get("password") ?? "");
+    defaultValues: {
+      email: "",
+      password: "",
+    },
+  });
 
-    if (!email || !password) {
-      setErrorMessage("Please enter both email and password.");
-      return;
-    }
-
+  async function onSubmit(formData: TSignIn) {
     try {
-      setIsSubmitting(true);
-      await signinUser(email, password);
+      const response = await fetch("/api/auth/signin", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        if (data.errors) {
+          Object.entries(data.errors).forEach(([field, messages]) => {
+            setError(field as keyof TSignIn, {
+              type: "server",
+              message: (messages as string[])[0],
+            });
+          });
+        }
+
+        return;
+      }
+
+      reset();
       router.push("/dashboard");
       router.refresh();
+      console.log("Success", data);
     } catch (error) {
-      const message =
-        error instanceof Error ? error.message : "Unable to sign in right now.";
-      setErrorMessage(message);
-    } finally {
-      setIsSubmitting(false);
+      console.error(error);
     }
   }
 
@@ -54,16 +76,18 @@ export default function SignInForm() {
             </p>
           </div>
           <div>
-            <form onSubmit={handleUserSignin}>
+            <form onSubmit={handleSubmit(onSubmit)}>
               <div className="space-y-6">
                 <div>
                   <Label>
                     Email <span className="text-error-500">*</span>{" "}
                   </Label>
                   <Input
-                    placeholder="info@gmail.com"
                     type="email"
-                    name="email"
+                    error={!!errors.email}
+                    hint={errors.email?.message}
+                    placeholder="Enter your email"
+                    {...register("email")}
                   />
                 </div>
                 <div>
@@ -74,7 +98,9 @@ export default function SignInForm() {
                     <Input
                       type={showPassword ? "text" : "password"}
                       placeholder="Enter your password"
-                      name="password"
+                      error={!!errors.password}
+                      hint={errors.password?.message}
+                      {...register("password")}
                     />
                     <span
                       onClick={() => setShowPassword(!showPassword)}
@@ -108,11 +134,6 @@ export default function SignInForm() {
                   >
                     {isSubmitting ? "Signing in..." : "Sign in"}
                   </Button>
-                  {errorMessage && (
-                    <p className="mt-3 text-sm text-error-500">
-                      {errorMessage}
-                    </p>
-                  )}
                 </div>
               </div>
             </form>

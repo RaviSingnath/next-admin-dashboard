@@ -1,23 +1,44 @@
 import { NextResponse } from "next/server";
-import createClient from "@/lib/supabase/server";
+import { getZodErrors } from "@/lib/helper/get-zod-errors";
+import { zResetPassword } from "@/lib/validations/admin/college-schema";
+import { resetPassword } from "@/lib/services/auth.service";
 
-export async function POST(request: Request) {
-  const { origin } = new URL(request.url);
+export async function POST(req: Request) {
+  try {
+    const body = await req.json();
 
-  const supabase = await createClient();
+    // Server-side validation
+    const validatedFields = zResetPassword.safeParse(body);
 
-  const { email } = await request.json();
+    if (!validatedFields.success) {
+      return NextResponse.json(
+        {
+          success: false,
+          message: "Validation failed",
+          errors: getZodErrors(validatedFields.error),
+        },
+        { status: 400 },
+      );
+    }
 
-  const { data, error } = await supabase.auth.resetPasswordForEmail(email, {
-    redirectTo: `${origin}/callback?next=/update-password`,
-  });
+    const data = await resetPassword(validatedFields.data);
 
-  if (error) {
-    return NextResponse.json({ error: error.message }, { status: 400 });
+    return NextResponse.json(
+      {
+        success: true,
+        data: data,
+      },
+      { status: 201 },
+    );
+  } catch (error) {
+    console.error(error);
+
+    return NextResponse.json(
+      {
+        success: false,
+        message: "Internal server error",
+      },
+      { status: 500 },
+    );
   }
-
-  return NextResponse.json({
-    success: true,
-    data,
-  });
 }

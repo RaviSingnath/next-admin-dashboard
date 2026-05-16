@@ -5,36 +5,59 @@ import Button from "@/components/ui/button/Button";
 import Link from "next/link";
 import React, { useState } from "react";
 import { resetPassword } from "@/lib/services/auth.service";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import {
+  zResetPassword,
+  TResetPassword,
+} from "@/lib/validations/admin/college-schema";
 
 export default function SignInForm() {
-  const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-  async function handleUserRestPassword(
-    event: React.FormEvent<HTMLFormElement>,
-  ) {
-    event.preventDefault();
-    setErrorMessage(null);
+  const {
+    register,
+    handleSubmit,
+    reset,
+    setError,
+    formState: { errors, isSubmitting },
+  } = useForm<TResetPassword>({
+    resolver: zodResolver(zResetPassword),
 
-    const formData = new FormData(event.currentTarget);
-    const email = String(formData.get("email") ?? "").trim();
+    defaultValues: {
+      email: "",
+    },
+  });
 
-    if (!email) {
-      setErrorMessage("Please enter your email.");
-      return;
-    }
-
+  async function onSubmit(formData: TResetPassword) {
     try {
-      setIsSubmitting(true);
-      const data = await resetPassword(email);
+      const response = await fetch("/api/auth/reset-password", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        if (data.errors) {
+          Object.entries(data.errors).forEach(([field, messages]) => {
+            setError(field as keyof TResetPassword, {
+              type: "server",
+              message: (messages as string[])[0],
+            });
+          });
+        }
+
+        return;
+      }
+
+      reset();
       if (data.success) setIsSuccess(true);
     } catch (error) {
-      const message =
-        error instanceof Error ? error.message : "Unable to sign in right now.";
-      setErrorMessage(message);
-    } finally {
-      setIsSubmitting(false);
+      console.error(error);
     }
   }
 
@@ -67,32 +90,30 @@ export default function SignInForm() {
               </p>
             </div>
             <div>
-              <form onSubmit={handleUserRestPassword}>
+              <form onSubmit={handleSubmit(onSubmit)}>
                 <div className="space-y-6">
                   <div>
                     <Label>
                       Email <span className="text-error-500">*</span>{" "}
                     </Label>
                     <Input
-                      placeholder="info@gmail.com"
                       type="email"
-                      name="email"
+                      error={!!errors.email}
+                      hint={errors.email?.message}
+                      placeholder="Enter your email"
+                      {...register("email")}
                     />
                   </div>
 
                   <div>
                     <Button
+                      type="submit"
                       className="w-full"
                       size="sm"
                       disabled={isSubmitting}
                     >
                       {isSubmitting ? "Submiting..." : "Submit"}
                     </Button>
-                    {errorMessage && (
-                      <p className="mt-3 text-sm text-error-500">
-                        {errorMessage}
-                      </p>
-                    )}
                   </div>
                   <div className="flex items-center justify-end gap-1">
                     <div className="flex items-center gap-3">

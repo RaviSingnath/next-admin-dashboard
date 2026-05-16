@@ -7,45 +7,64 @@ import Link from "next/link";
 import React, { useState } from "react";
 import { useRouter } from "next/navigation";
 import { updatePassword } from "@/lib/services/auth.service";
+import { useForm } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
+import {
+  zUpdatePassword,
+  TUpdatePassword,
+} from "@/lib/validations/admin/college-schema";
 
 export default function UpdatePasswordForm() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const router = useRouter();
 
-  async function handleUpdatePassword(event: React.FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    setErrorMessage(null);
+  const {
+    register,
+    handleSubmit,
+    reset,
+    setError,
+    formState: { errors, isSubmitting },
+  } = useForm<TUpdatePassword>({
+    resolver: zodResolver(zUpdatePassword),
 
-    const formData = new FormData(event.currentTarget);
-    const password = String(formData.get("password") ?? "");
-    const confirmPassword = String(formData.get("confirm-password") ?? "");
+    defaultValues: {
+      password: "",
+      confirm_password: "",
+    },
+  });
 
-    if (!password || !confirmPassword) {
-      setErrorMessage("Please enter both email and password.");
-      return;
-    }
-
-    if (password !== confirmPassword) {
-      setErrorMessage(
-        "Your passwords do not match. Please ensure both fields are identical.",
-      );
-      return;
-    }
-
+  async function onSubmit(formData: TUpdatePassword) {
     try {
-      setIsSubmitting(true);
-      await updatePassword(password);
+      const response = await fetch("/api/auth/update-password", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        if (data.errors) {
+          Object.entries(data.errors).forEach(([field, messages]) => {
+            setError(field as keyof TUpdatePassword, {
+              type: "server",
+              message: (messages as string[])[0],
+            });
+          });
+        }
+
+        return;
+      }
+
+      reset();
       router.push("/login");
       router.refresh();
+      console.log("Success", data);
     } catch (error) {
-      const message =
-        error instanceof Error ? error.message : "Unable to sign in right now.";
-      setErrorMessage(message);
-    } finally {
-      setIsSubmitting(false);
+      console.error(error);
     }
   }
 
@@ -61,7 +80,7 @@ export default function UpdatePasswordForm() {
           </p>
         </div>
         <div>
-          <form onSubmit={handleUpdatePassword}>
+          <form onSubmit={handleSubmit(onSubmit)}>
             <div className="space-y-6">
               <div>
                 <Label>
@@ -71,7 +90,9 @@ export default function UpdatePasswordForm() {
                   <Input
                     type={showPassword ? "text" : "password"}
                     placeholder="Enter your password"
-                    name="password"
+                    error={!!errors.password}
+                    hint={errors.password?.message}
+                    {...register("password")}
                   />
                   <span
                     onClick={() => setShowPassword(!showPassword)}
@@ -94,7 +115,9 @@ export default function UpdatePasswordForm() {
                   <Input
                     type={showConfirmPassword ? "text" : "password"}
                     placeholder="Enter your password again"
-                    name="confirm-password"
+                    error={!!errors.confirm_password}
+                    hint={errors.confirm_password?.message}
+                    {...register("confirm_password")}
                   />
                   <span
                     onClick={() => setShowConfirmPassword(!showConfirmPassword)}
@@ -120,12 +143,14 @@ export default function UpdatePasswordForm() {
                 </p>
               </div>
               <div>
-                <Button className="w-full" size="sm" disabled={isSubmitting}>
+                <Button
+                  type="submit"
+                  className="w-full"
+                  size="sm"
+                  disabled={isSubmitting}
+                >
                   {isSubmitting ? "Updating..." : "Update"}
                 </Button>
-                {errorMessage && (
-                  <p className="mt-3 text-sm text-error-500">{errorMessage}</p>
-                )}
               </div>
             </div>
           </form>

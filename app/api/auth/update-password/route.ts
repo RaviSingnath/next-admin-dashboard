@@ -1,23 +1,44 @@
 import { NextResponse } from "next/server";
-import createClient from "@/lib/supabase/server";
+import { getZodErrors } from "@/lib/helper/get-zod-errors";
+import { zUpdatePassword } from "@/lib/validations/admin/college-schema";
+import { updatePassword } from "@/lib/services/auth.service";
 
-export async function POST(request: Request) {
-  const { origin } = new URL(request.url);
+export async function POST(req: Request) {
+  try {
+    const body = await req.json();
 
-  const supabase = await createClient();
+    // Server-side validation
+    const validatedFields = zUpdatePassword.safeParse(body);
 
-  const { password } = await request.json();
+    if (!validatedFields.success) {
+      return NextResponse.json(
+        {
+          success: false,
+          message: "Validation failed",
+          errors: getZodErrors(validatedFields.error),
+        },
+        { status: 400 },
+      );
+    }
 
-  const { data, error } = await supabase.auth.updateUser({
-    password: password,
-  });
+    const data = await updatePassword(validatedFields.data);
 
-  if (error) {
-    return NextResponse.json({ error: error.message }, { status: 400 });
+    return NextResponse.json(
+      {
+        success: true,
+        data: data,
+      },
+      { status: 201 },
+    );
+  } catch (error) {
+    console.error(error);
+
+    return NextResponse.json(
+      {
+        success: false,
+        message: "Internal server error",
+      },
+      { status: 500 },
+    );
   }
-
-  // Force re-auth: After exchangeCodeForSession. Prevents session fixation issues.
-  await supabase.auth.signOut();
-
-  return NextResponse.redirect(`${origin}/login`);
 }

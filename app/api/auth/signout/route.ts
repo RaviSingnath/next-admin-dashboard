@@ -1,16 +1,17 @@
 import { NextResponse } from "next/server";
-import createClient from "@/lib/supabase/server";
+import { signOut } from "@/lib/services/auth.service";
 
 export async function POST() {
-  const supabase = await createClient();
+  try {
+    await signOut();
 
-  const { error } = await supabase.auth.signOut();
+    return NextResponse.json({ success: true }, { status: 200 });
+  } catch (error) {
+    const message =
+      error instanceof Error
+        ? error.message
+        : "Signout failed. Please try again.";
 
-  if (error) {
-    return NextResponse.json({ error: error.message }, { status: 400 });
+    return NextResponse.json({ error: message }, { status: 400 });
   }
-
-  return NextResponse.json({
-    success: true,
-  });
 }
