@@ -5,6 +5,7 @@ import type {
   TCollege,
   TCollegeAdminInvite,
 } from "@/lib/validations/admin/college-schema";
+import { AppError } from "@/lib/app-error";
 
 export async function createCollege(data: TCollege) {
   const supabase = await createClient();
@@ -87,7 +88,6 @@ export async function inviteCollegeAdmin(data: TCollegeAdminInvite) {
   const supabase = await createClient();
   const supabaseAdmin = createAdminClient();
 
-  // Optional duplicate check
   const { data: existingInvite } = await supabase
     .from("invitations")
     .select("id")
@@ -95,7 +95,7 @@ export async function inviteCollegeAdmin(data: TCollegeAdminInvite) {
     .maybeSingle();
 
   if (existingInvite) {
-    throw new Error("Invite email already exists");
+    throw new AppError("Invitation already exists", 409, "INVITATION_EXISTS");
   }
 
   const {
@@ -103,7 +103,7 @@ export async function inviteCollegeAdmin(data: TCollegeAdminInvite) {
   } = await supabase.auth.getUser();
 
   if (!user) {
-    throw new Error("Unauthorized");
+    throw new AppError("Unauthorized", 401, "UNAUTHORIZED");
   }
 
   const { data: profile } = await supabase
@@ -113,22 +113,23 @@ export async function inviteCollegeAdmin(data: TCollegeAdminInvite) {
     .single();
 
   if (profile?.role !== "super_admin") {
-    throw new Error("Forbidden");
+    throw new AppError("Forbidden", 403, "FORBIDDEN");
   }
 
   const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
 
-  const { data: inviteData, error } = await supabase
-    .from("invitations")
-    .insert({
-      email: data.invite_email,
-      role: "college_admin",
-      college_id: data.college_id,
-      expires_at: expiresAt.toISOString(),
-    });
-  console.log("inviteData: ", inviteData, error);
+  const { error } = await supabase.from("invitations").insert({
+    email: data.invite_email,
+    role: "college_admin",
+    college_id: data.college_id,
+    expires_at: expiresAt.toISOString(),
+  });
 
-  const inviteUrl = `${process.env.NEXT_PUBLIC_SITE_URL}` + `/accept-invite`;
+  if (error) {
+    throw new AppError(error.message, 400, error.code || "DATABASE_ERROR");
+  }
+
+  const inviteUrl = `${process.env.NEXT_PUBLIC_SITE_URL}/accept-invite`;
 
   const { data: invite, error: inviteError } =
     await supabaseAdmin.auth.admin.inviteUserByEmail(data.invite_email, {
@@ -136,7 +137,11 @@ export async function inviteCollegeAdmin(data: TCollegeAdminInvite) {
     });
 
   if (inviteError) {
-    throw inviteError;
+    throw new AppError(
+      inviteError.message,
+      400,
+      inviteError.code || "INVITE_ERROR",
+    );
   }
 
   return invite;

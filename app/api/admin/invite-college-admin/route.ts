@@ -3,12 +3,12 @@ import { NextResponse } from "next/server";
 import { zCollegeAdminInvite } from "@/lib/validations/admin/college-schema";
 import { inviteCollegeAdmin } from "@/lib/services/super-admin.service";
 import { getZodErrors } from "@/lib/helper/get-zod-errors";
+import { AppError } from "@/lib/app-error";
 
 export async function POST(req: Request) {
   try {
     const body = await req.json();
 
-    // Server-side validation
     const validatedFields = zCollegeAdminInvite.safeParse(body);
 
     if (!validatedFields.success) {
@@ -23,7 +23,6 @@ export async function POST(req: Request) {
     }
 
     const inviteAdmin = await inviteCollegeAdmin(validatedFields.data);
-    console.log(inviteAdmin);
 
     return NextResponse.json(
       {
@@ -35,10 +34,24 @@ export async function POST(req: Request) {
   } catch (error) {
     console.error(error);
 
+    if (error instanceof AppError) {
+      return NextResponse.json(
+        {
+          success: false,
+          message: error.message,
+          code: error.code,
+        },
+        {
+          status: error.statusCode,
+        },
+      );
+    }
+
     return NextResponse.json(
       {
         success: false,
         message: "Internal server error",
+        code: "INTERNAL_SERVER_ERROR",
       },
       { status: 500 },
     );

@@ -6,6 +6,8 @@ import SelectInputs from "@/components/ui/form/form-elements/SelectInputs";
 
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { appToast } from "@/lib/toast";
+import { useRouter } from "next/navigation";
 
 import {
   zCollegeAdminInvite,
@@ -21,8 +23,7 @@ export default function InviteCollegeAdminForm({
   options,
   closeModal,
 }: InviteCollegeAdminFormProps) {
-  const token = crypto.randomUUID().toString();
-  console.log(token, options);
+  const router = useRouter();
   const {
     register,
     handleSubmit,
@@ -48,8 +49,9 @@ export default function InviteCollegeAdminForm({
       });
 
       const data = await response.json();
+      console.log(data, response);
 
-      if (!response.ok) {
+      if (!response.ok || !data.success) {
         if (data.errors) {
           Object.entries(data.errors).forEach(([field, messages]) => {
             setError(field as keyof TCollegeAdminInvite, {
@@ -57,9 +59,28 @@ export default function InviteCollegeAdminForm({
               message: (messages as string[])[0],
             });
           });
+          return;
         }
 
-        return;
+        if (!data.success) {
+          switch (data.code) {
+            case "INVITATION_EXISTS":
+              appToast.error("Invitation already sent");
+              return;
+
+            case "FORBIDDEN":
+              appToast.error("You do not have permission");
+              return;
+
+            case "UNAUTHORIZED":
+              router.push("/login");
+              return;
+
+            default:
+              appToast.error(data.message || "Something went wrong");
+              return;
+          }
+        }
       }
 
       reset();
