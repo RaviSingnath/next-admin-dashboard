@@ -146,3 +146,47 @@ export async function inviteCollegeAdmin(data: TCollegeAdminInvite) {
 
   return invite;
 }
+
+export async function getCollegeAdmins() {
+  const supabase = await createClient();
+
+  const query = supabase
+    .from("invitations")
+    .select(
+      `
+    id,
+    email,
+    role,
+    status,
+    expires_at,
+    accepted_at,
+    created_at,
+
+    college:colleges (
+      id,
+      college_name
+    ),
+
+    invited_by_profile:profiles (
+      id,
+      full_name,
+      email
+    )
+  `,
+    )
+    .order("created_at", { ascending: false })
+    .eq("role", "college_admin");
+
+  const { data, error } = await query;
+
+  if (error) {
+    throw error;
+  }
+
+  return data;
+}
+export type CollegeAdminsListResponse = Awaited<
+  ReturnType<typeof getCollegeAdmins>
+>;
+
+export type CollegeAdminListItem = CollegeAdminsListResponse[number];

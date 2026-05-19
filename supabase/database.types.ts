@@ -52,43 +52,52 @@ export type Database = {
       }
       colleges: {
         Row: {
-          address: string | null
+          city: string | null
           college_name: string
+          country: string | null
           created_at: string | null
-          created_by: string | null
+          created_by: string
           deleted_at: string | null
           id: string
           logo_url: string | null
           official_email: string
           phone: string | null
+          postal_code: string | null
+          state: string | null
           status: string | null
           stripe_connected_account_id: string | null
           updated_at: string | null
         }
         Insert: {
-          address?: string | null
+          city?: string | null
           college_name: string
+          country?: string | null
           created_at?: string | null
-          created_by?: string | null
+          created_by?: string
           deleted_at?: string | null
           id?: string
           logo_url?: string | null
           official_email: string
           phone?: string | null
+          postal_code?: string | null
+          state?: string | null
           status?: string | null
           stripe_connected_account_id?: string | null
           updated_at?: string | null
         }
         Update: {
-          address?: string | null
+          city?: string | null
           college_name?: string
+          country?: string | null
           created_at?: string | null
-          created_by?: string | null
+          created_by?: string
           deleted_at?: string | null
           id?: string
           logo_url?: string | null
           official_email?: string
           phone?: string | null
+          postal_code?: string | null
+          state?: string | null
           status?: string | null
           stripe_connected_account_id?: string | null
           updated_at?: string | null
@@ -196,10 +205,10 @@ export type Database = {
           email: string
           expires_at: string
           id: string
-          invited_by: string | null
+          invited_by: string
           role: Database["public"]["Enums"]["user_role"]
           status: Database["public"]["Enums"]["invitation_status"] | null
-          token: string
+          token: string | null
         }
         Insert: {
           accepted_at?: string | null
@@ -209,10 +218,10 @@ export type Database = {
           email: string
           expires_at: string
           id?: string
-          invited_by?: string | null
+          invited_by?: string
           role: Database["public"]["Enums"]["user_role"]
           status?: Database["public"]["Enums"]["invitation_status"] | null
-          token: string
+          token?: string | null
         }
         Update: {
           accepted_at?: string | null
@@ -222,10 +231,10 @@ export type Database = {
           email?: string
           expires_at?: string
           id?: string
-          invited_by?: string | null
+          invited_by?: string
           role?: Database["public"]["Enums"]["user_role"]
           status?: Database["public"]["Enums"]["invitation_status"] | null
-          token?: string
+          token?: string | null
         }
         Relationships: [
           {
@@ -240,6 +249,13 @@ export type Database = {
             columns: ["department_id"]
             isOneToOne: false
             referencedRelation: "departments"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "invitations_invited_by_fkey"
+            columns: ["invited_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
         ]
@@ -303,6 +319,7 @@ export type Database = {
       }
       profiles: {
         Row: {
+          avatar: string | null
           college_id: string | null
           created_at: string | null
           created_by: string | null
@@ -316,6 +333,7 @@ export type Database = {
           updated_at: string | null
         }
         Insert: {
+          avatar?: string | null
           college_id?: string | null
           created_at?: string | null
           created_by?: string | null
@@ -329,6 +347,7 @@ export type Database = {
           updated_at?: string | null
         }
         Update: {
+          avatar?: string | null
           college_id?: string | null
           created_at?: string | null
           created_by?: string | null

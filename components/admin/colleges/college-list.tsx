@@ -8,9 +8,8 @@ type CollegeListProps = {
 };
 
 export function CollegeList({ colleges }: CollegeListProps) {
-  console.log(colleges);
   return (
-    <ComponentCard title="Colleges List" ActionButton={AddCollegeButton}>
+    <ComponentCard title="Colleges List" ActionButton={<AddCollegeButton />}>
       <CollegeTable colleges={colleges} />
     </ComponentCard>
   );

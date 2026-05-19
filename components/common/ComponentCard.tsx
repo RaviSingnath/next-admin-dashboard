@@ -5,7 +5,7 @@ interface ComponentCardProps {
   children: React.ReactNode;
   className?: string; // Additional custom classes for styling
   desc?: string; // Description text
-  ActionButton?: React.ComponentType;
+  ActionButton?: React.ReactNode;
 }
 
 const ComponentCard: React.FC<ComponentCardProps> = ({
@@ -30,7 +30,7 @@ const ComponentCard: React.FC<ComponentCardProps> = ({
               {desc}
             </p>
           )}
-          {ActionButton && <ActionButton />}
+          {ActionButton && ActionButton}
         </div>
       </div>
 

@@ -1,5 +1,7 @@
 import { Metadata } from "next";
-import PageBreadcrumb from "@/components/common/PageBreadCrumb";
+import { getCollegeAdmins } from "@/lib/services/super-admin.service";
+import PageWrapperBreadcrumb from "@/components/layout/page-wrapper-breadcrumb";
+import { CollegeAdminsList } from "@/components/admin/college-admin/college-admin-list";
 import { EmptyCollegeAdminList } from "@/components/admin/college-admin/empty-college-admin-list";
 
 export const metadata: Metadata = {
@@ -8,14 +10,16 @@ export const metadata: Metadata = {
 };
 
 export default async function CollegesAdminPage() {
+  const collegeAdmins = await getCollegeAdmins();
+  console.log(collegeAdmins);
+
   return (
-    <div>
-      <PageBreadcrumb pageTitle="Colleges Admin" />
-      <div className="min-h-screen rounded-2xl border border-gray-200 bg-white px-5 py-7 dark:border-gray-800 dark:bg-white/[0.03] xl:px-10 xl:py-12">
-        <div className="mx-auto w-full max-w-[630px] text-center">
-          <EmptyCollegeAdminList />
-        </div>
-      </div>
-    </div>
+    <PageWrapperBreadcrumb title="College Admins">
+      {collegeAdmins.length > 0 ? (
+        <CollegeAdminsList collegeAdmins={collegeAdmins} />
+      ) : (
+        <EmptyCollegeAdminList />
+      )}
+    </PageWrapperBreadcrumb>
   );
 }

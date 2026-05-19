@@ -17,12 +17,6 @@ type CollegeTableProps = {
 };
 
 export function CollegeTable({ colleges }: CollegeTableProps) {
-  const team = [
-    "/images/user/user-28.jpg",
-    "/images/user/user-29.jpg",
-    "/images/user/user-30.jpg",
-  ];
-
   return (
     <TableWrapper>
       <Table>
@@ -129,7 +123,8 @@ export function CollegeTable({ colleges }: CollegeTableProps) {
                           ) : (
                             <div className="flex items-center justify-center w-10 h-10 bg-gray-100 rounded-full dark:bg-gray-800">
                               <div className="text-gray-800 font-semibold font-medium dark:text-white/90">
-                                {profile.full_name.charAt(0)}
+                                {profile.full_name &&
+                                  profile.full_name.charAt(0)}
                               </div>
                             </div>
                           )}
@@ -167,7 +162,7 @@ export function CollegeTable({ colleges }: CollegeTableProps) {
                 </Badge>
               </TableCell>
               <TableCell className="px-4 py-3 text-gray-500 text-theme-sm dark:text-gray-400">
-                {formatDateTime(college.created_at)}
+                {college.created_at && formatDateTime(college.created_at)}
               </TableCell>
             </TableRow>
           ))}
