@@ -19,6 +19,7 @@ import {
   School,
   ClipboardList,
   BookOpen,
+  Mail,
   type LucideIcon,
 } from "lucide-react";
 
@@ -72,6 +73,11 @@ export const MENU_CONFIG: Record<UserRole, MenuGroup[]> = {
           name: "College Admins",
           path: "/admin/colleges-admin",
           icon: UserCog,
+        },
+        {
+          name: "invites",
+          path: "/admin/invites",
+          icon: Mail,
         },
       ],
     },

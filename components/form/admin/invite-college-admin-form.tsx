@@ -101,6 +101,16 @@ export default function InviteCollegeAdminForm({
 
           <div className="grid grid-cols-1 gap-x-6 gap-y-5 lg:grid-cols-2">
             <div className="col-span-2">
+              <Label>Full Name</Label>
+
+              <Input
+                type="text"
+                error={!!errors.full_name}
+                hint={errors.full_name?.message}
+                {...register("full_name")}
+              />
+            </div>
+            <div className="col-span-2">
               <Label>Email Address</Label>
 
               <Input

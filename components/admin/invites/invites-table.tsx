@@ -7,20 +7,18 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { CollegeAdminListItem } from "@/lib/services/super-admin.service";
+import { InvitesListItem } from "@/lib/services/super-admin.service";
 import { formatDateTime } from "@/utils/date";
-import { DeleteInviteButton } from "../invites/invite-actions/delete/delete-invite-button";
-import { ResendInviteButton } from "../invites/invite-actions/resend/resend-invite-button";
-import { RevokeInviteButton } from "../invites/invite-actions/revoke-invite-button";
+import { DeleteInviteButton } from "./invite-actions/delete/delete-invite-button";
+import { ResendInviteButton } from "./invite-actions/resend/resend-invite-button";
+import { RevokeInviteButton } from "./invite-actions/revoke-invite-button";
 
-type CollegeAdminsTableProps = {
-  collegeAdmins: CollegeAdminListItem[];
+type InvitesTableProps = {
+  invites: InvitesListItem[];
 };
 
-export async function CollegeAdminsTable({
-  collegeAdmins,
-}: CollegeAdminsTableProps) {
-  console.log(collegeAdmins);
+export async function InvitesTable({ invites }: InvitesTableProps) {
+  console.log(invites);
   return (
     <TableWrapper>
       <Table>
@@ -31,19 +29,7 @@ export async function CollegeAdminsTable({
               isHeader
               className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
             >
-              Name
-            </TableCell>
-            <TableCell
-              isHeader
-              className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
-            >
               Email
-            </TableCell>
-            <TableCell
-              isHeader
-              className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
-            >
-              Created By
             </TableCell>
             <TableCell
               isHeader
@@ -55,7 +41,19 @@ export async function CollegeAdminsTable({
               isHeader
               className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
             >
+              Invited By
+            </TableCell>
+            <TableCell
+              isHeader
+              className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
+            >
               Status
+            </TableCell>
+            <TableCell
+              isHeader
+              className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
+            >
+              Accepted At
             </TableCell>
             <TableCell
               isHeader
@@ -67,56 +65,44 @@ export async function CollegeAdminsTable({
               isHeader
               className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
             >
-              Deleted At
-            </TableCell>
-            <TableCell
-              isHeader
-              className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
-            >
               Action
             </TableCell>
           </TableRow>
         </TableHeader>
         {/* Table Body */}
         <TableBody className="divide-y divide-gray-100 dark:divide-white/[0.05]">
-          {collegeAdmins.map((collegeAdmin) => (
-            <TableRow key={collegeAdmin.id}>
+          {invites.map((invite) => (
+            <TableRow key={invite.id}>
               <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
-                {collegeAdmin.full_name}
+                {invite.email}
               </TableCell>
               <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
-                {collegeAdmin.email}
+                {invite.college && invite.college.college_name}
               </TableCell>
               <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
-                {collegeAdmin.created_by_profile?.full_name}
+                {invite.invited_by_profile.full_name}
               </TableCell>
               <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
-                {collegeAdmin.college?.college_name}
+                {invite.status}
               </TableCell>
               <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
-                {collegeAdmin.status}
+                {invite.accepted_at ? formatDateTime(invite.accepted_at) : "-"}
               </TableCell>
               <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
-                {collegeAdmin.created_at &&
-                  formatDateTime(collegeAdmin.created_at)}
-              </TableCell>
-              <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
-                {collegeAdmin.deleted_at
-                  ? formatDateTime(collegeAdmin.deleted_at)
-                  : "-"}
+                {invite.created_at && formatDateTime(invite.created_at)}
               </TableCell>
               <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
                 <div className="flex gap-2">
-                  {collegeAdmin.status === "active" ? (
+                  {invite.status === "pending" ? (
                     <>
-                      <ResendInviteButton inviteID={collegeAdmin.id} />
-                      <RevokeInviteButton inviteID={collegeAdmin.id} />
-                      <DeleteInviteButton inviteID={collegeAdmin.id} />
+                      <ResendInviteButton inviteID={invite.id} />
+                      <RevokeInviteButton inviteID={invite.id} />
+                      <DeleteInviteButton inviteID={invite.id} />
                     </>
-                  ) : collegeAdmin.status === "suspended" ? (
+                  ) : invite.status === "onboarding" ? (
                     <>
-                      <ResendInviteButton inviteID={collegeAdmin.id} />
-                      <RevokeInviteButton inviteID={collegeAdmin.id} />
+                      <ResendInviteButton inviteID={invite.id} />
+                      <RevokeInviteButton inviteID={invite.id} />
                     </>
                   ) : (
                     <Button size="sm">View</Button>

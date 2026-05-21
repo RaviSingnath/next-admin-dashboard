@@ -59,7 +59,7 @@ export async function getColleges() {
       id,
       full_name,
       avatar,
-      is_active
+      status
     )
   `);
 
@@ -74,7 +74,8 @@ export async function getColleges() {
   const collegesData: RawCollegesResponse =
     data?.map((college) => ({
       ...college,
-      profiles: college.profiles?.filter((profile) => profile.is_active) ?? [],
+      profiles:
+        college.profiles?.filter((profile) => profile.status == "active") ?? [],
     })) ?? [];
 
   return collegesData;
@@ -134,6 +135,7 @@ export async function inviteCollegeAdmin(data: TCollegeAdminInvite) {
   const { data: invite, error: inviteError } =
     await supabaseAdmin.auth.admin.inviteUserByEmail(data.invite_email, {
       redirectTo: inviteUrl,
+      data: { full_name: data.full_name },
     });
 
   if (inviteError) {
@@ -151,26 +153,24 @@ export async function getCollegeAdmins() {
   const supabase = await createClient();
 
   const query = supabase
-    .from("invitations")
+    .from("profiles")
     .select(
       `
     id,
+    full_name,
     email,
-    role,
     status,
-    expires_at,
-    accepted_at,
     created_at,
+    deleted_at,
 
     college:colleges (
       id,
       college_name
     ),
 
-    invited_by_profile:profiles (
+    created_by_profile:profiles!created_by (
       id,
-      full_name,
-      email
+      full_name
     )
   `,
     )
@@ -190,3 +190,63 @@ export type CollegeAdminsListResponse = Awaited<
 >;
 
 export type CollegeAdminListItem = CollegeAdminsListResponse[number];
+
+export async function getInvites() {
+  const supabase = await createClient();
+
+  const query = supabase
+    .from("invitations")
+    .select(
+      `
+    id,
+    email,
+    role,
+    status,
+    expires_at,
+    accepted_at,
+    created_at,
+
+    college:colleges (
+      id,
+      college_name
+    ),
+
+    invited_by_profile:profiles!invited_by (
+      id,
+      full_name,
+      email
+    ),
+    
+    created_user_profile:profiles!accepted_by (
+      id
+    )
+  `,
+    )
+    .order("created_at", { ascending: false })
+    .eq("role", "college_admin");
+
+  const { data, error } = await query;
+
+  if (error) {
+    throw error;
+  }
+
+  return data;
+}
+export type InvitesListResponse = Awaited<ReturnType<typeof getInvites>>;
+
+export type InvitesListItem = InvitesListResponse[number];
+
+export async function softDeleteUser(userID: string) {
+  const supabase = await createClient();
+
+  const { data, error } = await supabase.rpc("soft_delete_profile", {
+    p_user_id: userID,
+  });
+
+  if (error) {
+    throw new AppError(error.message, 400, "SOFT_DELETE_FAILED");
+  }
+
+  return data;
+}

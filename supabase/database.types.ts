@@ -199,8 +199,10 @@ export type Database = {
       invitations: {
         Row: {
           accepted_at: string | null
+          accepted_by: string | null
           college_id: string | null
           created_at: string | null
+          created_user_id: string | null
           department_id: string | null
           email: string
           expires_at: string
@@ -212,8 +214,10 @@ export type Database = {
         }
         Insert: {
           accepted_at?: string | null
+          accepted_by?: string | null
           college_id?: string | null
           created_at?: string | null
+          created_user_id?: string | null
           department_id?: string | null
           email: string
           expires_at: string
@@ -225,8 +229,10 @@ export type Database = {
         }
         Update: {
           accepted_at?: string | null
+          accepted_by?: string | null
           college_id?: string | null
           created_at?: string | null
+          created_user_id?: string | null
           department_id?: string | null
           email?: string
           expires_at?: string
@@ -237,6 +243,13 @@ export type Database = {
           token?: string | null
         }
         Relationships: [
+          {
+            foreignKeyName: "invitations_accepted_by_fkey"
+            columns: ["accepted_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "invitations_college_id_fkey"
             columns: ["college_id"]
@@ -328,8 +341,8 @@ export type Database = {
           email: string
           full_name: string | null
           id: string
-          is_active: boolean | null
           role: Database["public"]["Enums"]["user_role"]
+          status: Database["public"]["Enums"]["user_status"]
           updated_at: string | null
         }
         Insert: {
@@ -342,8 +355,8 @@ export type Database = {
           email: string
           full_name?: string | null
           id: string
-          is_active?: boolean | null
           role: Database["public"]["Enums"]["user_role"]
+          status?: Database["public"]["Enums"]["user_status"]
           updated_at?: string | null
         }
         Update: {
@@ -356,11 +369,18 @@ export type Database = {
           email?: string
           full_name?: string | null
           id?: string
-          is_active?: boolean | null
           role?: Database["public"]["Enums"]["user_role"]
+          status?: Database["public"]["Enums"]["user_status"]
           updated_at?: string | null
         }
         Relationships: [
+          {
+            foreignKeyName: "invitations_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "profiles_college_id_fkey"
             columns: ["college_id"]
@@ -466,17 +486,28 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      activate_profile: { Args: { p_user_id: string }; Returns: undefined }
       current_college_id: { Args: never; Returns: string }
       current_role: {
         Args: never
         Returns: Database["public"]["Enums"]["user_role"]
       }
+      hard_delete_profile: { Args: { p_user_id: string }; Returns: undefined }
       is_super_admin: { Args: never; Returns: boolean }
+      restore_profile: { Args: { p_user_id: string }; Returns: undefined }
+      soft_delete_profile: { Args: { p_user_id: string }; Returns: undefined }
+      suspend_profile: { Args: { p_user_id: string }; Returns: undefined }
     }
     Enums: {
-      invitation_status: "pending" | "accepted" | "expired" | "cancelled"
+      invitation_status:
+        | "pending"
+        | "accepted"
+        | "expired"
+        | "cancelled"
+        | "onboarding"
       payment_status: "pending" | "paid" | "failed" | "refunded"
       user_role: "super_admin" | "college_admin" | "supervisor" | "student"
+      user_status: "active" | "inactive" | "suspended" | "deleted"
     }
     CompositeTypes: {
       [_ in never]: never
@@ -604,9 +635,16 @@ export type CompositeTypes<
 export const Constants = {
   public: {
     Enums: {
-      invitation_status: ["pending", "accepted", "expired", "cancelled"],
+      invitation_status: [
+        "pending",
+        "accepted",
+        "expired",
+        "cancelled",
+        "onboarding",
+      ],
       payment_status: ["pending", "paid", "failed", "refunded"],
       user_role: ["super_admin", "college_admin", "supervisor", "student"],
+      user_status: ["active", "inactive", "suspended", "deleted"],
     },
   },
 } as const
