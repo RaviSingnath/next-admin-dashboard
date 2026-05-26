@@ -1,14 +1,13 @@
-import { NextResponse } from "next/server";
-import { zCollege } from "@/lib/validations/admin/college-schema";
-import { createCollege } from "@/lib/services/super-admin.service";
 import { getZodErrors } from "@/lib/helper/get-zod-errors";
+import { zAddDepartment } from "@/lib/validations/admin/college-schema";
+import { NextResponse } from "next/server";
+import { createDepartmentService } from "@/lib/services/depatments.service";
 
 export async function POST(req: Request) {
   try {
     const body = await req.json();
 
-    // Server-side validation
-    const validatedFields = zCollege.safeParse(body);
+    const validatedFields = zAddDepartment.safeParse(body);
 
     if (!validatedFields.success) {
       return NextResponse.json(
@@ -21,13 +20,12 @@ export async function POST(req: Request) {
       );
     }
 
-    const college = await createCollege(validatedFields.data);
-    console.log(college);
+    const department = await createDepartmentService(validatedFields.data);
 
     return NextResponse.json(
       {
         success: true,
-        data: college,
+        data: department,
       },
       { status: 201 },
     );

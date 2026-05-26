@@ -8,6 +8,7 @@ import {
 } from "@/components/ui/table";
 import { DepartmentsListItem } from "@/lib/services/depatments.service";
 import { formatDateTime } from "@/utils/date";
+import { DeleteDepartmentButton } from "./delete-department-button";
 
 type DepartmentsTableProps = {
   departments: DepartmentsListItem[];
@@ -25,12 +26,6 @@ export async function DepartmentsTable({ departments }: DepartmentsTableProps) {
               className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
             >
               Name
-            </TableCell>
-            <TableCell
-              isHeader
-              className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
-            >
-              College
             </TableCell>
             <TableCell
               isHeader
@@ -60,16 +55,15 @@ export async function DepartmentsTable({ departments }: DepartmentsTableProps) {
                 {department.department_name}
               </TableCell>
               <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
-                {department.college_id}
-              </TableCell>
-              <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
-                {department.created_by}
+                {department.creator?.full_name}
               </TableCell>
               <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
                 {department.created_at && formatDateTime(department.created_at)}
               </TableCell>
               <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
-                <div className="flex gap-2">ACTION</div>
+                <div className="flex gap-2">
+                  <DeleteDepartmentButton departmentID={department.id} />
+                </div>
               </TableCell>
             </TableRow>
           ))}

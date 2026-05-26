@@ -37,7 +37,7 @@ export default function AddDepartmentForm({
 
   const onSubmit = async (formData: TAddDepartment) => {
     try {
-      const response = await fetch("/api/admin/invite-college-admin", {
+      const response = await fetch("/api/admin/department", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -61,8 +61,8 @@ export default function AddDepartmentForm({
 
         if (!data.success) {
           switch (data.code) {
-            case "INVITATION_EXISTS":
-              appToast.error("Invitation already sent");
+            case "DEPARTMENT_EXISTS":
+              appToast.error("Department already exist");
               return;
 
             case "FORBIDDEN":

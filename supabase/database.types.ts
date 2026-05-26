@@ -140,6 +140,13 @@ export type Database = {
             referencedRelation: "colleges"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "departments_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
         ]
       }
       fee_structures: {
