@@ -4,7 +4,7 @@ import Label from "@/components/form/Label";
 import Button from "@/components/ui/button/Button";
 import { EyeCloseIcon, EyeIcon } from "@/components/icons";
 import Link from "next/link";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -12,11 +12,13 @@ import {
   zAcceptInvite,
   TAcceptInvite,
 } from "@/lib/validations/admin/college-schema";
+import { createClient } from "@/lib/supabase/client";
 
 export default function AcceptInviteForm() {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const router = useRouter();
+  const supabase = createClient();
 
   const {
     register,
@@ -26,43 +28,65 @@ export default function AcceptInviteForm() {
     formState: { errors, isSubmitting },
   } = useForm<TAcceptInvite>({
     resolver: zodResolver(zAcceptInvite),
-
     defaultValues: {
-      full_name: "",
       password: "",
       confirm_password: "",
     },
   });
 
-  async function onSubmit(formData: TAcceptInvite) {
-    try {
-      const response = await fetch("/api/auth/accept-invite", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
-      });
+  useEffect(() => {
+    const hash = window.location.hash;
+    const params = new URLSearchParams(hash.slice(1));
 
-      const data = await response.json();
+    const access_token = params.get("access_token");
+    const type = params.get("type");
+    const refreshToken = params.get("refresh_token");
 
-      if (!response.ok) {
-        if (data.errors) {
-          Object.entries(data.errors).forEach(([field, messages]) => {
-            setError(field as keyof TAcceptInvite, {
-              type: "server",
-              message: (messages as string[])[0],
-            });
-          });
+    const establishSession = async () => {
+      if (access_token && refreshToken && type) {
+        const { error } = await supabase.auth.setSession({
+          access_token: access_token,
+          refresh_token: refreshToken,
+        });
+
+        if (error) {
+          return;
         }
 
+        const response = await fetch("/api/auth/accept-invite");
+        const data = await response.json();
+
+        if (!response.ok) {
+          setError("password", {
+            type: "server",
+            message: data.message ?? "Failed to accept invite.",
+          });
+        }
+      }
+
+      window.history.replaceState(null, "", window.location.pathname);
+    };
+
+    establishSession();
+  }, []);
+
+  async function onSubmit(formData: TAcceptInvite) {
+    try {
+      const { error: updateError } = await supabase.auth.updateUser({
+        password: formData.password,
+      });
+
+      if (updateError) {
+        setError("password", {
+          type: "server",
+          message: updateError.message,
+        });
         return;
       }
 
       reset();
       router.push("/login");
       router.refresh();
-      console.log("Success", data);
     } catch (error) {
       console.error(error);
     }
@@ -73,27 +97,16 @@ export default function AcceptInviteForm() {
       <div className="flex flex-col justify-center flex-1 w-full max-w-md mx-auto">
         <div className="mb-5 sm:mb-8">
           <h1 className="mb-2 font-semibold text-gray-800 text-title-sm dark:text-white/90 sm:text-title-md">
-            Complete your profile
+            Set your password
           </h1>
           <p className="text-sm text-gray-500 dark:text-gray-400">
-            Welcome! Your invite has been accepted. Please fill in your details
-            below to set up your account and get started.
+            Your invite has been accepted. Choose a password to finish setting
+            up your account.
           </p>
         </div>
         <div>
           <form onSubmit={handleSubmit(onSubmit)}>
             <div className="space-y-6">
-              <div>
-                <Label>Full Name</Label>
-
-                <Input
-                  type="text"
-                  error={!!errors.full_name}
-                  hint={errors.full_name?.message}
-                  placeholder="Enter your full name"
-                  {...register("full_name")}
-                />
-              </div>
               <div>
                 <Label>
                   Password <span className="text-error-500">*</span>{" "}
@@ -102,6 +115,8 @@ export default function AcceptInviteForm() {
                   <Input
                     type={showPassword ? "text" : "password"}
                     placeholder="Enter your password"
+                    error={!!errors.password}
+                    hint={errors.password?.message}
                     {...register("password")}
                   />
                   <span
@@ -125,6 +140,8 @@ export default function AcceptInviteForm() {
                   <Input
                     type={showConfirmPassword ? "text" : "password"}
                     placeholder="Enter your password again"
+                    error={!!errors.confirm_password}
+                    hint={errors.confirm_password?.message}
                     {...register("confirm_password")}
                   />
                   <span

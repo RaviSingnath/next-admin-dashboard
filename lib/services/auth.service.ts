@@ -5,6 +5,8 @@ import {
   TResetPassword,
   TUpdatePassword,
 } from "@/lib/validations/admin/college-schema";
+import { Session } from "@supabase/supabase-js";
+import { createAdminClient } from "../supabase/admin";
 
 export async function signinUser(data: TSignIn) {
   const supabase = await createClient();
@@ -63,53 +65,61 @@ export async function updatePassword(data: TUpdatePassword) {
   return updatePasswordData;
 }
 
-export async function acceptInvite(data: TAcceptInvite) {
+export async function acceptInvite() {
   const supabase = await createClient();
+  const supabaseAdmin = createAdminClient();
 
   const {
     data: { user },
   } = await supabase.auth.getUser();
 
-  if (!user) {
-    throw new Error("Invalid invite");
+  if (!user?.email) {
+    throw new Error("Your not authenticated.");
   }
 
-  const { data: invitation, error: invitationError } = await supabase
+  const { data: invitation, error: invitationError } = await supabaseAdmin
     .from("invitations")
     .select("*")
     .eq("email", user.email)
-    .eq("status", "pending")
-    .single();
+    .in("status", ["pending", "onboarding"])
+    .order("created_at", { ascending: false })
+    .limit(1)
+    .maybeSingle();
 
-  if (invitationError) {
+  if (!invitation || invitationError) {
     throw new Error("Invite not found.");
   }
 
-  const { error: updateUserError } = await supabase.auth.updateUser({
-    password: data.confirm_password,
-  });
+  const { error: profileError } = await supabaseAdmin.from("profiles").upsert(
+    {
+      id: user.id,
+      email: user.email,
+      role: invitation.role,
+      college_id: invitation.college_id,
+      created_by: invitation.invited_by,
+      status: "active",
+    },
+    { onConflict: "id" },
+  );
 
-  if (updateUserError) {
-    throw new Error("Error occured while updating the info.");
+  if (profileError) {
+    throw new Error(profileError.message);
   }
 
-  await supabase.from("profiles").insert({
-    id: user.id,
-    email: user.email,
-    role: invitation.role,
-    college_id: invitation.college_id,
-    created_by: invitation.invited_by,
-    full_name: data.full_name,
-    is_active: true,
-  });
-
-  const invite = await supabase
+  const { data: invite, error: inviteError } = await supabaseAdmin
     .from("invitations")
     .update({
       status: "accepted",
       accepted_at: new Date().toISOString(),
+      accepted_by: user.id,
     })
-    .eq("id", invitation.id);
+    .eq("id", invitation.id)
+    .select()
+    .single();
+
+  if (inviteError) {
+    throw new Error(inviteError.message);
+  }
 
   return invite;
 }

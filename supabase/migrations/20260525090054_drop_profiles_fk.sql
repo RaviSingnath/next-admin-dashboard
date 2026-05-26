@@ -1,0 +1,2 @@
+alter table public.profiles
+drop constraint invitations_created_by_fkey;

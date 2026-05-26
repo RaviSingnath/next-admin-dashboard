@@ -117,22 +117,10 @@ export async function inviteCollegeAdmin(data: TCollegeAdminInvite) {
     throw new AppError("Forbidden", 403, "FORBIDDEN");
   }
 
-  const expiresAt = new Date(Date.now() + 7 * 24 * 60 * 60 * 1000);
-
-  const { error } = await supabase.from("invitations").insert({
-    email: data.invite_email,
-    role: "college_admin",
-    college_id: data.college_id,
-    expires_at: expiresAt.toISOString(),
-  });
-
-  if (error) {
-    throw new AppError(error.message, 400, error.code || "DATABASE_ERROR");
-  }
-
   const inviteUrl = `${process.env.NEXT_PUBLIC_SITE_URL}/accept-invite`;
+  // const toeknConfirmUrl = `${process.env.NEXT_PUBLIC_SITE_URL}/token-confirm?next=/accept-invite`;
 
-  const { data: invite, error: inviteError } =
+  const { error: inviteError } =
     await supabaseAdmin.auth.admin.inviteUserByEmail(data.invite_email, {
       redirectTo: inviteUrl,
       data: { full_name: data.full_name },
@@ -146,13 +134,29 @@ export async function inviteCollegeAdmin(data: TCollegeAdminInvite) {
     );
   }
 
-  return invite;
+  const expiresAt = new Date(Date.now() + 3600 * 1000);
+
+  const { data: invitation, error } = await supabase
+    .from("invitations")
+    .insert({
+      email: data.invite_email,
+      full_name: data.full_name,
+      role: "college_admin",
+      college_id: data.college_id,
+      expires_at: expiresAt.toISOString(),
+    });
+
+  if (error) {
+    throw new AppError(error.message, 400, error.code || "DATABASE_ERROR");
+  }
+
+  return invitation;
 }
 
 export async function getCollegeAdmins() {
   const supabase = await createClient();
 
-  const query = supabase
+  const { data, error } = await supabase
     .from("profiles")
     .select(
       `
@@ -162,28 +166,54 @@ export async function getCollegeAdmins() {
     status,
     created_at,
     deleted_at,
+    created_by,
 
     college:colleges (
       id,
       college_name
-    ),
-
-    created_by_profile:profiles!created_by (
-      id,
-      full_name
     )
   `,
     )
     .order("created_at", { ascending: false })
     .eq("role", "college_admin");
 
-  const { data, error } = await query;
-
   if (error) {
     throw error;
   }
 
-  return data;
+  if (!data?.length) {
+    return [];
+  }
+
+  const creatorIds = [
+    ...new Set(
+      data.map((row) => row.created_by).filter((id): id is string => !!id),
+    ),
+  ];
+
+  if (creatorIds.length === 0) {
+    return data.map((row) => ({ ...row, creator: null }));
+  }
+
+  const { data: creators, error: creatorsError } = await supabase
+    .from("profiles")
+    .select("id, full_name")
+    .in("id", creatorIds);
+
+  if (creatorsError) {
+    throw creatorsError;
+  }
+
+  const creatorsById = new Map(
+    creators?.map((creator) => [creator.id, creator]) ?? [],
+  );
+
+  return data.map((row) => ({
+    ...row,
+    creator: row.created_by
+      ? (creatorsById.get(row.created_by) ?? null)
+      : null,
+  }));
 }
 export type CollegeAdminsListResponse = Awaited<
   ReturnType<typeof getCollegeAdmins>

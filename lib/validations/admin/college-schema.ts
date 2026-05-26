@@ -61,7 +61,6 @@ export type TCollegeAdminInvite = z.infer<typeof zCollegeAdminInvite>;
 
 export const zAcceptInvite = z
   .object({
-    full_name: z.string().trim().min(1, "Full name is required"),
     password: z.string().min(6, "Password must be at least 6 characters"),
     confirm_password: z.string(),
   })

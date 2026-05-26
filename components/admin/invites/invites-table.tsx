@@ -53,13 +53,19 @@ export async function InvitesTable({ invites }: InvitesTableProps) {
               isHeader
               className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
             >
+              Created At
+            </TableCell>
+            <TableCell
+              isHeader
+              className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
+            >
               Accepted At
             </TableCell>
             <TableCell
               isHeader
               className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
             >
-              Created At
+              Exprire At
             </TableCell>
             <TableCell
               isHeader
@@ -86,10 +92,13 @@ export async function InvitesTable({ invites }: InvitesTableProps) {
                 {invite.status}
               </TableCell>
               <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
+                {invite.created_at && formatDateTime(invite.created_at)}
+              </TableCell>
+              <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
                 {invite.accepted_at ? formatDateTime(invite.accepted_at) : "-"}
               </TableCell>
               <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
-                {invite.created_at && formatDateTime(invite.created_at)}
+                {invite.expires_at ? formatDateTime(invite.expires_at) : "-"}
               </TableCell>
               <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
                 <div className="flex gap-2">

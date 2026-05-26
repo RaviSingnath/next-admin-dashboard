@@ -1,29 +1,9 @@
 import { NextResponse } from "next/server";
-
-import { zAcceptInvite } from "@/lib/validations/admin/college-schema";
 import { acceptInvite } from "@/lib/services/auth.service";
-import { getZodErrors } from "@/lib/helper/get-zod-errors";
 
-export async function POST(req: Request) {
+export async function GET() {
   try {
-    const body = await req.json();
-
-    // Server-side validation
-    const validatedFields = zAcceptInvite.safeParse(body);
-
-    if (!validatedFields.success) {
-      return NextResponse.json(
-        {
-          success: false,
-          message: "Validation failed",
-          errors: getZodErrors(validatedFields.error),
-        },
-        { status: 400 },
-      );
-    }
-
-    const acceptedInvite = await acceptInvite(validatedFields.data);
-    console.log(acceptedInvite);
+    const acceptedInvite = await acceptInvite();
 
     return NextResponse.json(
       {
@@ -38,7 +18,8 @@ export async function POST(req: Request) {
     return NextResponse.json(
       {
         success: false,
-        message: "Internal server error",
+        message:
+          error instanceof Error ? error.message : "Internal server error",
       },
       { status: 500 },
     );

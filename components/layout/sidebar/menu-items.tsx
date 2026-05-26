@@ -1,3 +1,5 @@
+"use client";
+
 import React, { useEffect, useRef, useState } from "react";
 import Link from "next/link";
 import { type MenuGroup } from "@/lib/navigation/menu-config";
@@ -11,6 +13,7 @@ type MenuItemsProps = {
 };
 
 export default function MenuItems({ navItems, menuType }: MenuItemsProps) {
+  console.log(navItems);
   const pathname = usePathname();
   const { isExpanded, isMobileOpen, isHovered } = useSidebar();
   const subMenuRefs = useRef<Record<string, HTMLDivElement | null>>({});

@@ -206,6 +206,7 @@ export type Database = {
           department_id: string | null
           email: string
           expires_at: string
+          full_name: string | null
           id: string
           invited_by: string
           role: Database["public"]["Enums"]["user_role"]
@@ -221,6 +222,7 @@ export type Database = {
           department_id?: string | null
           email: string
           expires_at: string
+          full_name?: string | null
           id?: string
           invited_by?: string
           role: Database["public"]["Enums"]["user_role"]
@@ -236,6 +238,7 @@ export type Database = {
           department_id?: string | null
           email?: string
           expires_at?: string
+          full_name?: string | null
           id?: string
           invited_by?: string
           role?: Database["public"]["Enums"]["user_role"]
@@ -375,17 +378,17 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: "invitations_created_by_fkey"
-            columns: ["created_by"]
-            isOneToOne: false
-            referencedRelation: "profiles"
-            referencedColumns: ["id"]
-          },
-          {
             foreignKeyName: "profiles_college_id_fkey"
             columns: ["college_id"]
             isOneToOne: false
             referencedRelation: "colleges"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "profiles_created_by_fkey"
+            columns: ["created_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
           {

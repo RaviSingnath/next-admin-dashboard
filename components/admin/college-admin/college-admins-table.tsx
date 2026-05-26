@@ -20,7 +20,7 @@ type CollegeAdminsTableProps = {
 export async function CollegeAdminsTable({
   collegeAdmins,
 }: CollegeAdminsTableProps) {
-  console.log(collegeAdmins);
+  console.log("collegeAdmins:", collegeAdmins);
   return (
     <TableWrapper>
       <Table>
@@ -88,7 +88,7 @@ export async function CollegeAdminsTable({
                 {collegeAdmin.email}
               </TableCell>
               <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
-                {collegeAdmin.created_by_profile?.full_name}
+                {collegeAdmin.creator?.full_name}
               </TableCell>
               <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
                 {collegeAdmin.college?.college_name}

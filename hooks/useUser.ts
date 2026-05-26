@@ -2,8 +2,14 @@
 
 import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
-import { parseUser } from "@/lib/autth/parseUser";
-import { UserContext } from "@/lib/autth/types";
+
+export type UserContext = {
+  id: string;
+  email: string;
+  role: string | null;
+  college_id: string | null;
+  full_name: string | null;
+};
 
 export default function useUser() {
   const supabase = createClient();
@@ -14,25 +20,64 @@ export default function useUser() {
   useEffect(() => {
     let mounted = true;
 
-    async function init() {
+    async function loadUser() {
+      setLoading(true);
+
+      // Get authenticated user
       const {
         data: { session },
       } = await supabase.auth.getSession();
 
+      const authUser = session?.user;
+
+      if (!authUser) {
+        if (mounted) {
+          setUser(null);
+          setLoading(false);
+        }
+        return;
+      }
+
+      // Get profile
+      const { data: profile, error } = await supabase
+        .from("profiles")
+        .select(
+          `
+          id,
+          full_name,
+          role,
+          college_id
+        `,
+        )
+        .eq("id", authUser.id)
+        .single();
+
       if (!mounted) return;
 
-      setUser(parseUser(session?.user ?? null));
+      if (error || !profile) {
+        setUser(null);
+        setLoading(false);
+        return;
+      }
+
+      setUser({
+        id: authUser.id,
+        email: authUser.email ?? "",
+        role: profile.role,
+        college_id: profile.college_id,
+        full_name: profile.full_name,
+      });
+
       setLoading(false);
     }
 
-    init();
+    loadUser();
 
-    // 🔥 Listen to auth changes (login/logout/refresh)
+    // Listen to auth changes
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, session) => {
-      setUser(parseUser(session?.user ?? null));
-      setLoading(false);
+    } = supabase.auth.onAuthStateChange(() => {
+      loadUser();
     });
 
     return () => {

@@ -5,6 +5,8 @@ export async function GET(request: Request) {
   const { searchParams, origin } = new URL(request.url);
 
   const code = searchParams.get("code");
+  const type = searchParams.get("type");
+  const token_hash = searchParams.get("token_hash");
   const next = searchParams.get("next") ?? "/";
 
   if (!code) {

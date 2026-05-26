@@ -7,12 +7,15 @@ import useUser from "@/hooks/useUser";
 import { useSidebar } from "@/context/SidebarContext";
 import { HorizontaLDots } from "../../icons/index";
 import MenuItems from "./menu-items";
+import UserRole from "@/lib/rbac/roles";
 
 const AppSidebar: React.FC = () => {
   const { user } = useUser();
+  console.log("asdasdasd", user);
   const { isExpanded, isMobileOpen, isHovered, setIsHovered } = useSidebar();
+  const userRole = (user?.role as UserRole) || "";
 
-  const navItems: MenuGroup[] | [] = user ? MENU_CONFIG[user.role] : [];
+  const navItems: MenuGroup[] | [] = userRole ? MENU_CONFIG[userRole] : [];
 
   return (
     <aside
