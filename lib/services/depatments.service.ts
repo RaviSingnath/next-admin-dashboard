@@ -2,12 +2,13 @@ import createClient from "@/lib/supabase/server";
 import { getProfile } from "./helper/getProfile";
 import { AppError } from "../app-error";
 import { TAddDepartment } from "../validations/admin/college-schema";
+import { TDepartmentFilters } from "@/types/departments.types";
 
 // getDepartmentByIdService()
 // updateDepartmentService()
 // filterDepartmentsService()
 
-export async function getDepartmentsService() {
+export async function getDepartmentsService(filters: TDepartmentFilters) {
   const supabase = await createClient();
 
   const profile = await getProfile();
@@ -20,7 +21,7 @@ export async function getDepartmentsService() {
     throw new Error("Profile is not associated with a college");
   }
 
-  const { data: departmentsData, error } = await supabase
+  let query = supabase
     .from("departments")
     .select(
       `
@@ -29,6 +30,7 @@ export async function getDepartmentsService() {
     department_name,
     created_by,
     created_at,
+    deleted_at,
 
     creator:profiles!created_by (
       id,
@@ -37,8 +39,14 @@ export async function getDepartmentsService() {
   `,
     )
     .order("created_at", { ascending: false })
-    .eq("college_id", profile.college_id)
-    .is("deleted_at", null);
+    .eq("college_id", profile.college_id);
+
+  // Soft delete handling\
+  if (!filters?.includeDeleted) {
+    query = query.is("deleted_at", null);
+  }
+
+  const { data: departmentsData, error } = await query;
 
   if (error) {
     throw error;

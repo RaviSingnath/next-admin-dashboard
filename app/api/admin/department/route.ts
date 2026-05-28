@@ -1,7 +1,10 @@
 import { getZodErrors } from "@/lib/helper/get-zod-errors";
 import { zAddDepartment } from "@/lib/validations/admin/college-schema";
 import { NextResponse } from "next/server";
-import { createDepartmentService } from "@/lib/services/depatments.service";
+import {
+  createDepartmentService,
+  getDepartmentsService,
+} from "@/lib/services/depatments.service";
 
 export async function POST(req: Request) {
   try {
@@ -40,4 +43,16 @@ export async function POST(req: Request) {
       { status: 500 },
     );
   }
+}
+
+export async function GET(req: Request) {
+  const { searchParams } = new URL(req.url);
+
+  const filters = {
+    includeDeleted: searchParams.get("includeDeleted"),
+  };
+
+  const result = await getDepartmentsService(filters);
+
+  return result;
 }
