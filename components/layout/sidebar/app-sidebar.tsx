@@ -11,7 +11,7 @@ import UserRole from "@/lib/rbac/roles";
 
 const AppSidebar: React.FC = () => {
   const { user } = useUser();
-  console.log("asdasdasd", user);
+
   const { isExpanded, isMobileOpen, isHovered, setIsHovered } = useSidebar();
   const userRole = (user?.role as UserRole) || "";
 

@@ -8,7 +8,7 @@ import { TDepartmentFilters } from "@/types/departments.types";
 // updateDepartmentService()
 // filterDepartmentsService()
 
-export async function getDepartmentsService(filters: TDepartmentFilters) {
+export async function getDepartmentsService(filters?: TDepartmentFilters) {
   const supabase = await createClient();
 
   const profile = await getProfile();
@@ -40,6 +40,8 @@ export async function getDepartmentsService(filters: TDepartmentFilters) {
     )
     .order("created_at", { ascending: false })
     .eq("college_id", profile.college_id);
+
+  console.log("departments query: ", query);
 
   // Soft delete handling\
   if (!filters?.includeDeleted) {
