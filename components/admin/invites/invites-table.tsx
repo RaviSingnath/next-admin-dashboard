@@ -17,8 +17,7 @@ type InvitesTableProps = {
   invites: InvitesListItem[];
 };
 
-export async function InvitesTable({ invites }: InvitesTableProps) {
-  console.log(invites);
+export default async function InvitesTable({ invites }: InvitesTableProps) {
   return (
     <TableWrapper>
       <Table>

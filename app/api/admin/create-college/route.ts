@@ -22,7 +22,6 @@ export async function POST(req: Request) {
     }
 
     const college = await createCollege(validatedFields.data);
-    console.log(college);
 
     return NextResponse.json(
       {

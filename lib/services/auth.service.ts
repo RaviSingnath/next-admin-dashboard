@@ -77,8 +77,6 @@ export async function acceptInvite(token: string) {
     throw new Error("Your not authenticated.");
   }
 
-  console.log("acceptInvite: ", user.email, token);
-
   const { data: invitation, error: invitationError } = await supabaseAdmin
     .from("invitations")
     .select("*")
@@ -89,7 +87,7 @@ export async function acceptInvite(token: string) {
     .gt("expires_at", new Date().toISOString())
     .limit(1)
     .maybeSingle();
-  console.log("invitationError: ", invitationError);
+
   if (!invitation || invitationError) {
     throw new Error("Invite not found.");
   }

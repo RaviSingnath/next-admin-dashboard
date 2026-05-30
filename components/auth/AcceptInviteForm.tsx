@@ -66,7 +66,6 @@ export default function AcceptInviteForm() {
           });
           return;
         }
-        console.log(data);
       }
 
       window.history.replaceState(null, "", window.location.pathname);

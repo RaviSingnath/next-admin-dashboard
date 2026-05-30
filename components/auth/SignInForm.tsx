@@ -57,7 +57,6 @@ export default function SignInForm() {
       reset();
       router.push("/dashboard");
       router.refresh();
-      console.log("Success", data);
     } catch (error) {
       console.error(error);
     }

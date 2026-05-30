@@ -41,8 +41,6 @@ export async function getDepartmentsService(filters?: TDepartmentFilters) {
     .order("created_at", { ascending: false })
     .eq("college_id", profile.college_id);
 
-  console.log("departments query: ", query);
-
   // Soft delete handling\
   if (!filters?.includeDeleted) {
     query = query.is("deleted_at", null);

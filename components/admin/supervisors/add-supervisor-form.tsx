@@ -25,7 +25,7 @@ export default function InviteSupervisorForm({
   closeModal,
 }: InviteSupervisorFormProps) {
   const { user } = useUser();
-  console.log("user: ", user);
+
   const router = useRouter();
   const {
     register,
@@ -54,7 +54,6 @@ export default function InviteSupervisorForm({
       });
 
       const data = await response.json();
-      console.log(data, response);
 
       if (!response.ok || !data.success) {
         if (data.errors) {
@@ -90,7 +89,6 @@ export default function InviteSupervisorForm({
 
       reset();
       closeModal();
-      console.log("Success", data);
     } catch (error) {
       console.error(error);
     }

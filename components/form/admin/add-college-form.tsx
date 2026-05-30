@@ -63,7 +63,6 @@ export default function AddCollegeForm({ closeModal }: AddCollegeFormProps) {
 
       reset();
       closeModal();
-      console.log("Success", data);
     } catch (error) {
       console.error(error);
     }

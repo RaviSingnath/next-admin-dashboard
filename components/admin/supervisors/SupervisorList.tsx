@@ -1,5 +1,5 @@
 import ComponentCard from "@/components/common/ComponentCard";
-import { SupervisorsTable } from "./supervisor-table";
+import SupervisorsTable from "./supervisor-table";
 import { AddSupervisorButton } from "./add-supervisor-button";
 import { SupervisorsListItem } from "@/lib/services/supervisors.services";
 import { getDepartmentsService } from "@/lib/services/depatments.service";

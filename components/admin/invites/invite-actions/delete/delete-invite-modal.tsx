@@ -16,7 +16,6 @@ export function DeleteInviteModal({
     const res = await fetch(`/api/admin/delete-user/${id}`, {
       method: "DELETE",
     });
-    console.log(res);
   };
 
   return (

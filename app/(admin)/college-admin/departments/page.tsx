@@ -22,7 +22,7 @@ export default async function DepartmentsPage({
   const departments = await getDepartmentsService({
     includeDeleted: params.includeDeleted,
   });
-  console.log("departments: ", departments);
+
   return (
     <PageWrapperBreadcrumb title="Departments">
       {departments.length > 0 ? (

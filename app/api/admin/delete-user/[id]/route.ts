@@ -13,8 +13,6 @@ export async function DELETE(_request: Request, { params }: RouteParams) {
   try {
     const { id } = await params;
 
-    console.log("USER ID:", id);
-
     if (!id) {
       throw new AppError("User ID is required", 400, "VALIDATION_ERROR");
     }

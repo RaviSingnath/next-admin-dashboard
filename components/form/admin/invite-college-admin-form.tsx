@@ -49,7 +49,6 @@ export default function InviteCollegeAdminForm({
       });
 
       const data = await response.json();
-      console.log(data, response);
 
       if (!response.ok || !data.success) {
         if (data.errors) {
@@ -85,7 +84,6 @@ export default function InviteCollegeAdminForm({
 
       reset();
       closeModal();
-      console.log("Success", data);
     } catch (error) {
       console.error(error);
     }

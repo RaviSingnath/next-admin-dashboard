@@ -98,8 +98,6 @@ export async function inviteSupervisor(data: TSupervisorInvite) {
       .eq("email", data.invite_email)
       .in("status", ["pending", "onboarding"]);
 
-  console.log("revokeOldInviteData: ", revokeOldInviteData);
-
   if (revokeOldInviteError) {
     throw new Error(revokeOldInviteError.message);
   }

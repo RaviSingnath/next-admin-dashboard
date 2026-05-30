@@ -62,7 +62,6 @@ export default function UpdatePasswordForm() {
       reset();
       router.push("/login");
       router.refresh();
-      console.log("Success", data);
     } catch (error) {
       console.error(error);
     }

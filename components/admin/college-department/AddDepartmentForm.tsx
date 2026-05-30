@@ -46,7 +46,6 @@ export default function AddDepartmentForm({
       });
 
       const data = await response.json();
-      console.log(data, response);
 
       if (!response.ok || !data.success) {
         if (data.errors) {
@@ -82,7 +81,6 @@ export default function AddDepartmentForm({
 
       reset();
       closeModal();
-      console.log("Success", data);
     } catch (error) {
       console.error(error);
     }

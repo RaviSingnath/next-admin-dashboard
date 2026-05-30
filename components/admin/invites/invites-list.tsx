@@ -3,7 +3,7 @@ import {
   CollegeListItem,
   InvitesListItem,
 } from "@/lib/services/super-admin.service";
-import { InvitesTable } from "./invites-table";
+import InvitesTable from "./invites-table";
 import { InviteCollegeAdminButton } from "../college-admin/invite-college-admin-button";
 
 type invitesListProps = {

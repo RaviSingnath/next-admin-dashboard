@@ -11,7 +11,6 @@ export const metadata: Metadata = {
 
 export default async function CollegesAdminPage() {
   const collegeAdmins = await getCollegeAdmins();
-  console.log(collegeAdmins);
 
   return (
     <PageWrapperBreadcrumb title="College Admins">

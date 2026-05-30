@@ -17,8 +17,9 @@ type SupervisorsTableProps = {
   supervisors: SupervisorsListItem[];
 };
 
-export async function SupervisorsTable({ supervisors }: SupervisorsTableProps) {
-  console.log("supervisors:", supervisors);
+export default async function SupervisorsTable({
+  supervisors,
+}: SupervisorsTableProps) {
   return (
     <TableWrapper>
       <Table>

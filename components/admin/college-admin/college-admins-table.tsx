@@ -17,10 +17,9 @@ type CollegeAdminsTableProps = {
   collegeAdmins: CollegeAdminListItem[];
 };
 
-export async function CollegeAdminsTable({
+export default async function CollegeAdminsTable({
   collegeAdmins,
 }: CollegeAdminsTableProps) {
-  console.log("collegeAdmins:", collegeAdmins);
   return (
     <TableWrapper>
       <Table>

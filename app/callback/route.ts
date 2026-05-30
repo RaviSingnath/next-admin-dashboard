@@ -16,10 +16,7 @@ export async function GET(request: Request) {
   const supabase = await createClient();
 
   if (code) {
-    console.log("code: ", code);
     const { error, data } = await supabase.auth.exchangeCodeForSession(code);
-    console.log("error: ", error);
-    console.log("data: ", data);
 
     if (error) {
       return NextResponse.redirect(`${origin}/login?error=expired_link`);

@@ -13,7 +13,6 @@ type MenuItemsProps = {
 };
 
 export default function MenuItems({ navItems, menuType }: MenuItemsProps) {
-  console.log(navItems);
   const pathname = usePathname();
   const { isExpanded, isMobileOpen, isHovered } = useSidebar();
   const subMenuRefs = useRef<Record<string, HTMLDivElement | null>>({});

@@ -1,6 +1,6 @@
 import ComponentCard from "@/components/common/ComponentCard";
 import { CollegeAdminListItem } from "@/lib/services/super-admin.service";
-import { CollegeAdminsTable } from "./college-admins-table";
+import CollegeAdminsTable from "./college-admins-table";
 import { InviteCollegeAdminButton } from "./invite-college-admin-button";
 import { getColleges } from "@/lib/services/super-admin.service";
 

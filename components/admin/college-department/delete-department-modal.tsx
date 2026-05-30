@@ -16,7 +16,6 @@ export default function DeleteDepartmentModal({
     const res = await fetch(`/api/admin/department/${id}`, {
       method: "DELETE",
     });
-    console.log(res);
   };
 
   return (
