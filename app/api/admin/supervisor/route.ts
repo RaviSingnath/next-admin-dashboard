@@ -1,9 +1,8 @@
 import { NextResponse } from "next/server";
-
 import { zSupervisorInvite } from "@/lib/validations/admin/college-schema";
-import { inviteCollegeAdmin } from "@/lib/services/super-admin.service";
 import { getZodErrors } from "@/lib/helper/get-zod-errors";
 import { AppError } from "@/lib/app-error";
+import { inviteSupervisor } from "@/lib/services/supervisors.services";
 
 export async function POST(req: Request) {
   try {
@@ -22,7 +21,7 @@ export async function POST(req: Request) {
       );
     }
 
-    const inviteAdmin = await inviteCollegeAdmin(validatedFields.data);
+    const inviteAdmin = await inviteSupervisor(validatedFields.data);
 
     return NextResponse.json(
       {

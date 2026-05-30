@@ -1,0 +1,1 @@
+alter table public.profiles add constraint profile_role_rules check ( ( role = 'super_admin' and college_id is null and department_id is null ) or ( role = 'college_admin' and college_id is not null and department_id is null ) or ( role in ('supervisor', 'student') and college_id is not null and department_id is not null ) );

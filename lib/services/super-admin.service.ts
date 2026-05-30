@@ -210,9 +210,7 @@ export async function getCollegeAdmins() {
 
   return data.map((row) => ({
     ...row,
-    creator: row.created_by
-      ? (creatorsById.get(row.created_by) ?? null)
-      : null,
+    creator: row.created_by ? (creatorsById.get(row.created_by) ?? null) : null,
   }));
 }
 export type CollegeAdminsListResponse = Awaited<
@@ -252,8 +250,7 @@ export async function getInvites() {
     )
   `,
     )
-    .order("created_at", { ascending: false })
-    .eq("role", "college_admin");
+    .order("created_at", { ascending: false });
 
   const { data, error } = await query;
 

@@ -3,6 +3,7 @@ import { getProfile } from "./helper/getProfile";
 import { AppError } from "../app-error";
 import { TSupervisorInvite } from "../validations/admin/college-schema";
 import { createAdminClient } from "../supabase/admin";
+import { generateToken } from "../helper/generate-token";
 
 export async function getSupervisorsService() {
   const supabase = await createClient();
@@ -67,7 +68,7 @@ export type SupervisorsListResponse = Awaited<
 
 export type SupervisorsListItem = SupervisorsListResponse[number];
 
-export async function inviteCollegeAdmin(data: TSupervisorInvite) {
+export async function inviteSupervisor(data: TSupervisorInvite) {
   const supabase = await createClient();
   const supabaseAdmin = createAdminClient();
 
@@ -87,7 +88,24 @@ export async function inviteCollegeAdmin(data: TSupervisorInvite) {
     throw new AppError("Forbidden", 403, "FORBIDDEN");
   }
 
-  const inviteUrl = `${process.env.NEXT_PUBLIC_SITE_URL}/accept-invite`;
+  // Invalidate older invites automatically for email reuse
+  const { data: revokeOldInviteData, error: revokeOldInviteError } =
+    await supabase
+      .from("invitations")
+      .update({
+        status: "cancelled",
+      })
+      .eq("email", data.invite_email)
+      .in("status", ["pending", "onboarding"]);
+
+  console.log("revokeOldInviteData: ", revokeOldInviteData);
+
+  if (revokeOldInviteError) {
+    throw new Error(revokeOldInviteError.message);
+  }
+
+  const token = generateToken();
+  const inviteUrl = `${process.env.NEXT_PUBLIC_SITE_URL}/accept-invite?token=${token}`;
 
   const { error: inviteError } =
     await supabaseAdmin.auth.admin.inviteUserByEmail(data.invite_email, {
@@ -116,7 +134,9 @@ export async function inviteCollegeAdmin(data: TSupervisorInvite) {
       email: data.invite_email,
       full_name: data.full_name,
       role: "supervisor",
+      token: token,
       college_id: data.college_id,
+      department_id: data.department_id,
       expires_at: expiresAt.toISOString(),
     });
 

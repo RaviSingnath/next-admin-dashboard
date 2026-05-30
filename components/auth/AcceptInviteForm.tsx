@@ -5,7 +5,7 @@ import Button from "@/components/ui/button/Button";
 import { EyeCloseIcon, EyeIcon } from "@/components/icons";
 import Link from "next/link";
 import React, { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import {
@@ -19,6 +19,9 @@ export default function AcceptInviteForm() {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const router = useRouter();
   const supabase = createClient();
+  const searchParams = useSearchParams();
+
+  const token = searchParams.get("token");
 
   const {
     register,
@@ -53,7 +56,7 @@ export default function AcceptInviteForm() {
           return;
         }
 
-        const response = await fetch("/api/auth/accept-invite");
+        const response = await fetch(`/api/auth/accept-invite/?token=${token}`);
         const data = await response.json();
 
         if (!response.ok) {
@@ -61,7 +64,9 @@ export default function AcceptInviteForm() {
             type: "server",
             message: data.message ?? "Failed to accept invite.",
           });
+          return;
         }
+        console.log(data);
       }
 
       window.history.replaceState(null, "", window.location.pathname);

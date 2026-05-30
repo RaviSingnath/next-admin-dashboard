@@ -47,6 +47,12 @@ export async function InvitesTable({ invites }: InvitesTableProps) {
               isHeader
               className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
             >
+              Role
+            </TableCell>
+            <TableCell
+              isHeader
+              className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
+            >
               Status
             </TableCell>
             <TableCell
@@ -87,6 +93,9 @@ export async function InvitesTable({ invites }: InvitesTableProps) {
               </TableCell>
               <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
                 {invite.invited_by_profile.full_name}
+              </TableCell>
+              <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
+                {invite.role}
               </TableCell>
               <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
                 {invite.status}

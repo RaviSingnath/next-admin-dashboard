@@ -65,7 +65,7 @@ export async function updatePassword(data: TUpdatePassword) {
   return updatePasswordData;
 }
 
-export async function acceptInvite() {
+export async function acceptInvite(token: string) {
   const supabase = await createClient();
   const supabaseAdmin = createAdminClient();
 
@@ -77,15 +77,19 @@ export async function acceptInvite() {
     throw new Error("Your not authenticated.");
   }
 
+  console.log("acceptInvite: ", user.email, token);
+
   const { data: invitation, error: invitationError } = await supabaseAdmin
     .from("invitations")
     .select("*")
     .eq("email", user.email)
-    .in("status", ["pending", "onboarding"])
+    .eq("token", token)
+    .in("status", ["pending"])
     .order("created_at", { ascending: false })
+    .gt("expires_at", new Date().toISOString())
     .limit(1)
     .maybeSingle();
-
+  console.log("invitationError: ", invitationError);
   if (!invitation || invitationError) {
     throw new Error("Invite not found.");
   }
@@ -96,8 +100,10 @@ export async function acceptInvite() {
       email: user.email,
       role: invitation.role,
       college_id: invitation.college_id,
+      department_id: invitation.department_id,
       created_by: invitation.invited_by,
       status: "active",
+      full_name: invitation.full_name,
     },
     { onConflict: "id" },
   );
@@ -114,6 +120,7 @@ export async function acceptInvite() {
       accepted_by: user.id,
     })
     .eq("id", invitation.id)
+    .eq("token", token)
     .select()
     .single();
 
