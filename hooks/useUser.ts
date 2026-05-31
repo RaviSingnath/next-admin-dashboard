@@ -8,6 +8,7 @@ export type UserContext = {
   email: string;
   role: string | null;
   college_id: string | null;
+  department_id: string | null;
   full_name: string | null;
 };
 
@@ -46,7 +47,8 @@ export default function useUser() {
           id,
           full_name,
           role,
-          college_id
+          college_id,
+          department_id
         `,
         )
         .eq("id", authUser.id)
@@ -65,6 +67,7 @@ export default function useUser() {
         email: authUser.email ?? "",
         role: profile.role,
         college_id: profile.college_id,
+        department_id: profile.department_id,
         full_name: profile.full_name,
       });
 

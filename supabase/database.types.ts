@@ -498,6 +498,7 @@ export type Database = {
     Functions: {
       activate_profile: { Args: { p_user_id: string }; Returns: undefined }
       current_college_id: { Args: never; Returns: string }
+      current_department_id: { Args: never; Returns: string }
       current_role: {
         Args: never
         Returns: Database["public"]["Enums"]["user_role"]

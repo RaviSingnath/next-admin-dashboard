@@ -209,7 +209,7 @@ export const MENU_CONFIG: Record<UserRole, MenuGroup[]> = {
       subItems: [
         {
           name: "My Students",
-          path: "/dashboard/students",
+          path: "/supervisor/students",
           icon: Users,
         },
       ],

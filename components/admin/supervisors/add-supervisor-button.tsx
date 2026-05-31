@@ -3,7 +3,7 @@
 import { Plus } from "lucide-react";
 import Button from "@/components/ui/button/Button";
 import { useModal } from "@/hooks/useModal";
-import { AddsupervisortModal } from "./add-supervisor-modal";
+import AddsupervisortModal from "./add-supervisor-modal";
 import InviteSupervisorForm from "./add-supervisor-form";
 
 type AddSupervisorButtonProps = {
