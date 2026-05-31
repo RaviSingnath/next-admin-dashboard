@@ -3,6 +3,15 @@
 import { useEffect, useState } from "react";
 import { createClient } from "@/lib/supabase/client";
 
+type College = {
+  status: string | null;
+  college_name: string | null;
+};
+
+type Department = {
+  department_name: string | null;
+};
+
 export type UserContext = {
   id: string;
   email: string;
@@ -10,6 +19,8 @@ export type UserContext = {
   college_id: string | null;
   department_id: string | null;
   full_name: string | null;
+  college: College | null;
+  department: Department | null;
 };
 
 export default function useUser() {
@@ -48,7 +59,14 @@ export default function useUser() {
           full_name,
           role,
           college_id,
-          department_id
+          department_id,
+          college:colleges (
+            status,
+            college_name
+          ),
+          department:departments!department_id (
+            department_name
+          )
         `,
         )
         .eq("id", authUser.id)
@@ -69,6 +87,8 @@ export default function useUser() {
         college_id: profile.college_id,
         department_id: profile.department_id,
         full_name: profile.full_name,
+        college: profile.college,
+        department: profile.department,
       });
 
       setLoading(false);

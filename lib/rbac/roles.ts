@@ -6,3 +6,10 @@ enum UserRole {
 }
 
 export default UserRole;
+
+export const UserRoleLabel: Record<UserRole, string> = {
+  [UserRole.SUPER_ADMIN]: "Super Admin",
+  [UserRole.COLLEGE_ADMIN]: "College Admin",
+  [UserRole.SUPERVISOR]: "Supervisor",
+  [UserRole.STUDENT]: "Student",
+};

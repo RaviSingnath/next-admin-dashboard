@@ -1,4 +1,8 @@
+"use client";
+
 import Image from "next/image";
+import useUser from "@/hooks/useUser";
+import UserRole, { UserRoleLabel } from "@/lib/rbac/roles";
 
 type UserToggleButtonProps = {
   isOpen: boolean;
@@ -9,6 +13,9 @@ export default function UserToggleButton({
   isOpen,
   toggleDropdown,
 }: UserToggleButtonProps) {
+  const { user } = useUser();
+  const userRole = user?.role as UserRole | undefined;
+
   return (
     <button
       onClick={toggleDropdown}
@@ -23,7 +30,14 @@ export default function UserToggleButton({
         />
       </span>
 
-      <span className="block mr-1 font-medium text-theme-sm">Ravi</span>
+      <div className="flex flex-col items-start">
+        <span className="block mr-1 font-medium text-theme-sm">
+          {user?.full_name}
+        </span>
+        <span className="block mr-1 font-normal text-theme-xs">
+          {userRole ? (UserRoleLabel[userRole] ?? "") : ""}
+        </span>
+      </div>
 
       <svg
         className={`stroke-gray-500 dark:stroke-gray-400 transition-transform duration-200 ${

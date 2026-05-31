@@ -11,9 +11,10 @@ import UserRole from "@/lib/rbac/roles";
 
 const AppSidebar: React.FC = () => {
   const { user } = useUser();
-
+  console.log(user);
   const { isExpanded, isMobileOpen, isHovered, setIsHovered } = useSidebar();
   const userRole = (user?.role as UserRole) || "";
+  const collegeName = user?.college?.college_name || "";
 
   const navItems: MenuGroup[] | [] = userRole ? MENU_CONFIG[userRole] : [];
 
@@ -83,7 +84,7 @@ const AppSidebar: React.FC = () => {
                 }`}
               >
                 {isExpanded || isHovered || isMobileOpen ? (
-                  "Menu"
+                  collegeName // "Menu"
                 ) : (
                   <HorizontaLDots />
                 )}
