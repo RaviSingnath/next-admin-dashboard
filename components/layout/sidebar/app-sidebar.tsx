@@ -3,18 +3,18 @@ import React from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { MENU_CONFIG, type MenuGroup } from "@/lib/navigation/menu-config";
-import useUser from "@/hooks/useUser";
+import { useAuth } from "@/context/AuthProvider";
 import { useSidebar } from "@/context/SidebarContext";
 import { HorizontaLDots } from "../../icons/index";
 import MenuItems from "./menu-items";
 import UserRole from "@/lib/rbac/roles";
 
 const AppSidebar: React.FC = () => {
-  const { user } = useUser();
+  const { user } = useAuth();
   console.log(user);
   const { isExpanded, isMobileOpen, isHovered, setIsHovered } = useSidebar();
   const userRole = (user?.role as UserRole) || "";
-  const collegeName = user?.college?.college_name || "";
+  const collegeName = user?.college_name || "";
 
   const navItems: MenuGroup[] | [] = userRole ? MENU_CONFIG[userRole] : [];
 
@@ -84,7 +84,7 @@ const AppSidebar: React.FC = () => {
                 }`}
               >
                 {isExpanded || isHovered || isMobileOpen ? (
-                  collegeName // "Menu"
+                  collegeName
                 ) : (
                   <HorizontaLDots />
                 )}

@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import useUser from "@/hooks/useUser";
+import { useAuth } from "@/context/AuthProvider";
 import UserRole, { UserRoleLabel } from "@/lib/rbac/roles";
 
 type UserToggleButtonProps = {
@@ -13,7 +13,7 @@ export default function UserToggleButton({
   isOpen,
   toggleDropdown,
 }: UserToggleButtonProps) {
-  const { user } = useUser();
+  const { user } = useAuth();
   const userRole = user?.role as UserRole | undefined;
 
   return (

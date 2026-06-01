@@ -8,7 +8,7 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { appToast } from "@/lib/toast";
 import { useRouter } from "next/navigation";
-import useUser from "@/hooks/useUser";
+import { useAuth } from "@/context/AuthProvider";
 
 import {
   zStudentInvite,
@@ -22,7 +22,7 @@ type InviteStudentFormProps = {
 export default function InviteStudentForm({
   closeModal,
 }: InviteStudentFormProps) {
-  const { user } = useUser();
+  const { user } = useAuth();
 
   const router = useRouter();
   const {

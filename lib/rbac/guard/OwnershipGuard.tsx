@@ -3,7 +3,7 @@
 import { ReactNode } from "react";
 import { Permission } from "@/lib/rbac/permissions";
 import { hasPermission } from "@/lib/rbac/role-permission-security/hasPermission";
-import useUser from "@/hooks/useUser";
+import { useAuth } from "@/context/AuthProvider";
 
 type Props = {
   permission: Permission;
@@ -18,7 +18,7 @@ export function OwnershipGuard({
   children,
   fallback = null,
 }: Props) {
-  const { user } = useUser();
+  const { user } = useAuth();
   if (!user) return;
 
   const hasAccess =

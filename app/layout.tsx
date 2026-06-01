@@ -4,6 +4,7 @@ import "./globals.css";
 import "react-tooltip/dist/react-tooltip.css";
 import { ThemeProvider } from "@/context/ThemeContext";
 import { SidebarProvider } from "@/context/SidebarContext";
+import { AuthProvider } from "@/context/AuthProvider";
 import { Toaster } from "sonner";
 
 const outfit = Outfit({
@@ -26,7 +27,9 @@ export default function RootLayout({
         className={`${outfit.className} min-h-full flex flex-col dark:bg-gray-900`}
       >
         <ThemeProvider>
-          <SidebarProvider>{children}</SidebarProvider>
+          <AuthProvider>
+            <SidebarProvider>{children}</SidebarProvider>
+          </AuthProvider>
         </ThemeProvider>
         <Toaster richColors position="top-right" />
       </body>
