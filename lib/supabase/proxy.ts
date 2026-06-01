@@ -4,7 +4,37 @@ import { type NextRequest, NextResponse } from "next/server";
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const supabaseKey = process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY;
 
-export default async function proxy(request: NextRequest) {
+const protectedRoutes = [
+  "/admin",
+  "/college-admin",
+  "/dashboard",
+  "/profile",
+  "/supervisor",
+];
+
+function isProtectedRoute(pathname: string) {
+  return protectedRoutes.some(
+    (route) => pathname === route || pathname.startsWith(`${route}/`),
+  );
+}
+
+function redirectWithSupabaseCookies(
+  request: NextRequest,
+  supabaseResponse: NextResponse,
+  pathname: string,
+) {
+  const redirectResponse = NextResponse.redirect(
+    new URL(pathname, request.url),
+  );
+
+  supabaseResponse.cookies.getAll().forEach((cookie) => {
+    redirectResponse.cookies.set(cookie);
+  });
+
+  return redirectResponse;
+}
+
+export async function updateSession(request: NextRequest) {
   // Create an unmodified response
   let supabaseResponse = NextResponse.next({
     request: {
@@ -22,7 +52,9 @@ export default async function proxy(request: NextRequest) {
           request.cookies.set(name, value),
         );
         supabaseResponse = NextResponse.next({
-          request,
+          request: {
+            headers: request.headers,
+          },
         });
         cookiesToSet.forEach(({ name, value, options }) =>
           supabaseResponse.cookies.set(name, value, options),
@@ -35,31 +67,18 @@ export default async function proxy(request: NextRequest) {
     data: { user },
   } = await supabase.auth.getUser();
 
-  const isAuthPage = request.nextUrl.pathname.startsWith("/login");
-  const isAdminPage = request.nextUrl.pathname.startsWith("/dashboard");
+  const { pathname } = request.nextUrl;
+  const isLoginPage = pathname === "/login";
 
   // Redirect unauthenticated users
-  if (!user && isAdminPage) {
-    return NextResponse.redirect(new URL("/login", request.url));
+  if (!user && isProtectedRoute(pathname)) {
+    return redirectWithSupabaseCookies(request, supabaseResponse, "/login");
   }
 
-  // Redirect logged-in users away from login
-  if (user && isAuthPage) {
-    return NextResponse.redirect(new URL("/dashboard", request.url));
+  // Redirect logged-in users away from the login form only.
+  if (user && isLoginPage) {
+    return redirectWithSupabaseCookies(request, supabaseResponse, "/dashboard");
   }
 
   return supabaseResponse;
 }
-
-export const config = {
-  matcher: [
-    /*
-     * Match all request paths except for:
-     * - _next/static (static files)
-     * - _next/image (image optimization files)
-     * - favicon.ico (favicon file)
-     * - common image assets
-     */
-    "/((?!_next/static|_next/image|favicon.ico|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
-  ],
-};

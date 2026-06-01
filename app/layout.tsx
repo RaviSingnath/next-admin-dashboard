@@ -27,9 +27,7 @@ export default function RootLayout({
         className={`${outfit.className} min-h-full flex flex-col dark:bg-gray-900`}
       >
         <ThemeProvider>
-          <AuthProvider>
-            <SidebarProvider>{children}</SidebarProvider>
-          </AuthProvider>
+          <SidebarProvider>{children}</SidebarProvider>
         </ThemeProvider>
         <Toaster richColors position="top-right" />
       </body>

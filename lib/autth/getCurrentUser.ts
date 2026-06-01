@@ -13,7 +13,7 @@ export async function getCurrentUser(): Promise<AuthUser | null> {
   if (!authUser) {
     return null;
   }
-
+  console.time("profile query");
   const { data: profile, error } = await supabase
     .from("profiles")
     .select(
@@ -34,6 +34,7 @@ export async function getCurrentUser(): Promise<AuthUser | null> {
     )
     .eq("id", authUser.id)
     .single();
+  console.timeEnd("profile query");
 
   if (error || !profile) {
     return null;

@@ -18,8 +18,14 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 const supabase = createClient();
 
-export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [user, setUser] = useState<AuthUser | null>(null);
+export function AuthProvider({
+  children,
+  initialUser,
+}: {
+  children: React.ReactNode;
+  initialUser: AuthUser | null;
+}) {
+  const [user, setUser] = useState<AuthUser | null>(initialUser);
 
   const [loading, setLoading] = useState(true);
 
@@ -51,6 +57,10 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange(async (_event, session) => {
+      if (_event === "INITIAL_SESSION") {
+        return;
+      }
+
       if (!session) {
         setUser(null);
         return;
