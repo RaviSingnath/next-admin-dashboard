@@ -1,5 +1,5 @@
 import React from "react";
-import PageBreadcrumb from "@/components/common/PageBreadCrumb";
+import PageBreadcrumb from "@/components/common/page-breadcrumb";
 
 type PageWrapperBreadcrumbProps = {
   title: string;

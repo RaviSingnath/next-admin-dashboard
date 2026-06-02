@@ -10,7 +10,7 @@ type AddSupervisorButtonProps = {
   departments: { value: string; label: string }[];
 };
 
-export function AddSupervisorButton({ departments }: AddSupervisorButtonProps) {
+export default function AddSupervisorButton({ departments }: AddSupervisorButtonProps) {
   const { isOpen, openModal, closeModal } = useModal();
 
   return (

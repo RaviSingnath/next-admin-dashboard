@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Image from "next/image";
-import GridShape from "@/components/common/GridShape";
+import GridShape from "@/components/common/grid-shape";
 import ThemeTogglerTwo from "@/components/common/ThemeTogglerTwo";
 
 export const metadata: Metadata = {

@@ -8,7 +8,10 @@ type AddCollegeModalProps = {
   closeModal: () => void;
 };
 
-export function AddCollegeModal({ isOpen, closeModal }: AddCollegeModalProps) {
+export default function AddCollegeModal({
+  isOpen,
+  closeModal,
+}: AddCollegeModalProps) {
   return (
     <Modal
       isOpen={isOpen}

@@ -7,7 +7,7 @@ type RevokeInviteButtonProps = {
   inviteID: string;
 };
 
-export const RevokeInviteButton = ({ inviteID }: RevokeInviteButtonProps) => {
+const RevokeInviteButton = ({ inviteID }: RevokeInviteButtonProps) => {
   const handleRevokeInvite = () => console.log(inviteID);
   return (
     <>
@@ -22,3 +22,5 @@ export const RevokeInviteButton = ({ inviteID }: RevokeInviteButtonProps) => {
     </>
   );
 };
+
+export default RevokeInviteButton;

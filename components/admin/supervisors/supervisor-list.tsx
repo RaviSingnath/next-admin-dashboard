@@ -1,6 +1,6 @@
-import ComponentCard from "@/components/common/ComponentCard";
+import ComponentCard from "@/components/common/cmponent-card";
 import SupervisorsTable from "./supervisor-table";
-import { AddSupervisorButton } from "./add-supervisor-button";
+import AddSupervisorButton from "./add-supervisor-button";
 import { SupervisorsListItem } from "@/lib/services/supervisors.services";
 import { getDepartmentsService } from "@/lib/services/depatments.service";
 
@@ -8,7 +8,9 @@ type SupervisorsListProps = {
   supervisors: SupervisorsListItem[];
 };
 
-export async function SupervisorsList({ supervisors }: SupervisorsListProps) {
+export default async function SupervisorsList({
+  supervisors,
+}: SupervisorsListProps) {
   const departments = await getDepartmentsService();
 
   const departmentList = departments.map((department) => ({

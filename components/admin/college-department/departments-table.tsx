@@ -1,6 +1,6 @@
 "use client";
 
-import { TableWrapper } from "@/components/tables/table-wrapper";
+import TableWrapper from "@/components/tables/table-wrapper";
 import {
   Table,
   TableBody,
@@ -10,17 +10,19 @@ import {
 } from "@/components/ui/table";
 import { DepartmentsListItem } from "@/lib/services/depatments.service";
 import { formatDateTime } from "@/utils/date";
-import { DeleteDepartmentButton } from "./delete-department-button";
+import DeleteDepartmentButton from "./delete-department-button";
 import CheckboxField from "@/components/form/input/check-box-field";
 import { createQueryString } from "@/lib/helper/update-search-params";
 import { useSearchParams, useRouter } from "next/navigation";
-import { RevertDepartmentButton } from "./revert-department-button";
+import RevertDepartmentButton from "./revert-department-button";
 
 type DepartmentsTableProps = {
   departments: DepartmentsListItem[];
 };
 
-export function DepartmentsTable({ departments }: DepartmentsTableProps) {
+export default function DepartmentsTable({
+  departments,
+}: DepartmentsTableProps) {
   const searchParams = useSearchParams();
   const router = useRouter();
 

@@ -5,7 +5,7 @@ type DescriptionProps = {
   className?: string;
 };
 
-export function Description({ children, className }: DescriptionProps) {
+export default function Description({ children, className }: DescriptionProps) {
   return (
     <p
       className={twMerge(

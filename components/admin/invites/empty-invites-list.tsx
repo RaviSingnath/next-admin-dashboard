@@ -1,15 +1,15 @@
 import { Building2 } from "lucide-react";
 import Link from "next/link";
-import { InviteCollegeAdminButton } from "../college-admin/invite-college-admin-button";
-import { Title } from "@/components/ui/text/title";
-import { Description } from "@/components/ui/text/description";
+import InviteCollegeAdminButton from "../college-admin/invite-college-admin-button";
+import Title from "@/components/ui/text/title";
+import Description from "@/components/ui/text/description";
 import { getColleges } from "@/lib/services/super-admin.service";
 
 type EmptyCollegeAdminListProps = {
   className?: string;
 };
 
-export async function EmptyInvitesList({
+export default async function EmptyInvitesList({
   className,
 }: EmptyCollegeAdminListProps) {
   const colleges = await getColleges();

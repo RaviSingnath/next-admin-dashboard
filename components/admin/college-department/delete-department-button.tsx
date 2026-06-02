@@ -9,7 +9,7 @@ type DeleteDepartmentButtonProps = {
   departmentID: string;
 };
 
-export const DeleteDepartmentButton = ({
+const DeleteDepartmentButton = ({
   departmentID,
 }: DeleteDepartmentButtonProps) => {
   const { isOpen, openModal, closeModal } = useModal();
@@ -31,3 +31,5 @@ export const DeleteDepartmentButton = ({
     </>
   );
 };
+
+export default DeleteDepartmentButton;

@@ -3,10 +3,10 @@
 import { Plus } from "lucide-react";
 import Button from "@/components/ui/button/Button";
 import { useModal } from "@/hooks/useModal";
-import AddDepartmentForm from "./AddDepartmentForm";
-import { AddDepartmentModal } from "./AddDepartmentModal";
+import AddDepartmentForm from "./add-department-form";
+import AddDepartmentModal from "./add-department-modal";
 
-export function AddDepartmentButton() {
+export default function AddDepartmentButton() {
   const { isOpen, openModal, closeModal } = useModal();
 
   return (

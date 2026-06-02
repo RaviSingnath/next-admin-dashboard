@@ -9,7 +9,7 @@ type RevertDepartmentButtonProps = {
   departmentID: string;
 };
 
-export const RevertDepartmentButton = ({
+const RevertDepartmentButton = ({
   departmentID,
 }: RevertDepartmentButtonProps) => {
   const { isOpen, openModal, closeModal } = useModal();
@@ -31,3 +31,5 @@ export const RevertDepartmentButton = ({
     </>
   );
 };
+
+export default RevertDepartmentButton;

@@ -5,7 +5,7 @@ type TitleProps = {
   className?: string;
 };
 
-export function Title({ children, className }: TitleProps) {
+export default function Title({ children, className }: TitleProps) {
   return (
     <h3
       className={twMerge(

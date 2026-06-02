@@ -1,5 +1,5 @@
 import { CollegeListItem } from "@/lib/services/super-admin.service";
-import { TableWrapper } from "@/components/tables/table-wrapper";
+import TableWrapper from "@/components/tables/table-wrapper";
 import {
   Table,
   TableBody,
@@ -16,7 +16,7 @@ type CollegeTableProps = {
   colleges: CollegeListItem[];
 };
 
-export function CollegeTable({ colleges }: CollegeTableProps) {
+export default function CollegeTable({ colleges }: CollegeTableProps) {
   return (
     <TableWrapper>
       <Table>

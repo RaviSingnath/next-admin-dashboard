@@ -7,7 +7,7 @@ type ResendInviteButtonProps = {
   inviteID: string;
 };
 
-export const ResendInviteButton = ({ inviteID }: ResendInviteButtonProps) => {
+const ResendInviteButton = ({ inviteID }: ResendInviteButtonProps) => {
   const handleResendInvite = () => console.log(inviteID);
   return (
     <>
@@ -22,3 +22,5 @@ export const ResendInviteButton = ({ inviteID }: ResendInviteButtonProps) => {
     </>
   );
 };
+
+export default ResendInviteButton;

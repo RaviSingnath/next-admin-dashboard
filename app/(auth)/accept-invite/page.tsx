@@ -1,5 +1,5 @@
 import { Metadata } from "next";
-import AcceptInviteForm from "@/components/auth/AcceptInviteForm";
+import AcceptInviteForm from "@/components/auth/accept-invite-form";
 
 export const metadata: Metadata = {
   title: "Next.js Blank Page | Next.js Dashboard Template",

@@ -7,7 +7,7 @@ type DeleteUserModalProps = {
   closeModal: () => void;
 };
 
-export function DeleteInviteModal({
+export default function DeleteInviteModal({
   userID,
   isOpen,
   closeModal,

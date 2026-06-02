@@ -6,7 +6,7 @@ type InviteCollegeAdminModalProps = {
   children: React.ReactNode;
 };
 
-export function InviteCollegeAdminModal({
+export default function InviteCollegeAdminModal({
   isOpen,
   closeModal,
   children,

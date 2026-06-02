@@ -6,7 +6,7 @@ type AddDepartmentModalProps = {
   children: React.ReactNode;
 };
 
-export function AddDepartmentModal({
+export default function AddDepartmentModal({
   isOpen,
   closeModal,
   children,

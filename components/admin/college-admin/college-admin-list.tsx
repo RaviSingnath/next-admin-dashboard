@@ -1,14 +1,14 @@
-import ComponentCard from "@/components/common/ComponentCard";
+import ComponentCard from "@/components/common/cmponent-card";
 import { CollegeAdminListItem } from "@/lib/services/super-admin.service";
 import CollegeAdminsTable from "./college-admins-table";
-import { InviteCollegeAdminButton } from "./invite-college-admin-button";
+import InviteCollegeAdminButton from "./invite-college-admin-button";
 import { getColleges } from "@/lib/services/super-admin.service";
 
 type CollegeAdminsListProps = {
   collegeAdmins: CollegeAdminListItem[];
 };
 
-export async function CollegeAdminsList({
+export default async function CollegeAdminsList({
   collegeAdmins,
 }: CollegeAdminsListProps) {
   const colleges = await getColleges();

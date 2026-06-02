@@ -1,15 +1,17 @@
 import { Building2 } from "lucide-react";
 import Link from "next/link";
-import { AddCollegeButton } from "../add-college-button";
-import { Title } from "@/components/ui/text/title";
-import { Description } from "@/components/ui/text/description";
+import AddCollegeButton from "../add-college-button";
+import Title from "@/components/ui/text/title";
+import Description from "@/components/ui/text/description";
 import { getColleges } from "@/lib/services/super-admin.service";
 
 type EmptyCollegeListProps = {
   className?: string;
 };
 
-export async function EmptyCollegeList({ className }: EmptyCollegeListProps) {
+export default async function EmptyCollegeList({
+  className,
+}: EmptyCollegeListProps) {
   const colleges = await getColleges();
   return colleges.length > 0 ? (
     <div className="min-h-screen  bg-white px-5 py-7 dark:border-gray-800 dark:bg-white/[0.03] xl:px-10 xl:py-12">

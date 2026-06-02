@@ -1,11 +1,11 @@
 import { Building2 } from "lucide-react";
 import Link from "next/link";
-import { AddSupervisorButton } from "./add-supervisor-button";
-import { Title } from "@/components/ui/text/title";
-import { Description } from "@/components/ui/text/description";
+import AddSupervisorButton from "./add-supervisor-button";
+import Title from "@/components/ui/text/title";
+import Description from "@/components/ui/text/description";
 import { getDepartmentsService } from "@/lib/services/depatments.service";
 
-export async function EmptySupervisorList() {
+export default async function EmptySupervisorList() {
   const departments = await getDepartmentsService();
 
   const departmentOptions = departments.map((department) => ({

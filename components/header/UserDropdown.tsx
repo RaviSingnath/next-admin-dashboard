@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { Dropdown } from "@/components/ui/dropdown/Dropdown";
 import { DropdownItem } from "@/components/ui/dropdown/DropdownItem";
 import UserToggleButton from "./user-toggle-button";
-import SignOutButton from "@/components/auth/SignOutButton";
+import SignOutButton from "@/components/auth/signout-button";
 import { UserCircle2Icon, SettingsIcon, CircleAlertIcon } from "lucide-react";
 import { useAuth } from "@/context/AuthProvider";
 import UserRole, { UserRoleLabel } from "@/lib/rbac/roles";

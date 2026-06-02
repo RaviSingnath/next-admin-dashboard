@@ -1,13 +1,13 @@
 import { Building2 } from "lucide-react";
-import { AddDepartmentButton } from "./add-department-button";
-import { Title } from "@/components/ui/text/title";
-import { Description } from "@/components/ui/text/description";
+import AddDepartmentButton from "./add-department-button";
+import Title from "@/components/ui/text/title";
+import Description from "@/components/ui/text/description";
 
 type EmptyDepartmentsListProps = {
   className?: string;
 };
 
-export async function EmptyDepartmentsList({
+export default async function EmptyDepartmentsList({
   className,
 }: EmptyDepartmentsListProps) {
   return (
