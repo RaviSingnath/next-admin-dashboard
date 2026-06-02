@@ -262,7 +262,7 @@ export const MENU_CONFIG: Record<UserRole, MenuGroup[]> = {
       subItems: [
         {
           name: "My Profile",
-          path: "/dashboard/profile",
+          path: "/student/profile",
           icon: UserCircle2,
         },
         {
