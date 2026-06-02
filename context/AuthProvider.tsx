@@ -11,8 +11,12 @@ import {
 
 import { createClient } from "@/lib/supabase/client";
 import { getCurrentUser } from "@/lib/autth/getCurrentUser";
-
 import type { AuthContextType, AuthUser } from "@/types/auth";
+
+type AuthProviderProps = {
+  children: React.ReactNode;
+  initialUser?: AuthUser | null;
+};
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
@@ -20,14 +24,11 @@ const supabase = createClient();
 
 export function AuthProvider({
   children,
-  initialUser,
-}: {
-  children: React.ReactNode;
-  initialUser: AuthUser | null;
-}) {
+  initialUser = null,
+}: AuthProviderProps) {
   const [user, setUser] = useState<AuthUser | null>(initialUser);
 
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(!initialUser);
 
   const refreshUser = useCallback(async () => {
     const profile = await getCurrentUser();
@@ -39,6 +40,11 @@ export function AuthProvider({
     let mounted = true;
 
     async function initialize() {
+      if (initialUser) {
+        setLoading(false);
+        return;
+      }
+
       try {
         const profile = await getCurrentUser();
 
@@ -56,8 +62,8 @@ export function AuthProvider({
 
     const {
       data: { subscription },
-    } = supabase.auth.onAuthStateChange(async (_event, session) => {
-      if (_event === "INITIAL_SESSION") {
+    } = supabase.auth.onAuthStateChange(async (event, session) => {
+      if (event === "INITIAL_SESSION" && initialUser) {
         return;
       }
 

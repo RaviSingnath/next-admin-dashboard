@@ -1,18 +1,15 @@
-import { createClient } from "@/lib/supabase/client";
-import { AuthUser } from "@/types/auth";
+// lib/auth/getCurrentUserServer.ts
 
-const supabase = createClient();
+import createClient from "@/lib/supabase/server";
 
-export async function getCurrentUser(): Promise<AuthUser | null> {
+export async function getCurrentUserServer() {
+  const supabase = await createClient();
+
   const {
-    data: { session },
-  } = await supabase.auth.getSession();
+    data: { user },
+  } = await supabase.auth.getUser();
 
-  const authUser = session?.user;
-
-  if (!authUser) {
-    return null;
-  }
+  if (!user) return null;
 
   const { data: profile, error } = await supabase
     .from("profiles")
@@ -32,7 +29,7 @@ export async function getCurrentUser(): Promise<AuthUser | null> {
       )
     `,
     )
-    .eq("id", authUser.id)
+    .eq("id", user.id)
     .single();
 
   if (error || !profile) {
@@ -48,8 +45,8 @@ export async function getCurrentUser(): Promise<AuthUser | null> {
     : profile.departments;
 
   return {
-    id: authUser.id,
-    email: authUser.email ?? "",
+    id: user.id,
+    email: user.email ?? "",
 
     full_name: profile.full_name,
     role: profile.role,

@@ -1,10 +1,9 @@
 import type { Metadata } from "next";
-import AdminLayoutClient from "@/app/(admin)/AdminLayoutClient";
-import createClient from "@/lib/supabase/server";
 import { redirect } from "next/navigation";
-import { getProfile } from "@/lib/services/helper/getProfile";
 import { AuthProvider } from "@/context/AuthProvider";
-import { getCurrentUser } from "@/lib/autth/getCurrentUser";
+import { SidebarProvider } from "@/context/SidebarContext";
+import AdminLayoutClient from "@/app/(admin)/AdminLayoutClient";
+import { getCurrentUserServer } from "@/lib/autth/getCurrentUserServer";
 
 export const metadata: Metadata = {
   title: "Admin dashboard",
@@ -16,23 +15,17 @@ export default async function AdminLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const supabase = await createClient();
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const profile = await getCurrentUserServer();
 
-  if (!user) {
+  if (!profile) {
     redirect("/login");
   }
 
-  console.time("getCurrentUser");
-  const profile = await getCurrentUser();
-  console.timeEnd("getCurrentUser");
-  console.log(profile);
-
   return (
-    <AuthProvider initialUser={profile}>
-      <AdminLayoutClient>{children}</AdminLayoutClient>
-    </AuthProvider>
+    <SidebarProvider>
+      <AuthProvider initialUser={profile}>
+        <AdminLayoutClient>{children}</AdminLayoutClient>
+      </AuthProvider>
+    </SidebarProvider>
   );
 }
