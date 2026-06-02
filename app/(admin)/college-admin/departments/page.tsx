@@ -1,8 +1,8 @@
 import { Metadata } from "next";
 import PageWrapperBreadcrumb from "@/components/layout/page-wrapper-breadcrumb";
 import { getDepartmentsService } from "@/lib/services/depatments.service";
-import { EmptyDepartmentsList } from "@/components/admin/college-department/empty-departments-list";
-import { DepartmentsList } from "@/components/admin/college-department/departments-list";
+import EmptyDepartmentsList from "@/components/admin/college-department/empty-departments-list";
+import DepartmentsList from "@/components/admin/college-department/departments-list";
 import { TDepartmentFilters } from "@/types/departments.types";
 
 export const metadata: Metadata = {

@@ -1,4 +1,4 @@
-import { TableWrapper } from "@/components/tables/table-wrapper";
+import TableWrapper from "@/components/tables/table-wrapper";
 import Button from "@/components/ui/button/Button";
 import {
   Table,
@@ -8,9 +8,9 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { formatDateTime } from "@/utils/date";
-import { DeleteInviteButton } from "../invites/invite-actions/delete/delete-invite-button";
-import { ResendInviteButton } from "../invites/invite-actions/resend/resend-invite-button";
-import { RevokeInviteButton } from "../invites/invite-actions/revoke-invite-button";
+import DeleteInviteButton from "../invites/invite-actions/delete/delete-invite-button";
+import ResendInviteButton from "../invites/invite-actions/resend/resend-invite-button";
+import RevokeInviteButton from "../invites/invite-actions/revoke-invite-button";
 import { SupervisorsListItem } from "@/lib/services/supervisors.services";
 
 type SupervisorsTableProps = {

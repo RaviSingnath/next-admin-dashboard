@@ -1,7 +1,7 @@
 import { Building2 } from "lucide-react";
 import AddStudentButton from "./add-student-button";
-import { Title } from "@/components/ui/text/title";
-import { Description } from "@/components/ui/text/description";
+import Title from "@/components/ui/text/title";
+import Description from "@/components/ui/text/description";
 
 export default async function EmptyStudentsList() {
   return (
