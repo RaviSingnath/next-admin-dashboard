@@ -66,7 +66,7 @@ export const MENU_CONFIG: Record<UserRole, MenuGroup[]> = {
       subItems: [
         {
           name: "Colleges",
-          path: "/admin/colleges",
+          path: "/colleges",
           icon: School,
         },
         {

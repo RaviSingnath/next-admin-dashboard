@@ -1,5 +1,6 @@
 import { Metadata } from "next";
-import { getColleges, getInvites } from "@/lib/services/super-admin.service";
+import { getInvites } from "@/lib/services/super-admin.service";
+import { getColleges } from "@/features/colleges/college.service";
 import PageWrapperBreadcrumb from "@/components/layout/page-wrapper-breadcrumb";
 import InvitesList from "@/components/admin/invites/invites-list";
 import EmptyInvitesList from "@/components/admin/invites/empty-invites-list";

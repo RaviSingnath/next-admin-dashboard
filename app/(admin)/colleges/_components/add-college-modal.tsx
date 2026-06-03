@@ -1,7 +1,7 @@
 "use client";
 
 import { Modal } from "@/components/ui/modal";
-import AddCollegeForm from "@/components/form/admin/add-college-form";
+import AddCollegeForm from "./add-college-form";
 
 type AddCollegeModalProps = {
   isOpen: boolean;

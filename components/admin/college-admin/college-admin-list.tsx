@@ -2,7 +2,7 @@ import ComponentCard from "@/components/common/cmponent-card";
 import { CollegeAdminListItem } from "@/lib/services/super-admin.service";
 import CollegeAdminsTable from "./college-admins-table";
 import InviteCollegeAdminButton from "./invite-college-admin-button";
-import { getColleges } from "@/lib/services/super-admin.service";
+import { getColleges } from "@/features/colleges/college.service";
 
 type CollegeAdminsListProps = {
   collegeAdmins: CollegeAdminListItem[];

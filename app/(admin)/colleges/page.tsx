@@ -1,8 +1,8 @@
 import { Metadata } from "next";
-import { getColleges } from "@/lib/services/super-admin.service";
-import { CollegeList } from "@/components/admin/colleges/college-list";
+import { getColleges } from "@/features/colleges/college.service";
+import CollegeList from "./_components/college-list";
+import EmptyCollegeList from "./_components/empty-college-list";
 import PageWrapperBreadcrumb from "@/components/layout/page-wrapper-breadcrumb";
-import { EmptyCollegeList } from "@/components/admin/colleges/empty-college-list";
 
 export const metadata: Metadata = {
   title: "Next.js Blank Page | Next.js Dashboard Template",

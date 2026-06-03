@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
-import { zCollege } from "@/lib/validations/admin/college-schema";
-import { createCollege } from "@/lib/services/super-admin.service";
+import { zCollege } from "@/features/colleges/college.schema";
+import { createCollege } from "@/features/colleges/college.service";
 import { getZodErrors } from "@/lib/helper/get-zod-errors";
 
 export async function POST(req: Request) {

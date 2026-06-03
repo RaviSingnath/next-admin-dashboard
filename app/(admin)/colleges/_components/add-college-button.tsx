@@ -1,9 +1,9 @@
 "use client";
 
 import { Plus } from "lucide-react";
-import Button from "../ui/button/Button";
 import { useModal } from "@/hooks/useModal";
-import AddCollegeModal from "./modal/add-college-modal";
+import Button from "@/components/ui/button/Button";
+import AddCollegeModal from "./add-college-modal";
 
 export default function AddCollegeButton() {
   const { isOpen, openModal, closeModal } = useModal();

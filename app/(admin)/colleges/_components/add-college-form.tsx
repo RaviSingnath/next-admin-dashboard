@@ -1,15 +1,11 @@
 "use client";
-import Button from "@/components/ui/button/Button";
-import Input from "@/components/form/input/InputField";
-import Label from "@/components/form/Label";
 
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-
-import {
-  zCollege,
-  type TCollege,
-} from "@/lib/validations/admin/college-schema";
+import Label from "@/components/form/Label";
+import Button from "@/components/ui/button/Button";
+import Input from "@/components/form/input/InputField";
+import { zCollege, TCollege } from "@/features/colleges/college.schema";
 
 type AddCollegeFormProps = {
   closeModal: () => void;

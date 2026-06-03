@@ -3,7 +3,7 @@ import Link from "next/link";
 import InviteCollegeAdminButton from "../invite-college-admin-button";
 import Title from "@/components/ui/text/title";
 import Description from "@/components/ui/text/description";
-import { getColleges } from "@/lib/services/super-admin.service";
+import { getColleges } from "@/features/colleges/college.service";
 
 type EmptyCollegeAdminListProps = {
   className?: string;

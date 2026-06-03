@@ -1,4 +1,5 @@
-import { CollegeListItem } from "@/lib/services/super-admin.service";
+import Image from "next/image";
+import { formatDateTime } from "@/utils/date";
 import TableWrapper from "@/components/tables/table-wrapper";
 import {
   Table,
@@ -7,10 +8,8 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-
 import Badge from "@/components/ui/badge/Badge";
-import Image from "next/image";
-import { formatDateTime } from "@/utils/date";
+import { CollegeListItem } from "@/lib/services/super-admin.service";
 
 type CollegeTableProps = {
   colleges: CollegeListItem[];
@@ -112,7 +111,7 @@ export default function CollegeTable({ colleges }: CollegeTableProps) {
                           key={index}
                           className="w-6 h-6 overflow-hidden border-2 border-white rounded-full dark:border-gray-900"
                         >
-                          {profile.avatar ? (
+                          {/* {profile.avatar ? (
                             <Image
                               width={24}
                               height={24}
@@ -127,7 +126,12 @@ export default function CollegeTable({ colleges }: CollegeTableProps) {
                                   profile.full_name.charAt(0)}
                               </div>
                             </div>
-                          )}
+                          )} */}
+                          <div className="flex items-center justify-center w-10 h-10 bg-gray-100 rounded-full dark:bg-gray-800">
+                            <div className="text-gray-800 font-semibold font-medium dark:text-white/90">
+                              {profile.full_name && profile.full_name.charAt(0)}
+                            </div>
+                          </div>
                         </div>
                       ))
                     : "-"}

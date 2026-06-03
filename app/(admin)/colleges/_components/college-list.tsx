@@ -1,7 +1,7 @@
 import ComponentCard from "@/components/common/cmponent-card";
-import { CollegeListItem } from "@/lib/services/super-admin.service";
 import CollegeTable from "./colleges-table";
-import AddCollegeButton from "../add-college-button";
+import AddCollegeButton from "./add-college-button";
+import { CollegeListItem } from "@/lib/services/super-admin.service";
 
 type CollegeListProps = {
   colleges: CollegeListItem[];
