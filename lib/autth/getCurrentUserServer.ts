@@ -1,6 +1,5 @@
-// lib/auth/getCurrentUserServer.ts
-
 import createClient from "@/lib/supabase/server";
+import { AVATAR_BUCKET } from "@/utils/constants";
 
 export async function getCurrentUserServer() {
   const supabase = await createClient();
@@ -20,6 +19,7 @@ export async function getCurrentUserServer() {
       role,
       college_id,
       department_id,
+      avatar,
       colleges (
         college_name,
         status
@@ -44,12 +44,12 @@ export async function getCurrentUserServer() {
     ? profile.departments[0]
     : profile.departments;
 
-  return {
+  const userProfile = {
     id: user.id,
     email: user.email ?? "",
 
-    full_name: profile.full_name,
     role: profile.role,
+    full_name: profile.full_name,
 
     college_id: profile.college_id,
     college_name: college?.college_name ?? null,
@@ -57,5 +57,28 @@ export async function getCurrentUserServer() {
 
     department_id: profile.department_id,
     department_name: department?.department_name ?? null,
+  };
+
+  if (!profile.avatar) {
+    return {
+      ...userProfile,
+      avatar_url: null,
+    };
+  }
+
+  const { data: avatarData, error: bucketError } = await supabase.storage
+    .from(AVATAR_BUCKET)
+    .createSignedUrl(profile.avatar, 60 * 60);
+
+  if (bucketError) {
+    return {
+      ...userProfile,
+      avatar_url: null,
+    };
+  }
+
+  return {
+    ...userProfile,
+    avatar_url: avatarData.signedUrl,
   };
 }

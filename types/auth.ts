@@ -4,6 +4,7 @@ export type AuthUser = {
 
   full_name: string | null;
   role: string | null;
+  avatar_url: string | null;
 
   college_id: string | null;
   college_name: string | null;

@@ -5,20 +5,28 @@ import { ImagePlus } from "lucide-react";
 import UploadUserAvatarModal from "./upload-user-avatar-modal";
 import { useModal } from "@/hooks/useModal";
 import UploadUserAvatarForm from "./upload-user-avatar-form";
+import { useAuth } from "@/context/AuthProvider";
 
 export default function UserAvatar() {
   const { isOpen, openModal, closeModal } = useModal();
+  const { user } = useAuth();
 
   return (
     <>
       <div className="relative w-20 h-20 rounded-fullbg-white">
-        <Image
-          width={80}
-          height={80}
-          src="/images/user/user-01.jpg"
-          alt="user"
-          className="object-cover w-full rounded-full"
-        />
+        {user?.avatar_url ? (
+          <Image
+            width={80}
+            height={80}
+            src={user?.avatar_url}
+            alt="user"
+            className="object-cover w-full rounded-full"
+          />
+        ) : (
+          <div className="flex h-8 w-8 items-center justify-center rounded-full bg-muted text-xs font-semibold uppercase">
+            {user?.full_name?.[0] ?? "U"}
+          </div>
+        )}
         <button onClick={openModal}>
           <ImagePlus
             size={24}

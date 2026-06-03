@@ -101,8 +101,8 @@ export const zStudentInvite = z.object({
 
 export type TStudentInvite = z.infer<typeof zStudentInvite>;
 
-const zImageFileSchema = z
-  .instanceof(File, {
+export const zImageFileSchema = z
+  .custom<File>((value) => value instanceof File, {
     message: "Please select a file",
   })
   .refine((file) => file.size <= 10 * 1024 * 1024, {

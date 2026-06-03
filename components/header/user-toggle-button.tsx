@@ -22,12 +22,21 @@ export default function UserToggleButton({
       className="flex items-center text-gray-700 dark:text-gray-400 dropdown-toggle"
     >
       <span className="mr-3 overflow-hidden rounded-full h-11 w-11">
-        <Image
-          width={44}
-          height={44}
-          src="/images/user/owner.jpeg"
-          alt="User"
-        />
+        {user?.avatar_url ? (
+          <div className="relative h-11 w-11 overflow-hidden rounded-full">
+            <Image
+              src={user?.avatar_url}
+              alt={user?.full_name || "user"}
+              fill
+              sizes="44px"
+              className="object-cover"
+            />
+          </div>
+        ) : (
+          <div className="flex size-11 items-center justify-center text-sm font-semibold uppercase text-gray-500 transition-colors bg-white border border-gray-200 rounded-full hover:text-gray-700 hover:bg-gray-100 dark:border-gray-800 dark:bg-gray-900 dark:text-gray-400 dark:hover:bg-gray-800 dark:hover:text-white">
+            {user?.full_name?.[0] ?? "U"}
+          </div>
+        )}
       </span>
 
       <div className="flex flex-col items-start">

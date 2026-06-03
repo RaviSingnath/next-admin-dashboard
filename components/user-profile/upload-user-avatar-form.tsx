@@ -6,6 +6,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import DropZone from "../ui/drop-zone/drop-zone";
 import { zImageFile, TImageFile } from "@/lib/validations/admin/college-schema";
 import Button from "../ui/button/Button";
+import { appToast } from "@/lib/toast";
 
 type UploadUserAvatarFormProps = {
   closeModal: () => void;
@@ -41,18 +42,56 @@ export default function UploadUserAvatarForm({
   };
 
   const {
+    register,
     handleSubmit,
     setValue,
     watch,
+    setError,
+    reset,
     formState: { errors, isSubmitting },
   } = useForm<TImageFile>({
     resolver: zodResolver(zImageFile),
   });
 
+  useEffect(() => {
+    register("imageFile");
+  }, [register]);
+
   const profileAvatar = watch("imageFile");
 
-  const onSubmit = (data: TImageFile) => {
-    console.log(data.imageFile);
+  const onSubmit = async (formData: TImageFile) => {
+    const payload = new FormData();
+
+    payload.append("imageFile", formData.imageFile);
+    try {
+      const response = await fetch("/api/avatar", {
+        method: "POST",
+        body: payload,
+      });
+
+      const data = await response.json();
+
+      if (!response.ok || !data.success) {
+        if (data.errors) {
+          Object.entries(data.errors).forEach(([field, messages]) => {
+            setError(field as keyof TImageFile, {
+              type: "server",
+              message: (messages as string[])[0],
+            });
+          });
+          return;
+        }
+
+        if (!data.success) {
+          appToast.error(data.message || "Something went wrong");
+        }
+      }
+
+      reset();
+      closeModal();
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   return (
