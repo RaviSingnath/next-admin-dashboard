@@ -1,5 +1,5 @@
 import createClient from "@/lib/supabase/server";
-import { AVATAR_BUCKET } from "@/utils/constants";
+import { AVATAR_BUCKET } from "../constants/db";
 
 export async function getCurrentUserServer() {
   const supabase = await createClient();

@@ -9,7 +9,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import Badge from "@/components/ui/badge/Badge";
-import { CollegeListItem } from "@/lib/services/super-admin.service";
+import { CollegeListItem } from "@/features/colleges/college.service";
 
 type CollegeTableProps = {
   colleges: CollegeListItem[];

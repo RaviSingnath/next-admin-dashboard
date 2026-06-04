@@ -1,11 +1,13 @@
 import createClient from "@/lib/supabase/server";
 import { QueryData } from "@supabase/supabase-js";
 import { TCollege } from "./college.schema";
+import { createCollegeMutation } from "./college.mutations";
+import { getCollegesQuery } from "./college.queries";
 
 export async function createCollege(data: TCollege) {
   const supabase = await createClient();
 
-  // Optional duplicate check
+  // We have constraint colleges_official_email_unique. It's an optional duplicate check
   const { data: existingCollege } = await supabase
     .from("colleges")
     .select("id")
@@ -16,19 +18,7 @@ export async function createCollege(data: TCollege) {
     throw new Error("College email already exists");
   }
 
-  const { data: college, error } = await supabase
-    .from("colleges")
-    .insert({
-      college_name: data.college_name,
-      official_email: data.official_email,
-      phone: data.phone,
-      country: data.country,
-      state: data.state,
-      city: data.city,
-      postal_code: data.postal_code,
-    })
-    .select()
-    .single();
+  const { data: college, error } = await createCollegeMutation(data);
 
   if (error) {
     throw error;
@@ -37,26 +27,8 @@ export async function createCollege(data: TCollege) {
   return college;
 }
 
-export async function getColleges() {
-  const supabase = await createClient();
-
-  const query = supabase.from("colleges").select(`
-    id,
-    college_name,
-    official_email,
-    phone,
-    logo_url,
-    country,
-    status,
-    stripe_connected_account_id,
-    created_at,
-    profiles (
-      id,
-      full_name,
-      avatar,
-      status
-    )
-  `);
+export async function getCollegesService() {
+  const query = getCollegesQuery();
 
   type RawCollegesResponse = QueryData<typeof query>;
 
@@ -76,6 +48,5 @@ export async function getColleges() {
   return collegesData;
 }
 
-export type CollegesListResponse = Awaited<ReturnType<typeof getColleges>>;
-
+type CollegesListResponse = Awaited<ReturnType<typeof getCollegesService>>;
 export type CollegeListItem = CollegesListResponse[number];

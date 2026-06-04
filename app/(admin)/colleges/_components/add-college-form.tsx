@@ -1,23 +1,28 @@
 "use client";
 
+import { useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import Label from "@/components/form/Label";
 import Button from "@/components/ui/button/Button";
 import Input from "@/components/form/input/InputField";
 import { zCollege, TCollege } from "@/features/colleges/college.schema";
+import { createCollegeAction } from "../_lib/college.actions";
+import { appToast } from "@/lib/toast";
 
 type AddCollegeFormProps = {
   closeModal: () => void;
 };
 
 export default function AddCollegeForm({ closeModal }: AddCollegeFormProps) {
+  const [isPending, startTransition] = useTransition();
+
   const {
     register,
     handleSubmit,
     reset,
     setError,
-    formState: { errors, isSubmitting },
+    formState: { errors },
   } = useForm<TCollege>({
     resolver: zodResolver(zCollege),
 
@@ -33,35 +38,30 @@ export default function AddCollegeForm({ closeModal }: AddCollegeFormProps) {
   });
 
   const onSubmit = async (formData: TCollege) => {
-    try {
-      const response = await fetch("/api/admin/create-college", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
-      });
+    startTransition(async () => {
+      try {
+        const result = await createCollegeAction(formData);
 
-      const data = await response.json();
-
-      if (!response.ok) {
-        if (data.errors) {
-          Object.entries(data.errors).forEach(([field, messages]) => {
-            setError(field as keyof TCollege, {
-              type: "server",
-              message: (messages as string[])[0],
+        if (!result.success) {
+          if (result.errors) {
+            Object.entries(result.errors).forEach(([field, messages]) => {
+              setError(field as keyof TCollege, {
+                type: "server",
+                message: (messages as string[])[0],
+              });
             });
-          });
+          }
+          return;
         }
 
-        return;
-      }
+        appToast.success("College created successfully");
 
-      reset();
-      closeModal();
-    } catch (error) {
-      console.error(error);
-    }
+        reset();
+        closeModal();
+      } catch (error) {
+        console.error(error);
+      }
+    });
   };
 
   return (
@@ -158,8 +158,8 @@ export default function AddCollegeForm({ closeModal }: AddCollegeFormProps) {
           Close
         </Button>
 
-        <Button type="submit" size="sm" disabled={isSubmitting}>
-          {isSubmitting ? "Adding..." : "Add College"}
+        <Button type="submit" size="sm" disabled={isPending}>
+          {isPending ? "Adding..." : "Add College"}
         </Button>
       </div>
     </form>

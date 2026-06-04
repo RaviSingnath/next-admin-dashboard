@@ -6,7 +6,7 @@ import {
   TImageFile,
 } from "@/lib/validations/admin/college-schema";
 import { createAdminClient } from "../supabase/admin";
-import { AVATAR_BUCKET } from "@/utils/constants";
+import { AVATAR_BUCKET } from "../constants/db";
 import sharp from "sharp";
 
 export async function signinUser(data: TSignIn) {

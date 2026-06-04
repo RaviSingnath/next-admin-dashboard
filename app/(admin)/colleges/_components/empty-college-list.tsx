@@ -3,16 +3,15 @@ import Link from "next/link";
 import AddCollegeButton from "./add-college-button";
 import Title from "@/components/ui/text/title";
 import Description from "@/components/ui/text/description";
-import { getColleges } from "@/features/colleges/college.service";
+import { CollegeListItem } from "@/features/colleges/college.service";
 
 type EmptyCollegeListProps = {
-  className?: string;
+  colleges: CollegeListItem[];
 };
 
 export default async function EmptyCollegeList({
-  className,
+  colleges,
 }: EmptyCollegeListProps) {
-  const colleges = await getColleges();
   return colleges.length > 0 ? (
     <div className="min-h-screen  bg-white px-5 py-7 dark:border-gray-800 dark:bg-white/[0.03] xl:px-10 xl:py-12">
       <div className="mx-auto w-full max-w-[630px] text-center">

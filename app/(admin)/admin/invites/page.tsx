@@ -1,9 +1,9 @@
 import { Metadata } from "next";
 import { getInvites } from "@/lib/services/super-admin.service";
-import { getColleges } from "@/features/colleges/college.service";
 import PageWrapperBreadcrumb from "@/components/layout/page-wrapper-breadcrumb";
 import InvitesList from "@/components/admin/invites/invites-list";
 import EmptyInvitesList from "@/components/admin/invites/empty-invites-list";
+import { getCollegesService } from "@/features/colleges/college.service";
 
 export const metadata: Metadata = {
   title: "Next.js Blank Page | Next.js Dashboard Template",
@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 };
 
 export default async function InvitesPage() {
-  const colleges = await getColleges();
+  const colleges = await getCollegesService();
   const invites = await getInvites();
 
   return (
@@ -19,7 +19,7 @@ export default async function InvitesPage() {
       {colleges.length > 0 ? (
         <InvitesList colleges={colleges} invites={invites} />
       ) : (
-        <EmptyInvitesList />
+        <EmptyInvitesList colleges={colleges} />
       )}
     </PageWrapperBreadcrumb>
   );

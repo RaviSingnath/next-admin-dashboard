@@ -1,0 +1,30 @@
+"use server";
+
+import createClient from "@/lib/supabase/server";
+
+export async function getCollegesQuery() {
+  const supabase = await createClient();
+
+  return supabase
+    .from("colleges")
+    .select(
+      `
+      id,
+      college_name,
+      official_email,
+      phone,
+      logo_url,
+      country,
+      status,
+      stripe_connected_account_id,
+      created_at,
+      profiles (
+        id,
+        full_name,
+        avatar,
+        status
+      )
+    `,
+    )
+    .order("created_at", { ascending: true });
+}

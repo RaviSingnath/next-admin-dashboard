@@ -3,17 +3,15 @@ import Link from "next/link";
 import InviteCollegeAdminButton from "../college-admin/invite-college-admin-button";
 import Title from "@/components/ui/text/title";
 import Description from "@/components/ui/text/description";
-import { getColleges } from "@/features/colleges/college.service";
+import { CollegeListItem } from "@/features/colleges/college.service";
 
 type EmptyCollegeAdminListProps = {
-  className?: string;
+  colleges: CollegeListItem[];
 };
 
 export default async function EmptyInvitesList({
-  className,
+  colleges,
 }: EmptyCollegeAdminListProps) {
-  const colleges = await getColleges();
-
   const collegeList = colleges.map((college) => ({
     value: college.id,
     label: college.college_name,

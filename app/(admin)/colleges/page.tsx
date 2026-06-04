@@ -1,5 +1,5 @@
 import { Metadata } from "next";
-import { getColleges } from "@/features/colleges/college.service";
+import { getCollegesService } from "@/features/colleges/college.service";
 import CollegeList from "./_components/college-list";
 import EmptyCollegeList from "./_components/empty-college-list";
 import PageWrapperBreadcrumb from "@/components/layout/page-wrapper-breadcrumb";
@@ -10,14 +10,14 @@ export const metadata: Metadata = {
 };
 
 export default async function CollegesPage() {
-  const colleges = await getColleges();
+  const colleges = await getCollegesService();
 
   return (
     <PageWrapperBreadcrumb title="Colleges">
       {colleges.length > 0 ? (
         <CollegeList colleges={colleges} />
       ) : (
-        <EmptyCollegeList />
+        <EmptyCollegeList colleges={colleges} />
       )}
     </PageWrapperBreadcrumb>
   );
