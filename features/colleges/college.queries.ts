@@ -26,5 +26,5 @@ export async function getCollegesQuery() {
       )
     `,
     )
-    .order("created_at", { ascending: true });
+    .order("created_at", { ascending: false });
 }

@@ -1,7 +1,7 @@
 import ComponentCard from "@/components/common/cmponent-card";
 import AddDepartmentButton from "./add-department-button";
 import DepartmentsTable from "./departments-table";
-import { DepartmentsListItem } from "@/lib/services/depatments.service";
+import { DepartmentsListItem } from "@/features/departments/department.services";
 
 type DepartmentsListProps = {
   departments: DepartmentsListItem[];

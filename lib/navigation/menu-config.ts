@@ -141,7 +141,7 @@ export const MENU_CONFIG: Record<UserRole, MenuGroup[]> = {
       subItems: [
         {
           name: "Departments",
-          path: "/college-admin/departments",
+          path: "/departments",
           icon: FolderKanban,
         },
         {

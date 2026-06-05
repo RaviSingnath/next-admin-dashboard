@@ -1,3 +1,5 @@
+import { Database } from "@/supabase/database.types";
+
 export type AuthUser = {
   id: string;
   email: string;
@@ -24,3 +26,5 @@ export type AuthContextType = {
 
   hasRole: (...roles: string[]) => boolean;
 };
+
+export type ProfilesDB = Database["public"]["Tables"]["profiles"]["Row"];

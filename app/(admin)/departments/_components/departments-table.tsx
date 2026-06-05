@@ -8,7 +8,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { DepartmentsListItem } from "@/lib/services/depatments.service";
+import { DepartmentsListItem } from "@/features/departments/department.services";
 import { formatDateTime } from "@/utils/date";
 import DeleteDepartmentButton from "./delete-department-button";
 import CheckboxField from "@/components/form/input/check-box-field";
@@ -34,7 +34,7 @@ export default function DepartmentsTable({
       includeDeleted: checked ? true : null,
     });
 
-    router.push(`/college-admin/departments?${query}`);
+    router.push(`/departments?${query}`);
   };
 
   return (

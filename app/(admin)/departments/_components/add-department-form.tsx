@@ -7,11 +7,13 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { appToast } from "@/lib/toast";
 import { useRouter } from "next/navigation";
+import { createDepartmentAction } from "../_lib/department.actions";
 
 import {
   zAddDepartment,
   type TAddDepartment,
-} from "@/lib/validations/admin/college-schema";
+} from "@/features/departments/department.schema";
+import { handleActionError } from "@/lib/helper/handle-action-error";
 
 type AddDepartmentFormProps = {
   closeModal: () => void;
@@ -37,47 +39,26 @@ export default function AddDepartmentForm({
 
   const onSubmit = async (formData: TAddDepartment) => {
     try {
-      const response = await fetch("/api/admin/department", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
-      });
+      const result = await createDepartmentAction(formData);
 
-      const data = await response.json();
-
-      if (!response.ok || !data.success) {
-        if (data.errors) {
-          Object.entries(data.errors).forEach(([field, messages]) => {
+      if (!result.success) {
+        if (result.errors) {
+          Object.entries(result.errors).forEach(([field, messages]) => {
             setError(field as keyof TAddDepartment, {
               type: "server",
               message: (messages as string[])[0],
             });
           });
+
           return;
         }
 
-        if (!data.success) {
-          switch (data.code) {
-            case "DEPARTMENT_EXISTS":
-              appToast.error("Department already exist");
-              return;
+        handleActionError(result, router);
 
-            case "FORBIDDEN":
-              appToast.error("You do not have permission");
-              return;
-
-            case "UNAUTHORIZED":
-              router.push("/login");
-              return;
-
-            default:
-              appToast.error(data.message || "Something went wrong");
-              return;
-          }
-        }
+        return;
       }
+
+      appToast.success("Department added successfully");
 
       reset();
       closeModal();

@@ -3,8 +3,7 @@
 import { getZodErrors } from "@/lib/helper/get-zod-errors";
 import { createCollege } from "@/features/colleges/college.service";
 import { TCollege, zCollege } from "@/features/colleges/college.schema";
-import { revalidateTag } from "next/cache";
-import { COLLEGE_TAG } from "@/features/colleges/college.constants";
+import { revalidatePath } from "next/cache";
 
 export const createCollegeAction = async (data: TCollege) => {
   try {
@@ -20,7 +19,7 @@ export const createCollegeAction = async (data: TCollege) => {
 
     const college = await createCollege(validatedFields.data);
 
-    revalidateTag(COLLEGE_TAG, "max");
+    revalidatePath("/colleges", "page");
 
     return {
       success: true,

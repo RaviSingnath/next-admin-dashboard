@@ -3,7 +3,7 @@ import Link from "next/link";
 import AddSupervisorButton from "./add-supervisor-button";
 import Title from "@/components/ui/text/title";
 import Description from "@/components/ui/text/description";
-import { getDepartmentsService } from "@/lib/services/depatments.service";
+import { getDepartmentsService } from "@/features/departments/department.services";
 
 export default async function EmptySupervisorList() {
   const departments = await getDepartmentsService();
@@ -43,7 +43,7 @@ export default async function EmptySupervisorList() {
             </Description>
 
             <Link
-              href="/college-admin/departments"
+              href="/departments"
               className="inline-flex text-left px-4 py-2 text-md rounded-md text-gray-700 hover:bg-gray-100 hover:text-gray-900"
             >
               Go to deaprtment page

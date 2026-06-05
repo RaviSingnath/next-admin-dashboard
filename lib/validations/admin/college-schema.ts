@@ -48,12 +48,6 @@ export const zAcceptInvite = z
 
 export type TAcceptInvite = z.infer<typeof zAcceptInvite>;
 
-export const zAddDepartment = z.object({
-  department_name: z.string().trim().min(1, "College name is required"),
-});
-
-export type TAddDepartment = z.infer<typeof zAddDepartment>;
-
 export const zSupervisorInvite = z.object({
   full_name: z.string().trim().min(1, "College name is required"),
   invite_email: z

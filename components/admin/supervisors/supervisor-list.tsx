@@ -2,7 +2,7 @@ import ComponentCard from "@/components/common/cmponent-card";
 import SupervisorsTable from "./supervisor-table";
 import AddSupervisorButton from "./add-supervisor-button";
 import { SupervisorsListItem } from "@/lib/services/supervisors.services";
-import { getDepartmentsService } from "@/lib/services/depatments.service";
+import { getDepartmentsService } from "@/features/departments/department.services";
 
 type SupervisorsListProps = {
   supervisors: SupervisorsListItem[];

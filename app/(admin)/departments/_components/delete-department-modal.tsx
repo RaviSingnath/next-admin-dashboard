@@ -1,5 +1,9 @@
+import { useRouter } from "next/navigation";
 import { Modal } from "@/components/ui/modal";
 import Button from "@/components/ui/button/Button";
+import { softDeleteDepartmentAction } from "../_lib/department.actions";
+import { handleActionError } from "@/lib/helper/handle-action-error";
+import { appToast } from "@/lib/toast";
 
 type DeleteDepartmentModalProps = {
   departmentID: string;
@@ -12,10 +16,23 @@ export default function DeleteDepartmentModal({
   isOpen,
   closeModal,
 }: DeleteDepartmentModalProps) {
+  const router = useRouter();
   const handleDeleteUser = async (id: string) => {
-    const res = await fetch(`/api/admin/department/${id}`, {
-      method: "DELETE",
-    });
+    try {
+      const result = await softDeleteDepartmentAction(id);
+
+      if (!result.success) {
+        handleActionError(result, router);
+
+        return;
+      }
+
+      appToast.success("Department deleted successfully");
+
+      closeModal();
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   return (
