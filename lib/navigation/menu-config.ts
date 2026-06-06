@@ -71,7 +71,7 @@ export const MENU_CONFIG: Record<UserRole, MenuGroup[]> = {
         },
         {
           name: "College Admins",
-          path: "/admin/colleges-admin",
+          path: "/college-admins",
           icon: UserCog,
         },
         {

@@ -1,10 +1,10 @@
 "use client";
 
 import { Plus } from "lucide-react";
-import Button from "../ui/button/Button";
+import Button from "@/components/ui/button/Button";
 import { useModal } from "@/hooks/useModal";
-import InviteCollegeAdminModal from "./modal/invite-college-admin-modal";
-import InviteCollegeAdminForm from "@/components/form/admin/invite-college-admin-form";
+import InviteCollegeAdminModal from "./invite-college-admin-modal";
+import InviteCollegeAdminForm from "./invite-college-admin-form";
 
 type InviteCollegeAdminButtonProps = {
   colleges: { value: string; label: string }[];

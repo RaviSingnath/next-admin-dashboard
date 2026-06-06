@@ -25,17 +25,6 @@ export const zUpdatePassword = z
 
 export type TUpdatePassword = z.infer<typeof zUpdatePassword>;
 
-export const zCollegeAdminInvite = z.object({
-  full_name: z.string().trim().min(1, "College name is required"),
-  invite_email: z
-    .email({ error: "Enter a valid email address" })
-    .trim()
-    .toLowerCase(),
-  college_id: z.string().trim().min(1, "College is required"),
-});
-
-export type TCollegeAdminInvite = z.infer<typeof zCollegeAdminInvite>;
-
 export const zAcceptInvite = z
   .object({
     password: z.string().min(6, "Password must be at least 6 characters"),

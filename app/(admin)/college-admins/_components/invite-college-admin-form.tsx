@@ -12,7 +12,9 @@ import { useRouter } from "next/navigation";
 import {
   zCollegeAdminInvite,
   type TCollegeAdminInvite,
-} from "@/lib/validations/admin/college-schema";
+} from "@/features/college-admins/college-admin.schema";
+import { InviteCollegeAdminAction } from "../_lib/college-admin.actions";
+import { handleActionError } from "@/lib/helper/handle-action-error";
 
 type InviteCollegeAdminFormProps = {
   closeModal: () => void;
@@ -40,47 +42,26 @@ export default function InviteCollegeAdminForm({
 
   const onSubmit = async (formData: TCollegeAdminInvite) => {
     try {
-      const response = await fetch("/api/admin/invite-college-admin", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
-      });
+      const result = await InviteCollegeAdminAction(formData);
 
-      const data = await response.json();
-
-      if (!response.ok || !data.success) {
-        if (data.errors) {
-          Object.entries(data.errors).forEach(([field, messages]) => {
+      if (!result.success) {
+        if (result.errors) {
+          Object.entries(result.errors).forEach(([field, messages]) => {
             setError(field as keyof TCollegeAdminInvite, {
               type: "server",
               message: (messages as string[])[0],
             });
           });
+
           return;
         }
 
-        if (!data.success) {
-          switch (data.code) {
-            case "INVITATION_EXISTS":
-              appToast.error("Invitation already sent");
-              return;
+        handleActionError(result, router);
 
-            case "FORBIDDEN":
-              appToast.error("You do not have permission");
-              return;
-
-            case "UNAUTHORIZED":
-              router.push("/login");
-              return;
-
-            default:
-              appToast.error(data.message || "Something went wrong");
-              return;
-          }
-        }
+        return;
       }
+
+      appToast.success("College admin invited successfully");
 
       reset();
       closeModal();

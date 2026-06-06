@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 
-import { zCollegeAdminInvite } from "@/lib/validations/admin/college-schema";
+import { zCollegeAdminInvite } from "@/features/college-admins/college-admin.schema";
 import { inviteCollegeAdmin } from "@/lib/services/super-admin.service";
 import { getZodErrors } from "@/lib/helper/get-zod-errors";
 import { AppError } from "@/lib/app-error";

@@ -1,9 +1,9 @@
 import { Metadata } from "next";
-import { getCollegeAdmins } from "@/lib/services/super-admin.service";
 import PageWrapperBreadcrumb from "@/components/layout/page-wrapper-breadcrumb";
-import CollegeAdminsList from "@/components/admin/college-admin/college-admin-list";
-import EmptyCollegeAdminList from "@/components/admin/college-admin/empty-college-admin-list";
+import CollegeAdminsList from "./_components/college-admin-list";
+import EmptyCollegeAdminList from "./_components/empty-college-admin-list";
 import { getCollegesService } from "@/features/colleges/college.service";
+import { getCollegeAdminsService } from "@/features/college-admins/college-admin.services";
 
 export const metadata: Metadata = {
   title: "Next.js Blank Page | Next.js Dashboard Template",
@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 };
 
 export default async function CollegesAdminPage() {
-  const collegeAdmins = await getCollegeAdmins();
+  const collegeAdmins = await getCollegeAdminsService();
   const colleges = await getCollegesService();
 
   return (

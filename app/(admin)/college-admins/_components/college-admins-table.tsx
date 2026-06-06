@@ -9,9 +9,9 @@ import {
 } from "@/components/ui/table";
 import { CollegeAdminListItem } from "@/lib/services/super-admin.service";
 import { formatDateTime } from "@/utils/date";
-import DeleteInviteButton from "../invites/invite-actions/delete/delete-invite-button";
-import ResendInviteButton from "../invites/invite-actions/resend/resend-invite-button";
-import RevokeInviteButton from "../invites/invite-actions/revoke-invite-button";
+import DeleteInviteButton from "../../../../components/admin/invites/invite-actions/delete/delete-invite-button";
+import ResendInviteButton from "../../../../components/admin/invites/invite-actions/resend/resend-invite-button";
+import RevokeInviteButton from "../../../../components/admin/invites/invite-actions/revoke-invite-button";
 
 type CollegeAdminsTableProps = {
   collegeAdmins: CollegeAdminListItem[];

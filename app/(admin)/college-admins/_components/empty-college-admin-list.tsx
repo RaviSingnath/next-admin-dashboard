@@ -1,6 +1,6 @@
 import { Building2 } from "lucide-react";
 import Link from "next/link";
-import InviteCollegeAdminButton from "../invite-college-admin-button";
+import InviteCollegeAdminButton from "./invite-college-admin-button";
 import Title from "@/components/ui/text/title";
 import Description from "@/components/ui/text/description";
 import { CollegeListItem } from "@/features/colleges/college.service";
