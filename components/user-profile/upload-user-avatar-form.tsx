@@ -4,9 +4,13 @@ import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 
 import DropZone from "../ui/drop-zone/drop-zone";
-import { zImageFile, TImageFile } from "@/lib/validations/admin/college-schema";
+import { useRouter } from "next/navigation";
+import { zImageFile, TImageFile } from "@/features/profile/profile.schema";
 import Button from "../ui/button/Button";
 import { appToast } from "@/lib/toast";
+import { uploadAvatarAction } from "@/app/(admin)/profile/_lib/profile.actions";
+import { handleActionError } from "@/lib/helper/handle-action-error";
+import { useAuth } from "@/context/AuthProvider";
 
 type UploadUserAvatarFormProps = {
   closeModal: () => void;
@@ -15,6 +19,8 @@ type UploadUserAvatarFormProps = {
 export default function UploadUserAvatarForm({
   closeModal,
 }: UploadUserAvatarFormProps) {
+  const router = useRouter();
+  const { refreshUser } = useAuth();
   const [preview, setPreview] = useState<string | null>(null);
   const previewUrlRef = useRef<string | null>(null);
 
@@ -60,20 +66,15 @@ export default function UploadUserAvatarForm({
   const profileAvatar = watch("imageFile");
 
   const onSubmit = async (formData: TImageFile) => {
-    const payload = new FormData();
-
-    payload.append("imageFile", formData.imageFile);
     try {
-      const response = await fetch("/api/avatar", {
-        method: "POST",
-        body: payload,
-      });
+      const payload = new FormData();
+      payload.append("imageFile", formData.imageFile);
 
-      const data = await response.json();
+      const result = await uploadAvatarAction(payload);
 
-      if (!response.ok || !data.success) {
-        if (data.errors) {
-          Object.entries(data.errors).forEach(([field, messages]) => {
+      if (!result.success) {
+        if (result.errors) {
+          Object.entries(result.errors).forEach(([field, messages]) => {
             setError(field as keyof TImageFile, {
               type: "server",
               message: (messages as string[])[0],
@@ -82,10 +83,13 @@ export default function UploadUserAvatarForm({
           return;
         }
 
-        if (!data.success) {
-          appToast.error(data.message || "Something went wrong");
-        }
+        handleActionError(result, router);
+        return;
       }
+
+      await refreshUser();
+
+      appToast.success("Avatar changed successfully");
 
       reset();
       closeModal();

@@ -37,38 +37,4 @@ export const zAcceptInvite = z
 
 export type TAcceptInvite = z.infer<typeof zAcceptInvite>;
 
-export const zImageFileSchema = z
-  .custom<File>((value) => value instanceof File, {
-    message: "Please select a file",
-  })
-  .refine((file) => file.size <= 10 * 1024 * 1024, {
-    message: "File must be less than 10MB",
-  })
-  .refine(
-    (file) =>
-      [
-        "image/png",
-        "image/jpeg",
-        "image/jpg",
-        "image/webp",
-        "image/svg+xml",
-      ].includes(file.type),
-    {
-      message: "Invalid file type",
-    },
-  );
 
-export const zImageFile = z.object({
-  imageFile: zImageFileSchema,
-});
-
-export type TImageFile = z.infer<typeof zImageFile>;
-
-export const zImageFiles = z.object({
-  gallery: z
-    .array(zImageFileSchema)
-    .min(1, "Select at least one image")
-    .max(5, "Maximum 5 images"),
-});
-
-export type TImageFiles = z.infer<typeof zImageFiles>;

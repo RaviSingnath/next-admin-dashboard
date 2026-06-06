@@ -83,6 +83,13 @@ export function AuthProvider({
     };
   }, []);
 
+  useEffect(() => {
+    const setData = (data: AuthUser | null) => {
+      setUser(data);
+    };
+    setData(initialUser);
+  }, [initialUser]);
+
   const hasRole = useCallback(
     (...roles: string[]) => {
       if (!user?.role) return false;
