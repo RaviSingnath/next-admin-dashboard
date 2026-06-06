@@ -12,8 +12,10 @@ import { useAuth } from "@/context/AuthProvider";
 
 import {
   zSupervisorInvite,
-  type TSupervisorInvite,
-} from "@/lib/validations/admin/college-schema";
+  TSupervisorInvite,
+} from "@/features/supervisors/supervisors.schema";
+import { InviteSupervisorAction } from "../_lib/supervisor.actions";
+import { handleActionError } from "@/lib/helper/handle-action-error";
 
 type InviteSupervisorFormProps = {
   closeModal: () => void;
@@ -45,19 +47,11 @@ export default function InviteSupervisorForm({
 
   const onSubmit = async (formData: TSupervisorInvite) => {
     try {
-      const response = await fetch("/api/admin/supervisor", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
-      });
+      const result = await InviteSupervisorAction(formData);
 
-      const data = await response.json();
-
-      if (!response.ok || !data.success) {
-        if (data.errors) {
-          Object.entries(data.errors).forEach(([field, messages]) => {
+      if (!result.success) {
+        if (result.errors) {
+          Object.entries(result.errors).forEach(([field, messages]) => {
             setError(field as keyof TSupervisorInvite, {
               type: "server",
               message: (messages as string[])[0],
@@ -66,26 +60,12 @@ export default function InviteSupervisorForm({
           return;
         }
 
-        if (!data.success) {
-          switch (data.code) {
-            case "INVITATION_EXISTS":
-              appToast.error("Invitation already sent");
-              return;
+        handleActionError(result, router);
 
-            case "FORBIDDEN":
-              appToast.error("You do not have permission");
-              return;
-
-            case "UNAUTHORIZED":
-              router.push("/login");
-              return;
-
-            default:
-              appToast.error(data.message || "Something went wrong");
-              return;
-          }
-        }
+        return;
       }
+
+      appToast.success("Supervsor invited successfully");
 
       reset();
       closeModal();

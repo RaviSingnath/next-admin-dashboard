@@ -1,28 +1,22 @@
-import createClient from "@/lib/supabase/server";
-import { getProfile } from "./helper/getProfile";
-import { AppError } from "../app-error";
-import { TSupervisorInvite } from "../validations/admin/college-schema";
-import { createAdminClient } from "../supabase/admin";
-import { generateToken } from "../helper/generate-token";
+"use server";
+
+import { getCurrentUserServer } from "@/lib/autth/getCurrentUserServer";
+import { AppError } from "@/lib/app-error";
+import { TSupervisorInvite } from "./supervisors.schema";
+import { createAdminClient } from "@/lib/supabase/admin";
+import { generateToken } from "@/lib/helper/generate-token";
+import { getSupervisorsQuery } from "./supervisors.queries";
+import { getCreatorByIdsQuery } from "../college-admins/college-admin.queries";
+import { getInviteByEmail } from "../invite/invite.queries";
+import {
+  cancelOlderInviteByEmail,
+  createInvite,
+} from "../invite/invite.mutations";
+import UserRole from "@/lib/rbac/roles";
+import { SupervisorInvite } from "../invite/invite.types";
 
 export async function getSupervisorsService() {
-  const supabase = await createClient();
-
-  const { data: supervisors, error } = await supabase
-    .from("profiles")
-    .select(
-      `
-    id,
-    full_name,
-    email,
-    status,
-    created_at,
-    deleted_at,
-    created_by
-  `,
-    )
-    .order("created_at", { ascending: false })
-    .eq("role", "supervisor");
+  const { data: supervisors, error } = await getSupervisorsQuery();
 
   if (error) {
     throw error;
@@ -44,10 +38,8 @@ export async function getSupervisorsService() {
     return supervisors.map((row) => ({ ...row, creator: null }));
   }
 
-  const { data: creators, error: creatorsError } = await supabase
-    .from("profiles")
-    .select("id, full_name")
-    .in("id", creatorIds);
+  const { data: creators, error: creatorsError } =
+    await getCreatorByIdsQuery(creatorIds);
 
   if (creatorsError) {
     throw creatorsError;
@@ -68,35 +60,25 @@ export type SupervisorsListResponse = Awaited<
 
 export type SupervisorsListItem = SupervisorsListResponse[number];
 
-export async function inviteSupervisor(data: TSupervisorInvite) {
-  const supabase = await createClient();
+export async function inviteSupervisorService(data: TSupervisorInvite) {
   const supabaseAdmin = createAdminClient();
 
-  const { data: existingInvite } = await supabase
-    .from("invitations")
-    .select("id")
-    .eq("email", data.invite_email)
-    .maybeSingle();
+  const { data: existingInvite } = await getInviteByEmail(data.invite_email);
 
   if (existingInvite) {
     throw new AppError("Invitation already exists", 409, "INVITATION_EXISTS");
   }
 
-  const profile = await getProfile();
+  const profile = await getCurrentUserServer();
 
   if (profile?.role !== "college_admin") {
     throw new AppError("Forbidden", 403, "FORBIDDEN");
   }
 
   // Invalidate older invites automatically for email reuse
-  const { data: revokeOldInviteData, error: revokeOldInviteError } =
-    await supabase
-      .from("invitations")
-      .update({
-        status: "cancelled",
-      })
-      .eq("email", data.invite_email)
-      .in("status", ["pending", "onboarding"]);
+  const { error: revokeOldInviteError } = await cancelOlderInviteByEmail(
+    data.invite_email,
+  );
 
   if (revokeOldInviteError) {
     throw new Error(revokeOldInviteError.message);
@@ -124,19 +106,16 @@ export async function inviteSupervisor(data: TSupervisorInvite) {
     );
   }
 
-  const expiresAt = new Date(Date.now() + 3600 * 1000);
+  const inviteData: SupervisorInvite = {
+    email: data.invite_email,
+    full_name: data.full_name,
+    role: UserRole.SUPERVISOR,
+    token: token,
+    college_id: data.college_id,
+    department_id: data.department_id,
+  };
 
-  const { data: invitation, error } = await supabase
-    .from("invitations")
-    .insert({
-      email: data.invite_email,
-      full_name: data.full_name,
-      role: "supervisor",
-      token: token,
-      college_id: data.college_id,
-      department_id: data.department_id,
-      expires_at: expiresAt.toISOString(),
-    });
+  const { data: invitation, error } = await createInvite(inviteData);
 
   if (error) {
     throw new AppError(error.message, 400, error.code || "DATABASE_ERROR");

@@ -10,6 +10,7 @@ import { createAdminClient } from "@/lib/supabase/admin";
 import UserRole from "@/lib/rbac/roles";
 import { CollegeAdminInvite } from "../invite/invite.types";
 import { createInvite } from "../invite/invite.mutations";
+import { generateToken } from "@/lib/helper/generate-token";
 
 export const getCollegeAdminsService = async () => {
   const query = getCollegeAdminsQuery();
@@ -70,7 +71,9 @@ export const inviteCollegeAdminService = async (data: TCollegeAdminInvite) => {
     throw new AppError("Forbidden", 403, "FORBIDDEN");
   }
 
-  const inviteUrl = `${process.env.NEXT_PUBLIC_SITE_URL}/accept-invite`;
+  const token = generateToken();
+
+  const inviteUrl = `${process.env.NEXT_PUBLIC_SITE_URL}/accept-invite?token=${token}`;
 
   const { error: inviteError } =
     await supabaseAdmin.auth.admin.inviteUserByEmail(data.invite_email, {
@@ -87,8 +90,9 @@ export const inviteCollegeAdminService = async (data: TCollegeAdminInvite) => {
   }
 
   const inviteData: CollegeAdminInvite = {
-    invite_email: data.invite_email,
+    email: data.invite_email,
     full_name: data.full_name,
+    token: token,
     role: UserRole.COLLEGE_ADMIN,
     college_id: data.college_id,
   };

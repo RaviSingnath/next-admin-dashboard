@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { zSupervisorInvite } from "@/lib/validations/admin/college-schema";
+import { zSupervisorInvite } from "@/features/supervisors/supervisors.schema";
 import { getZodErrors } from "@/lib/helper/get-zod-errors";
 import { AppError } from "@/lib/app-error";
 import { inviteSupervisor } from "@/lib/services/supervisors.services";

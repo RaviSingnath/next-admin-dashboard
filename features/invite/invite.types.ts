@@ -1,8 +1,12 @@
 import UserRole from "@/lib/rbac/roles";
+import { Database } from "@/supabase/database.types";
+
+export type InvitationInsert = Database["public"]["Tables"]["invitations"]["Insert"];
 
 type BaseInvite = {
-  invite_email: string;
+  email: string;
   full_name: string;
+  token: string;
 };
 
 export type CollegeAdminInvite = BaseInvite & {
