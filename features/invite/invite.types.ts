@@ -1,7 +1,8 @@
 import UserRole from "@/lib/rbac/roles";
 import { Database } from "@/supabase/database.types";
 
-export type InvitationInsert = Database["public"]["Tables"]["invitations"]["Insert"];
+export type InvitationInsert =
+  Database["public"]["Tables"]["invitations"]["Insert"];
 
 type BaseInvite = {
   email: string;
@@ -24,7 +25,6 @@ export type StudentInvite = BaseInvite & {
   role: UserRole.STUDENT;
   college_id: string;
   department_id: string;
-  supervisor_id: string;
 };
 
 export type InviteData = CollegeAdminInvite | SupervisorInvite | StudentInvite;

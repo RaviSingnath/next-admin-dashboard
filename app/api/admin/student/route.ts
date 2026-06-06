@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { zStudentInvite } from "@/lib/validations/admin/college-schema";
+import { zStudentInvite } from "@/features/students/students.schema";
 import { getZodErrors } from "@/lib/helper/get-zod-errors";
 import { AppError } from "@/lib/app-error";
 import { inviteStudent } from "@/lib/services/student.service";

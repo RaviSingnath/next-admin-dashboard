@@ -1,3 +1,5 @@
+"use client";
+
 import TableWrapper from "@/components/tables/table-wrapper";
 import Button from "@/components/ui/button/Button";
 import {
@@ -8,16 +10,14 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { formatDateTime } from "@/utils/date";
-import DeleteInviteButton from "../invites/invite-actions/delete/delete-invite-button";
-import ResendInviteButton from "../invites/invite-actions/resend/resend-invite-button";
-import RevokeInviteButton from "../invites/invite-actions/revoke-invite-button";
-import { StudentsListItem } from "@/lib/services/student.service";
+import DeleteButton from "@/components/ui/button/delete-button";
+import { StudentsListItem } from "@/features/students/students.services";
 
 type StudentsTableProps = {
   students: StudentsListItem[];
 };
 
-export default async function StudentsTable({ students }: StudentsTableProps) {
+export default function StudentsTable({ students }: StudentsTableProps) {
   return (
     <TableWrapper>
       <Table>
@@ -94,14 +94,19 @@ export default async function StudentsTable({ students }: StudentsTableProps) {
                 <div className="flex gap-2">
                   {student.status === "active" ? (
                     <>
-                      <ResendInviteButton inviteID={student.id} />
-                      <RevokeInviteButton inviteID={student.id} />
-                      <DeleteInviteButton inviteID={student.id} />
+                      {/* <ResendInviteButton inviteID={student.id} />
+                      <RevokeInviteButton inviteID={student.id} /> */}
+                      <DeleteButton
+                        tooltip="Delete student"
+                        handleClick={() =>
+                          console.log("Delete student: ", student.id)
+                        }
+                      />
                     </>
                   ) : student.status === "suspended" ? (
                     <>
-                      <ResendInviteButton inviteID={student.id} />
-                      <RevokeInviteButton inviteID={student.id} />
+                      {/* <ResendInviteButton inviteID={student.id} />
+                      <RevokeInviteButton inviteID={student.id} /> */}
                     </>
                   ) : (
                     <Button size="sm">View</Button>

@@ -1,8 +1,8 @@
 import { Metadata } from "next";
 import PageWrapperBreadcrumb from "@/components/layout/page-wrapper-breadcrumb";
-import { getStudentsService } from "@/lib/services/student.service";
-import EmptyStudentsList from "@/components/admin/students/empty-students-list";
-import StudentsList from "@/components/admin/students/students-list";
+import { getStudentsService } from "@/features/students/students.services";
+import EmptyStudentsList from "./_components/empty-students-list";
+import StudentsList from "./_components/students-list";
 
 export const metadata: Metadata = {
   title: "Students page",

@@ -1,5 +1,5 @@
 import ComponentCard from "@/components/common/cmponent-card";
-import { StudentsListItem } from "@/lib/services/student.service";
+import { StudentsListItem } from "@/features/students/students.services";
 import AddStudentButton from "./add-student-button";
 import StudentsTable from "./students-table";
 

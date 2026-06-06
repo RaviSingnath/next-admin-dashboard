@@ -76,9 +76,14 @@ export async function getCurrentUserServer() {
       avatar_url: null,
     };
   }
+  console.log("profile: ", profile);
 
   return {
     ...userProfile,
     avatar_url: avatarData.signedUrl,
   };
 }
+
+export type CurrentUserServer = Awaited<
+  ReturnType<typeof getCurrentUserServer>
+>;

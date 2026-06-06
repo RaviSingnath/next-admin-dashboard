@@ -13,7 +13,9 @@ import { useAuth } from "@/context/AuthProvider";
 import {
   zStudentInvite,
   type TStudentInvite,
-} from "@/lib/validations/admin/college-schema";
+} from "@/features/students/students.schema";
+import { inviteStudentAction } from "../_lib/student.actions";
+import { handleActionError } from "@/lib/helper/handle-action-error";
 
 type InviteStudentFormProps = {
   closeModal: () => void;
@@ -45,19 +47,11 @@ export default function InviteStudentForm({
 
   const onSubmit = async (formData: TStudentInvite) => {
     try {
-      const response = await fetch("/api/admin/student", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
-      });
+      const result = await inviteStudentAction(formData);
 
-      const data = await response.json();
-
-      if (!response.ok || !data.success) {
-        if (data.errors) {
-          Object.entries(data.errors).forEach(([field, messages]) => {
+      if (!result.success) {
+        if (result.errors) {
+          Object.entries(result.errors).forEach(([field, messages]) => {
             setError(field as keyof TStudentInvite, {
               type: "server",
               message: (messages as string[])[0],
@@ -66,26 +60,12 @@ export default function InviteStudentForm({
           return;
         }
 
-        if (!data.success) {
-          switch (data.code) {
-            case "INVITATION_EXISTS":
-              appToast.error("Invitation already sent");
-              return;
+        handleActionError(result, router);
 
-            case "FORBIDDEN":
-              appToast.error("You do not have permission");
-              return;
-
-            case "UNAUTHORIZED":
-              router.push("/login");
-              return;
-
-            default:
-              appToast.error(data.message || "Something went wrong");
-              return;
-          }
-        }
+        return;
       }
+
+      appToast.success("Student invited successfully");
 
       reset();
       closeModal();
