@@ -7,7 +7,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { InvitesListItem } from "@/lib/services/super-admin.service";
+import { InvitesListItem } from "@/features/invite/invite.service";
 import { formatDateTime } from "@/utils/date";
 import DeleteInviteButton from "./invite-actions/delete/delete-invite-button";
 import ResendInviteButton from "./invite-actions/resend/resend-invite-button";
@@ -35,6 +35,12 @@ export default async function InvitesTable({ invites }: InvitesTableProps) {
               className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
             >
               College Name
+            </TableCell>
+            <TableCell
+              isHeader
+              className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
+            >
+              Department
             </TableCell>
             <TableCell
               isHeader
@@ -91,7 +97,10 @@ export default async function InvitesTable({ invites }: InvitesTableProps) {
                 {invite.college && invite.college.college_name}
               </TableCell>
               <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
-                {invite.invited_by_profile.full_name}
+                {invite?.department && invite?.department?.department_name}
+              </TableCell>
+              <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
+                {invite?.invited_by_profile?.full_name}
               </TableCell>
               <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
                 {invite.role}

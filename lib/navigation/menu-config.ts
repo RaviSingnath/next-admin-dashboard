@@ -76,7 +76,7 @@ export const MENU_CONFIG: Record<UserRole, MenuGroup[]> = {
         },
         {
           name: "invites",
-          path: "/admin/invites",
+          path: "/invites",
           icon: Mail,
         },
       ],
@@ -154,6 +154,11 @@ export const MENU_CONFIG: Record<UserRole, MenuGroup[]> = {
           path: "/students",
           icon: GraduationCap,
         },
+        {
+          name: "invites",
+          path: "/invites",
+          icon: Mail,
+        },
       ],
     },
 
@@ -211,6 +216,11 @@ export const MENU_CONFIG: Record<UserRole, MenuGroup[]> = {
           name: "My Students",
           path: "/students",
           icon: Users,
+        },
+        {
+          name: "invites",
+          path: "/invites",
+          icon: Mail,
         },
       ],
     },
