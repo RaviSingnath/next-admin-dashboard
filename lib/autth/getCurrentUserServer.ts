@@ -20,6 +20,7 @@ export async function getCurrentUserServer() {
       college_id,
       department_id,
       avatar,
+      status,
       colleges (
         college_name,
         status
@@ -50,6 +51,7 @@ export async function getCurrentUserServer() {
 
     role: profile.role,
     full_name: profile.full_name,
+    status: profile.status,
 
     college_id: profile.college_id,
     college_name: college?.college_name ?? null,

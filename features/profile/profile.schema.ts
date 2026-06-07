@@ -35,3 +35,15 @@ export const zImageFiles = z.object({
 });
 
 export type TImageFiles = z.infer<typeof zImageFiles>;
+
+export const zProfileInfo = z.object({
+  full_name: z.string().trim().min(1, "Full name is required"),
+
+  // phone: z
+  //   .e164({
+  //     error: "Enter a valid phone number",
+  //   })
+  //   .optional(),
+});
+
+export type TProfileInfo = z.infer<typeof zProfileInfo>;

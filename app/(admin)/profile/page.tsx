@@ -1,6 +1,6 @@
-import UserAddressCard from "@/components/user-profile/UserAddressCard";
-import UserInfoCard from "@/components/user-profile/UserInfoCard";
-import UserMetaCard from "@/components/user-profile/UserMetaCard";
+import UserAddressCard from "@/app/(admin)/profile/_component/UserAddressCard";
+import UserInfoCard from "@/app/(admin)/profile/_component/UserInfoCard";
+import UserMetaCard from "@/app/(admin)/profile/_component/UserMetaCard";
 import { Metadata } from "next";
 import React from "react";
 

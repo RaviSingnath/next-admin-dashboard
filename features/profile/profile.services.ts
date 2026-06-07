@@ -1,14 +1,15 @@
-import { AVATAR_BUCKET } from "@/lib/constants/db";
-import createClient from "@/lib/supabase/server";
 import sharp from "sharp";
-import { TImageFile } from "./profile.schema";
+import { TImageFile, TProfileInfo } from "./profile.schema";
+import {
+  updateAvatarPath,
+  updateProfileInfo,
+  uploadAvatar,
+} from "./profile.mutations";
+import { getCurrentUserServer } from "@/lib/autth/getCurrentUserServer";
+import { AppError } from "@/lib/app-error";
 
 export async function updateAvatarService(data: TImageFile) {
-  const supabase = await createClient();
-
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
+  const user = await getCurrentUserServer();
 
   if (!user?.id) {
     throw new Error("Your not authenticated.");
@@ -29,25 +30,37 @@ export async function updateAvatarService(data: TImageFile) {
     .webp({ quality: 80 })
     .toBuffer();
 
-  const { error: uploadError } = await supabase.storage
-    .from(AVATAR_BUCKET)
-    .upload(filePath, webpBuffer, {
-      cacheControl: "3600",
-      upsert: true,
-      contentType: "image/webp",
-    });
+  const { error: uploadError } = await uploadAvatar(filePath, webpBuffer);
 
   if (uploadError) throw uploadError;
 
-  const { data: updatedData, error: profileUpdateError } = await supabase
-    .from("profiles")
-    .update({ avatar: filePath })
-    .eq("id", user.id)
-    .maybeSingle();
+  const { data: updatedData, error: profileUpdateError } =
+    await updateAvatarPath(user.id, filePath);
 
   if (profileUpdateError) throw profileUpdateError;
 
   return {
     profile: updatedData,
+  };
+}
+
+export async function updateProfifleInfoService(data: TProfileInfo) {
+  const profile = await getCurrentUserServer();
+
+  if (!profile) {
+    throw new AppError("Unauthorized", 401, "UNAUTHORIZED");
+  }
+
+  if (profile.status !== "active") {
+    throw new Error("Inactive users cannot create departments");
+  }
+
+  const { data: updatedProfile, error: profileUpdateError } =
+    await updateProfileInfo(profile.id, data);
+
+  if (profileUpdateError) throw profileUpdateError;
+
+  return {
+    profile: updatedProfile,
   };
 }
