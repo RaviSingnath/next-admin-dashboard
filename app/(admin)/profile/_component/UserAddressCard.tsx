@@ -1,17 +1,25 @@
 "use client";
-import React from "react";
+import React, { useState } from "react";
 import { useModal } from "../../../../hooks/useModal";
 import { Modal } from "../../../../components/ui/modal";
 import Button from "../../../../components/ui/button/Button";
 import Input from "../../../../components/form/input/InputField";
 import Label from "../../../../components/form/Label";
+import { AddressSearch } from "@/features/address/components/address-search";
+import { Address } from "@/features/address/types";
 
 export default function UserAddressCard() {
   const { isOpen, openModal, closeModal } = useModal();
+  const [selectedAddress, setSelectedAddress] = useState<Address | null>(null);
+
   const handleSave = () => {
     // Handle save logic here
     console.log("Saving changes...");
     closeModal();
+  };
+
+  const onUserSelectAddress = (address: Address) => {
+    setSelectedAddress(address);
   };
   return (
     <>
@@ -97,24 +105,40 @@ export default function UserAddressCard() {
           <form className="flex flex-col">
             <div className="px-2 overflow-y-auto custom-scrollbar">
               <div className="grid grid-cols-1 gap-x-6 gap-y-5 lg:grid-cols-2">
+                <div className="col-span-2">
+                  <Label>Search Address</Label>
+                  <AddressSearch onSelect={onUserSelectAddress} />
+                </div>
                 <div>
                   <Label>Country</Label>
-                  <Input type="text" defaultValue="United States" />
+                  <Input
+                    type="text"
+                    defaultValue={selectedAddress?.country || ""}
+                  />
                 </div>
 
                 <div>
-                  <Label>City/State</Label>
-                  <Input type="text" defaultValue="Arizona, United States." />
+                  <Label>State</Label>
+                  <Input
+                    type="text"
+                    defaultValue={selectedAddress?.state_province || ""}
+                  />
+                </div>
+
+                <div>
+                  <Label>City</Label>
+                  <Input
+                    type="text"
+                    defaultValue={selectedAddress?.city || ""}
+                  />
                 </div>
 
                 <div>
                   <Label>Postal Code</Label>
-                  <Input type="text" defaultValue="ERT 2489" />
-                </div>
-
-                <div>
-                  <Label>TAX ID</Label>
-                  <Input type="text" defaultValue="AS4568384" />
+                  <Input
+                    type="text"
+                    defaultValue={selectedAddress?.postal_code || ""}
+                  />
                 </div>
               </div>
             </div>
