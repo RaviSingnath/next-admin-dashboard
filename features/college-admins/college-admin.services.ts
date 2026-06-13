@@ -52,6 +52,11 @@ export const getCollegeAdminsService = async () => {
   }));
 };
 
+type CollegeAdminsListResponse = Awaited<
+  ReturnType<typeof getCollegeAdminsService>
+>;
+export type CollegeAdminsListItem = CollegeAdminsListResponse[number];
+
 export const inviteCollegeAdminService = async (data: TCollegeAdminInvite) => {
   const supabaseAdmin = createAdminClient();
 

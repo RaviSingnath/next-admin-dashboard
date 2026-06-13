@@ -1,3 +1,4 @@
+import Link from "next/link";
 import TableWrapper from "@/components/tables/table-wrapper";
 import Button from "@/components/ui/button/Button";
 import {
@@ -7,14 +8,14 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { CollegeAdminListItem } from "@/lib/services/super-admin.service";
+import { CollegeAdminsListItem } from "@/features/college-admins/college-admin.services";
 import { formatDateTime } from "@/utils/date";
-import DeleteInviteButton from "../../../../components/admin/invites/invite-actions/delete/delete-invite-button";
-import ResendInviteButton from "../../../../components/admin/invites/invite-actions/resend/resend-invite-button";
-import RevokeInviteButton from "../../../../components/admin/invites/invite-actions/revoke-invite-button";
+import DeleteInviteButton from "@/components/admin/invites/invite-actions/delete/delete-invite-button";
+import ResendInviteButton from "@/components/admin/invites/invite-actions/resend/resend-invite-button";
+import RevokeInviteButton from "@/components/admin/invites/invite-actions/revoke-invite-button";
 
 type CollegeAdminsTableProps = {
-  collegeAdmins: CollegeAdminListItem[];
+  collegeAdmins: CollegeAdminsListItem[];
 };
 
 export default async function CollegeAdminsTable({
@@ -81,7 +82,9 @@ export default async function CollegeAdminsTable({
           {collegeAdmins.map((collegeAdmin) => (
             <TableRow key={collegeAdmin.id}>
               <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
-                {collegeAdmin.full_name}
+                <Link href={`/user/${collegeAdmin.id}`}>
+                  {collegeAdmin.full_name}
+                </Link>
               </TableCell>
               <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
                 {collegeAdmin.email}

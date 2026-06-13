@@ -1,3 +1,4 @@
+import Link from "next/link";
 import TableWrapper from "@/components/tables/table-wrapper";
 import Button from "@/components/ui/button/Button";
 import {
@@ -8,10 +9,10 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { formatDateTime } from "@/utils/date";
-import DeleteInviteButton from "../../../../components/admin/invites/invite-actions/delete/delete-invite-button";
-import ResendInviteButton from "../../../../components/admin/invites/invite-actions/resend/resend-invite-button";
-import RevokeInviteButton from "../../../../components/admin/invites/invite-actions/revoke-invite-button";
-import { SupervisorsListItem } from "@/lib/services/supervisors.services";
+import DeleteInviteButton from "@/components/admin/invites/invite-actions/delete/delete-invite-button";
+import ResendInviteButton from "@/components/admin/invites/invite-actions/resend/resend-invite-button";
+import RevokeInviteButton from "@/components/admin/invites/invite-actions/revoke-invite-button";
+import { SupervisorsListItem } from "@/features/supervisors/supervisors.services";
 
 type SupervisorsTableProps = {
   supervisors: SupervisorsListItem[];
@@ -75,7 +76,9 @@ export default async function SupervisorsTable({
           {supervisors.map((supervisor) => (
             <TableRow key={supervisor.id}>
               <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
-                {supervisor.full_name}
+                <Link href={`/user/${supervisor.id}`}>
+                  {supervisor.full_name}
+                </Link>
               </TableCell>
               <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
                 {supervisor.email}
