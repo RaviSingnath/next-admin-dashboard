@@ -2,6 +2,7 @@ import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { appToast } from "@/lib/toast";
+import { useAuth } from "@/context/AuthProvider";
 import Button from "@/components/ui/button/Button";
 import Input from "@/components/form/input/InputField";
 import Label from "@/components/form/Label";
@@ -16,39 +17,32 @@ type EditAddressFormProps = {
 
 export default function EditAddressForm({ closeModal }: EditAddressFormProps) {
   const router = useRouter();
+  const { user } = useAuth();
+
   const {
     register,
     handleSubmit,
     reset,
     setError,
-    setValue,
-    getValues,
     formState: { errors, isSubmitting },
   } = useForm<TEditAddress>({
     resolver: zodResolver(zEditAddress),
 
     defaultValues: {
-      city: "",
-      state_province: "",
-      country: "",
-      postal_code: "",
+      city: user?.city || "",
+      state_province: user?.state_province || "",
+      country: user?.country || "",
+      postal_code: user?.postal_code || "",
     },
   });
 
   const onUserSelectAddress = (address: TEditAddress) => {
-    // setValue("city", address?.city);
-    // setValue("state_province", address.state_province);
-    // setValue("country", address.country);
-    // setValue("postal_code", address.postal_code);
     reset(address, {
       keepDirty: true,
       keepErrors: true,
       keepTouched: true,
-      keepDefaultValues: false, // set true if you want isDirty comparisons against old defaults
+      keepDefaultValues: false,
     });
-
-    // const currentValues = getValues();
-    // console.log("Current form data:", currentValues);
   };
 
   const onSubmit = async (formData: TEditAddress) => {

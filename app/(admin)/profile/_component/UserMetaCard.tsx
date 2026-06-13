@@ -1,7 +1,7 @@
 "use client";
 
 import { useAuth } from "@/context/AuthProvider";
-import UserAvatar from "../../../../components/user-profile/user-avatar";
+import UserAvatar from "@/components/user-profile/user-avatar";
 
 export default function UserMetaCard() {
   const { user } = useAuth();

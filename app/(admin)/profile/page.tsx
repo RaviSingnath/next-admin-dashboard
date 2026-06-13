@@ -2,7 +2,6 @@ import UserAddressCard from "@/app/(admin)/profile/_component/UserAddressCard";
 import UserInfoCard from "@/app/(admin)/profile/_component/UserInfoCard";
 import UserMetaCard from "@/app/(admin)/profile/_component/UserMetaCard";
 import { Metadata } from "next";
-import React from "react";
 
 export const metadata: Metadata = {
   title: "Next.js Profile | TailAdmin - Next.js Dashboard Template",

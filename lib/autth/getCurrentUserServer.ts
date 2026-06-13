@@ -22,6 +22,12 @@ export async function getCurrentUserServer() {
       avatar,
       status,
       address_id,
+      addresses (
+        city,
+        state_province,
+        country,
+        postal_code
+      ),
       colleges (
         college_name,
         status
@@ -46,6 +52,10 @@ export async function getCurrentUserServer() {
     ? profile.departments[0]
     : profile.departments;
 
+  const address = Array.isArray(profile.addresses)
+    ? profile.addresses[0]
+    : profile.addresses;
+
   const userProfile = {
     id: user.id,
     email: user.email ?? "",
@@ -61,6 +71,11 @@ export async function getCurrentUserServer() {
 
     department_id: profile.department_id,
     department_name: department?.department_name ?? null,
+
+    city: address?.city ?? null,
+    state_province: address?.state_province,
+    country: address?.country,
+    postal_code: address?.postal_code,
   };
 
   if (!profile.avatar) {

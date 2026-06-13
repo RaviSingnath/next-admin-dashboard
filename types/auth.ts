@@ -14,6 +14,11 @@ export type AuthUser = {
 
   department_id: string | null;
   department_name: string | null;
+
+  city: string | null;
+  state_province: string | null;
+  country: string | null;
+  postal_code: string | null;
 };
 
 export type AuthContextType = {
