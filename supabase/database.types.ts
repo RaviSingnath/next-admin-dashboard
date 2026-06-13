@@ -14,6 +14,63 @@ export type Database = {
   }
   public: {
     Tables: {
+      addresses: {
+        Row: {
+          address_line_1: string | null
+          address_line_2: string | null
+          city: string
+          country: string
+          country_code: string | null
+          created_at: string
+          created_by: string
+          formatted_address: string | null
+          id: string
+          label: string | null
+          latitude: number | null
+          longitude: number | null
+          place_id: string | null
+          postal_code: string
+          state_province: string
+          updated_at: string
+        }
+        Insert: {
+          address_line_1?: string | null
+          address_line_2?: string | null
+          city: string
+          country: string
+          country_code?: string | null
+          created_at?: string
+          created_by: string
+          formatted_address?: string | null
+          id?: string
+          label?: string | null
+          latitude?: number | null
+          longitude?: number | null
+          place_id?: string | null
+          postal_code: string
+          state_province: string
+          updated_at?: string
+        }
+        Update: {
+          address_line_1?: string | null
+          address_line_2?: string | null
+          city?: string
+          country?: string
+          country_code?: string | null
+          created_at?: string
+          created_by?: string
+          formatted_address?: string | null
+          id?: string
+          label?: string | null
+          latitude?: number | null
+          longitude?: number | null
+          place_id?: string | null
+          postal_code?: string
+          state_province?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       audit_logs: {
         Row: {
           action_type: string
@@ -52,6 +109,7 @@ export type Database = {
       }
       colleges: {
         Row: {
+          address_id: string | null
           city: string | null
           college_name: string
           country: string | null
@@ -69,6 +127,7 @@ export type Database = {
           updated_at: string | null
         }
         Insert: {
+          address_id?: string | null
           city?: string | null
           college_name: string
           country?: string | null
@@ -86,6 +145,7 @@ export type Database = {
           updated_at?: string | null
         }
         Update: {
+          address_id?: string | null
           city?: string | null
           college_name?: string
           country?: string | null
@@ -102,7 +162,15 @@ export type Database = {
           stripe_connected_account_id?: string | null
           updated_at?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "colleges_address_id_fkey"
+            columns: ["address_id"]
+            isOneToOne: false
+            referencedRelation: "addresses"
+            referencedColumns: ["id"]
+          },
+        ]
       }
       departments: {
         Row: {
@@ -342,6 +410,7 @@ export type Database = {
       }
       profiles: {
         Row: {
+          address_id: string | null
           avatar: string | null
           college_id: string | null
           created_at: string | null
@@ -356,6 +425,7 @@ export type Database = {
           updated_at: string | null
         }
         Insert: {
+          address_id?: string | null
           avatar?: string | null
           college_id?: string | null
           created_at?: string | null
@@ -370,6 +440,7 @@ export type Database = {
           updated_at?: string | null
         }
         Update: {
+          address_id?: string | null
           avatar?: string | null
           college_id?: string | null
           created_at?: string | null
@@ -384,6 +455,13 @@ export type Database = {
           updated_at?: string | null
         }
         Relationships: [
+          {
+            foreignKeyName: "profiles_address_id_fkey"
+            columns: ["address_id"]
+            isOneToOne: false
+            referencedRelation: "addresses"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "profiles_college_id_fkey"
             columns: ["college_id"]

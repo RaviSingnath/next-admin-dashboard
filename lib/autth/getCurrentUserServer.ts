@@ -21,6 +21,7 @@ export async function getCurrentUserServer() {
       department_id,
       avatar,
       status,
+      address_id,
       colleges (
         college_name,
         status
@@ -48,6 +49,7 @@ export async function getCurrentUserServer() {
   const userProfile = {
     id: user.id,
     email: user.email ?? "",
+    address_id: profile.address_id,
 
     role: profile.role,
     full_name: profile.full_name,

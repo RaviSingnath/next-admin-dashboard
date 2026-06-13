@@ -1,5 +1,7 @@
 "use server";
 
+import { TEditAddress, zEditAddress } from "@/features/address/address.schema";
+import { updateAddrerssService } from "@/features/address/address.service";
 import {
   TProfileInfo,
   zImageFile,
@@ -54,7 +56,35 @@ export async function updateProfileInfoAction(formData: TProfileInfo) {
   try {
     const profile = await updateProfifleInfoService(validatedFields.data);
 
-    revalidatePath("profile/", "page");
+    revalidatePath("/profile", "page");
+
+    return {
+      success: true,
+      data: profile,
+    };
+  } catch (error) {
+    return {
+      success: false,
+      message: error instanceof Error ? error.message : "Internal server error",
+    };
+  }
+}
+
+export async function updateAddressAction(formData: TEditAddress) {
+  const validatedFields = zEditAddress.safeParse(formData);
+
+  if (!validatedFields.success) {
+    return {
+      success: false,
+      errors: getZodErrors(validatedFields.error),
+    };
+  }
+
+  try {
+    console.log("updateAddrerssService");
+    const profile = await updateAddrerssService(validatedFields.data);
+
+    revalidatePath("/profile", "page");
 
     return {
       success: true,
