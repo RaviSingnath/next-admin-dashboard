@@ -21,7 +21,7 @@ export default function UserToggleButton({
       onClick={toggleDropdown}
       className="flex items-center text-gray-700 dark:text-gray-400 dropdown-toggle"
     >
-      <span className="mr-3 overflow-hidden rounded-full h-11 w-11">
+      <span className="mr-3 rounded-full h-11 w-11">
         {user?.avatar_url ? (
           <div className="relative h-11 w-11 overflow-hidden rounded-full">
             <Image
@@ -40,7 +40,7 @@ export default function UserToggleButton({
       </span>
 
       <div className="flex flex-col items-start">
-        <span className="block mr-1 font-medium text-theme-sm">
+        <span className="block mr-1 font-medium text-theme-sm text-start">
           {user?.full_name}
         </span>
         <span className="block mr-1 font-normal text-theme-xs">

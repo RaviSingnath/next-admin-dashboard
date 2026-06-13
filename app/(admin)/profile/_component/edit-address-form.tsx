@@ -81,7 +81,7 @@ export default function EditAddressForm({ closeModal }: EditAddressFormProps) {
     <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col">
       <div className="px-2 overflow-y-auto custom-scrollbar">
         <div className="grid grid-cols-1 gap-x-6 gap-y-5 lg:grid-cols-2">
-          <div className="col-span-2">
+          <div className="lg:col-span-2">
             <Label>Search Address</Label>
             <AddressSearch onSelect={onUserSelectAddress} />
           </div>
