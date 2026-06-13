@@ -3,6 +3,7 @@ import { Database } from "@/supabase/database.types";
 export type AuthUser = {
   id: string;
   email: string;
+  phone: string | null;
 
   full_name: string | null;
   role: string | null;
@@ -18,6 +19,7 @@ export type AuthUser = {
   city: string | null;
   state_province: string | null;
   country: string | null;
+  country_code: string | null;
   postal_code: string | null;
 };
 

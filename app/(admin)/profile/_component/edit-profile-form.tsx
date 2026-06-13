@@ -33,7 +33,7 @@ export default function EditProfileForm({ closeModal }: EditProfileFormProps) {
 
     defaultValues: {
       full_name: user?.full_name || "",
-      // phone: user?.phone || "",
+      phone: user?.phone || "",
     },
   });
 
@@ -81,7 +81,7 @@ export default function EditProfileForm({ closeModal }: EditProfileFormProps) {
             />
           </div>
 
-          {/* <div className="col-span-2 lg:col-span-1">
+          <div className="col-span-2 lg:col-span-1">
             <Label>Phone</Label>
             <Input
               type="text"
@@ -89,7 +89,7 @@ export default function EditProfileForm({ closeModal }: EditProfileFormProps) {
               hint={errors.phone?.message}
               {...register("phone")}
             />
-          </div> */}
+          </div>
         </div>
       </div>
 

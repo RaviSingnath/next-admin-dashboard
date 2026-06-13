@@ -25,6 +25,7 @@ export async function getCurrentUser(): Promise<AuthUser | null> {
       college_id,
       department_id,
       avatar,
+      phone,
       colleges (
         college_name,
         status
@@ -36,6 +37,7 @@ export async function getCurrentUser(): Promise<AuthUser | null> {
         city,
         state_province,
         country,
+        country_code,
         postal_code
       )
     `,
@@ -64,6 +66,7 @@ export async function getCurrentUser(): Promise<AuthUser | null> {
   const userProfile = {
     id: authUser.id,
     email: authUser.email ?? "",
+    phone: profile.phone,
 
     full_name: profile.full_name,
     role: profile.role,
@@ -78,6 +81,7 @@ export async function getCurrentUser(): Promise<AuthUser | null> {
     city: address?.city ?? null,
     state_province: address?.state_province,
     country: address?.country,
+    country_code: address?.country_code,
     postal_code: address?.postal_code,
   };
 

@@ -1,5 +1,6 @@
 "use client";
 
+import { AsYouType } from "libphonenumber-js";
 import { useAuth } from "@/context/AuthProvider";
 import UserRole, { UserRoleLabel } from "@/lib/rbac/roles";
 import EditProfileButton from "./edit-profile-button";
@@ -51,7 +52,7 @@ export default function UserInfoCard() {
                 Phone
               </p>
               <p className="text-sm font-medium text-gray-800 dark:text-white/90">
-                +09 363 398 46
+                {user?.phone && new AsYouType().input(user?.phone)}
               </p>
             </div>
 

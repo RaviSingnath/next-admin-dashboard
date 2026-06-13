@@ -20,12 +20,14 @@ export async function getCurrentUserServer() {
       college_id,
       department_id,
       avatar,
+      phone,
       status,
       address_id,
       addresses (
         city,
         state_province,
         country,
+        country_code,
         postal_code
       ),
       colleges (
@@ -60,6 +62,7 @@ export async function getCurrentUserServer() {
     id: user.id,
     email: user.email ?? "",
     address_id: profile.address_id,
+    phone: profile.phone,
 
     role: profile.role,
     full_name: profile.full_name,
@@ -75,6 +78,7 @@ export async function getCurrentUserServer() {
     city: address?.city ?? null,
     state_province: address?.state_province,
     country: address?.country,
+    country_code: address?.country_code,
     postal_code: address?.postal_code,
   };
 
