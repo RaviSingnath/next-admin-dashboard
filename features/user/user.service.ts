@@ -1,18 +1,31 @@
 import { withCreatorService } from "../services";
-import { getStudentDetails, getUserQuery } from "./user.queries";
-import createClient from "@/lib/supabase/server";
+import {
+  getStudentDetails,
+  getSupervisorDetails,
+  getUserQuery,
+} from "./user.queries";
 
 export async function getProfile(userId: string) {
-  const supabase = await createClient();
-
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  console.log("Querying as:", user?.id);
-
   const { data: profile, error: profileError } = await getUserQuery(userId);
 
   if (profileError) return profileError;
+
+  if (profile.role === "supervisor") {
+    const { data: supervisor, error: supervisorError } =
+      await getSupervisorDetails(profile.id);
+
+    if (supervisorError) return supervisorError;
+
+    if (supervisor.created_by) {
+      const studentwithCreator = await withCreatorService(supervisor);
+      return { ...profile, details: studentwithCreator };
+    }
+
+    return {
+      ...profile,
+      details: supervisor,
+    };
+  }
 
   if (profile?.role === "student") {
     const { data: student, error: studentError } = await getStudentDetails(

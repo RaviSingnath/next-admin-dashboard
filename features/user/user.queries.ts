@@ -52,3 +52,31 @@ export const getStudentDetails = async (id: string) => {
     .eq("id", id)
     .single();
 };
+
+export const getSupervisorDetails = async (id: string) => {
+  const supabase = await createClient();
+
+  return supabase
+    .from("profiles")
+    .select(
+      `
+      addresses (
+        city,
+        state_province,
+        country,
+        country_code,
+        postal_code
+      ),
+      colleges (
+        college_name,
+        status
+      ),
+      departments!department_id (
+        department_name
+      ),
+      created_by
+      `,
+    )
+    .eq("id", id)
+    .single();
+};
