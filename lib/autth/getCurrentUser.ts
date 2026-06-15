@@ -49,8 +49,6 @@ export async function getCurrentUser(): Promise<AuthUser | null> {
     return null;
   }
 
-  console.log("profile: ", profile);
-
   const college = Array.isArray(profile.colleges)
     ? profile.colleges[0]
     : profile.colleges;
@@ -102,7 +100,6 @@ export async function getCurrentUser(): Promise<AuthUser | null> {
       avatar_url: null,
     };
   }
-  console.log("profile: ", profile);
 
   return {
     ...userProfile,

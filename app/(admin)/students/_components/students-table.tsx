@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import TableWrapper from "@/components/tables/table-wrapper";
 import Button from "@/components/ui/button/Button";
 import {
@@ -73,7 +74,7 @@ export default function StudentsTable({ students }: StudentsTableProps) {
           {students.map((student) => (
             <TableRow key={student.id}>
               <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
-                {student.full_name}
+                <Link href={`/user/${student.id}`}>{student.full_name}</Link>
               </TableCell>
               <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
                 {student.email}

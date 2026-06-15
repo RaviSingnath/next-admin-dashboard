@@ -9,5 +9,9 @@ export default async function UserPage({
   const profile = await getProfile(id);
   console.log(profile);
 
-  return <div>User ID: {id}</div>;
+  return !profile ? (
+    <div>User ID: {id} but not authorize</div>
+  ) : (
+    <div>User ID: {id}</div>
+  );
 }
