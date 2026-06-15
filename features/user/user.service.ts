@@ -1,5 +1,6 @@
 import { withCreatorService } from "../services";
 import {
+  getCollegeAdminDetails,
   getStudentDetails,
   getSupervisorDetails,
   getUserQuery,
@@ -9,6 +10,23 @@ export async function getProfile(userId: string) {
   const { data: profile, error: profileError } = await getUserQuery(userId);
 
   if (profileError) return profileError;
+
+  if (profile.role === "college_admin") {
+    const { data: collegeAdmin, error: collegeAdminError } =
+      await getCollegeAdminDetails(profile.id);
+
+    if (collegeAdminError) return collegeAdminError;
+
+    if (collegeAdmin.created_by) {
+      const studentwithCreator = await withCreatorService(collegeAdmin);
+      return { ...profile, details: studentwithCreator };
+    }
+
+    return {
+      ...profile,
+      details: collegeAdmin,
+    };
+  }
 
   if (profile.role === "supervisor") {
     const { data: supervisor, error: supervisorError } =
