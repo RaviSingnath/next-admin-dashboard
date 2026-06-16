@@ -1,5 +1,6 @@
 import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
 import { appToast } from "../toast";
+import { ERROR_CODES } from "../errors/error-codes";
 
 export function handleActionError(
   result: {
@@ -12,12 +13,16 @@ export function handleActionError(
   if (result.success) return;
 
   switch (result.code) {
-    case "UNAUTHORIZED":
+    case ERROR_CODES.UNAUTHORIZED:
       router.push("/login");
       break;
 
-    case "FORBIDDEN":
+    case ERROR_CODES.FORBIDDEN:
       appToast.error("You don't have permission");
+      break;
+
+    case ERROR_CODES.DEPARTMENT_EXISTS:
+      appToast.error("Department already exists");
       break;
 
     default:

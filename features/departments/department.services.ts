@@ -13,6 +13,7 @@ import {
 } from "./department.mutations";
 import { TAddDepartment } from "./department.schema";
 import { mapSupabaseError } from "@/lib/errors/supabase-error";
+import { Errors } from "@/lib/errors/error-factory";
 
 export async function getDepartmentsService(filters?: TDepartmentFilters) {
   const profile = await getProfile();
@@ -53,23 +54,19 @@ export async function createDepartmentService(data: TAddDepartment) {
   const profile = await getProfile();
 
   if (!profile) {
-    throw new AppError("Unauthorized", 401, "UNAUTHORIZED");
+    throw Errors.unauthorized();
   }
 
   if (profile?.role !== "college_admin") {
-    throw new AppError(
-      "Only college admin can create departments",
-      403,
-      "FORBIDDEN",
-    );
+    throw Errors.forbidden("Only college admins can create departments");
   }
 
   if (profile.status !== "active") {
-    throw new Error("Inactive users cannot create departments");
+    throw Errors.forbidden("Inactive users cannot perform this action");
   }
 
   if (!profile.college_id) {
-    throw new Error("Profile is not associated with a college");
+    throw Errors.collegeNotAssigned();
   }
 
   const { data: existingDepartment } = await getCollegeDepatmentByName(
@@ -88,7 +85,7 @@ export async function createDepartmentService(data: TAddDepartment) {
   );
 
   if (error) {
-    throw error;
+    throw mapSupabaseError(error);
   }
 
   return department;

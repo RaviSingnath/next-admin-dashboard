@@ -10,19 +10,43 @@ export const Errors = {
     );
   },
 
-  forbidden() {
+  forbidden(message = "You do not have permission") {
+    return new AppError(message, 403, ERROR_CODES.FORBIDDEN);
+  },
+
+  conflict(message = "Conflict occurred") {
+    return new AppError(message, 409, ERROR_CODES.CONFLICT);
+  },
+
+  alreadyExists(resource = "Record") {
     return new AppError(
-      "You do not have permission",
-      403,
-      ERROR_CODES.FORBIDDEN,
+      `${resource} already exists`,
+      409,
+      ERROR_CODES.ALREADY_EXISTS,
     );
   },
 
-  notFound(resource = "Resource") {
-    return new AppError(`${resource} not found`, 404, ERROR_CODES.NOT_FOUND);
+  collegeNotAssigned() {
+    throw new AppError(
+      "College association missing",
+      403,
+      ERROR_CODES.COLLEGE_NOT_ASSIGNED,
+    );
   },
 
-  internal(message = "Something went wrong") {
-    return new AppError(message, 500, ERROR_CODES.INTERNAL_ERROR);
+  database() {
+    return new AppError(
+      "Database operation failed",
+      500,
+      ERROR_CODES.DATABASE_ERROR,
+    );
+  },
+
+  internal() {
+    return new AppError(
+      "Something went wrong",
+      500,
+      ERROR_CODES.INTERNAL_ERROR,
+    );
   },
 };

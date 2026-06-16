@@ -15,6 +15,8 @@ import {
   type TAddDepartment,
 } from "@/features/departments/department.schema";
 import { handleActionError } from "@/lib/helper/handle-action-error";
+import { handleUnexpectedError } from "@/lib/helper/handle-unexpected-error";
+import { ERROR_CODES } from "@/lib/errors/error-codes";
 
 type AddDepartmentFormProps = {
   closeModal: () => void;
@@ -43,7 +45,7 @@ export default function AddDepartmentForm({
       const result = await createDepartmentAction(formData);
 
       if (!result.success) {
-        if (result.errors) {
+        if (result.code === ERROR_CODES.VALIDATION_ERROR && result.errors) {
           Object.entries(result.errors).forEach(([field, messages]) => {
             setError(field as keyof TAddDepartment, {
               type: "server",
@@ -65,6 +67,7 @@ export default function AddDepartmentForm({
       closeModal();
     } catch (error) {
       console.error(error);
+      handleUnexpectedError(error);
     }
   };
 

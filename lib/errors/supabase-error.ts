@@ -1,3 +1,4 @@
+import AppError from "./app-error";
 import { ERROR_CODES } from "./error-codes";
 
 type SupabaseError = {
@@ -12,42 +13,42 @@ export function mapSupabaseError(error: SupabaseError) {
     // Unique constraint violation
     // Example: duplicate department name
     case "23505":
-      return {
-        code: ERROR_CODES.ALREADY_EXISTS,
-        message: "A record with this value already exists.",
-        statusCode: 409,
-      };
+      return new AppError(
+        "A record with this value already exists.",
+        409,
+        ERROR_CODES.ALREADY_EXISTS,
+      );
 
     // Foreign key violation
     // Example: deleting college that has departments
     case "23503":
-      return {
-        code: ERROR_CODES.CONFLICT,
-        message: "This record cannot be deleted because it is still in use.",
-        statusCode: 409,
-      };
+      return new AppError(
+        "This record cannot be deleted because it is still in use.",
+        409,
+        ERROR_CODES.CONFLICT,
+      );
 
     // Permission denied
     case "42501":
-      return {
-        code: ERROR_CODES.FORBIDDEN,
-        message: "You do not have permission to perform this action.",
-        statusCode: 403,
-      };
+      return new AppError(
+        "You do not have permission to perform this action.",
+        403,
+        ERROR_CODES.FORBIDDEN,
+      );
 
     // Invalid input syntax
     case "22P02":
-      return {
-        code: ERROR_CODES.INVALID_INPUT,
-        message: "Invalid data format.",
-        statusCode: 400,
-      };
+      return new AppError(
+        "Invalid data format.",
+        400,
+        ERROR_CODES.INVALID_INPUT,
+      );
 
     default:
-      return {
-        code: ERROR_CODES.DATABASE_ERROR,
-        message: "A database error occurred.",
-        statusCode: 500,
-      };
+      return new AppError(
+        "A database error occurred.",
+        500,
+        ERROR_CODES.DATABASE_ERROR,
+      );
   }
 }

@@ -1,6 +1,8 @@
 import AppError from "./app-error";
+import { ActionResponse } from "@/lib/types/action-response";
+import { ERROR_CODES } from "./error-codes";
 
-export function handleError(error: unknown) {
+export function handleError(error: unknown): ActionResponse {
   if (error instanceof AppError) {
     return {
       success: false,
@@ -13,7 +15,7 @@ export function handleError(error: unknown) {
 
   return {
     success: false,
-    code: "INTERNAL_ERROR",
+    code: ERROR_CODES.INTERNAL_ERROR,
     message: "Something went wrong",
   };
 }

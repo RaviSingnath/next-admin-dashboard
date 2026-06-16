@@ -10,13 +10,19 @@ import {
   createDepartmentService,
   softDeleteDepartmentService,
 } from "@/features/departments/department.services";
+import { handleError } from "@/lib/errors/handle-error";
+import { ActionResponse } from "@/lib/types/action-response";
+import { ERROR_CODES } from "@/lib/errors/error-codes";
 
-export async function createDepartmentAction(formData: TAddDepartment) {
+export async function createDepartmentAction(
+  formData: TAddDepartment,
+): Promise<ActionResponse> {
   const validatedFields = zAddDepartment.safeParse(formData);
 
   if (!validatedFields.success) {
     return {
       success: false,
+      code: ERROR_CODES.VALIDATION_ERROR,
       errors: getZodFieldErrors(validatedFields.error),
     };
   }
@@ -31,10 +37,7 @@ export async function createDepartmentAction(formData: TAddDepartment) {
       data: department,
     };
   } catch (error) {
-    return {
-      success: false,
-      message: error instanceof Error ? error.message : "Internal server error",
-    };
+    return handleError(error);
   }
 }
 

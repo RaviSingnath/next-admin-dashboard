@@ -11,6 +11,8 @@ export default class AppError extends Error {
   ) {
     super(message);
 
+    Object.setPrototypeOf(this, AppError.prototype);
+
     this.name = "AppError";
     this.statusCode = statusCode;
     this.code = code;
