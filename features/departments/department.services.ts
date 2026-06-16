@@ -6,7 +6,6 @@ import {
   getCollegeDepatmentById,
 } from "./department.queries";
 import AppError from "@/lib/errors/app-error";
-import { ERROR_CODES } from "@/lib/errors/error-codes";
 import {
   createDepartmentMutation,
   softDeleteDepartmentMutation,
@@ -19,15 +18,11 @@ export async function getDepartmentsService(filters?: TDepartmentFilters) {
   const profile = await getProfile();
 
   if (!profile) {
-    throw new AppError("Authentication required", 401, "UNAUTHORIZED");
+    throw Errors.unauthorized();
   }
 
   if (!profile.college_id) {
-    throw new AppError(
-      "College association missing",
-      403,
-      ERROR_CODES.COLLEGE_NOT_ASSIGNED,
-    );
+    throw Errors.collegeNotAssigned();
   }
 
   const query = getDepartmentsQuery(profile.college_id, filters);
@@ -35,11 +30,7 @@ export async function getDepartmentsService(filters?: TDepartmentFilters) {
   const { data, error } = await query;
 
   if (error) {
-    console.error("getDepartmentsService error", error);
-
-    const mapped = mapSupabaseError(error);
-
-    throw new AppError(mapped.message, 500, mapped.code);
+    throw mapSupabaseError(error);
   }
 
   return data ?? [];
@@ -95,23 +86,19 @@ export async function softDeleteDepartmentService(departmentId: string) {
   const profile = await getProfile();
 
   if (!profile) {
-    throw new AppError("Unauthorized", 401, "UNAUTHORIZED");
+    throw Errors.unauthorized();
   }
 
   if (profile?.role !== "college_admin") {
-    throw new AppError(
-      "Only college admin can delete departments",
-      403,
-      "FORBIDDEN",
-    );
+    throw Errors.forbidden("Only college admins can delete department");
   }
 
   if (profile.status !== "active") {
-    throw new Error("Inactive users cannot delete departments");
+    throw Errors.forbidden("Inactive users cannot perform this action");
   }
 
   if (!profile.college_id) {
-    throw new Error("Profile is not associated with a college");
+    throw Errors.forbidden("Only college admins can perform this action");
   }
 
   const { data: department } = await getCollegeDepatmentById(
@@ -120,11 +107,11 @@ export async function softDeleteDepartmentService(departmentId: string) {
   );
 
   if (!department) {
-    throw new AppError("Department not found", 409, "NO_FOUND");
+    throw Errors.notFound("Department not found");
   }
 
   if (department.college_id !== profile.college_id) {
-    throw new Error("You cannot delete this department");
+    throw Errors.forbidden("Yous cannot delete this department");
   }
 
   const { error: deleteError } =

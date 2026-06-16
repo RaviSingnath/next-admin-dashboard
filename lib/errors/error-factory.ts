@@ -14,6 +14,10 @@ export const Errors = {
     return new AppError(message, 403, ERROR_CODES.FORBIDDEN);
   },
 
+  notFound(message = "Record not found") {
+    return new AppError(message, 404, ERROR_CODES.NOT_FOUND);
+  },
+
   conflict(message = "Conflict occurred") {
     return new AppError(message, 409, ERROR_CODES.CONFLICT);
   },

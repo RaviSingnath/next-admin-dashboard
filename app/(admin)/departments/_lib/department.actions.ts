@@ -45,6 +45,7 @@ export async function softDeleteDepartmentAction(departmentId: string) {
   if (!departmentId) {
     return {
       success: false,
+      code: ERROR_CODES.NOT_FOUND,
       message: "Department ID not found",
     };
   }
@@ -59,9 +60,6 @@ export async function softDeleteDepartmentAction(departmentId: string) {
       data: department,
     };
   } catch (error) {
-    return {
-      success: false,
-      message: error instanceof Error ? error.message : "Internal server error",
-    };
+    return handleError(error);
   }
 }

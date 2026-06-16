@@ -4,6 +4,7 @@ import Button from "@/components/ui/button/Button";
 import { softDeleteDepartmentAction } from "../_lib/department.actions";
 import { handleActionError } from "@/lib/helper/handle-action-error";
 import { appToast } from "@/lib/toast";
+import { handleUnexpectedError } from "@/lib/helper/handle-unexpected-error";
 
 type DeleteDepartmentModalProps = {
   departmentID: string;
@@ -31,7 +32,7 @@ export default function DeleteDepartmentModal({
 
       closeModal();
     } catch (error) {
-      console.error(error);
+      handleUnexpectedError(error);
     }
   };
 
