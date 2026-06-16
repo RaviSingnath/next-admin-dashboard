@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { signinUser } from "@/lib/services/auth.service";
-import { getZodErrors } from "@/lib/helper/get-zod-errors";
+import { getZodFieldErrors } from "@/lib/helper/get-zod-field-errors";
 import { zSignIn } from "@/lib/validations/admin/college-schema";
 
 export async function POST(req: Request) {
@@ -15,7 +15,7 @@ export async function POST(req: Request) {
         {
           success: false,
           message: "Validation failed",
-          errors: getZodErrors(validatedFields.error),
+          errors: getZodFieldErrors(validatedFields.error),
         },
         { status: 400 },
       );

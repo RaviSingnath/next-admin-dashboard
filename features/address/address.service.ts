@@ -2,7 +2,7 @@
 
 import { getCurrentUserServer } from "@/lib/autth/getCurrentUserServer";
 import { TEditAddress } from "./address.schema";
-import { AppError } from "@/lib/app-error";
+import AppError from "@/lib/errors/app-error";
 import {
   addAddress,
   addAddressToProfile,

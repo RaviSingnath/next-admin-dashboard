@@ -4,7 +4,7 @@ import {
   TAddDepartment,
   zAddDepartment,
 } from "@/features/departments/department.schema";
-import { getZodErrors } from "@/lib/helper/get-zod-errors";
+import { getZodFieldErrors } from "@/lib/helper/get-zod-field-errors";
 import { revalidatePath } from "next/cache";
 import {
   createDepartmentService,
@@ -17,7 +17,7 @@ export async function createDepartmentAction(formData: TAddDepartment) {
   if (!validatedFields.success) {
     return {
       success: false,
-      errors: getZodErrors(validatedFields.error),
+      errors: getZodFieldErrors(validatedFields.error),
     };
   }
 

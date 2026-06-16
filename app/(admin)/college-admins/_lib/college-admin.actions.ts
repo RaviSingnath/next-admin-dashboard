@@ -5,7 +5,7 @@ import {
   TCollegeAdminInvite,
 } from "@/features/college-admins/college-admin.schema";
 import { inviteCollegeAdminService } from "@/features/college-admins/college-admin.services";
-import { getZodErrors } from "@/lib/helper/get-zod-errors";
+import { getZodFieldErrors } from "@/lib/helper/get-zod-field-errors";
 import { revalidatePath } from "next/cache";
 
 export const InviteCollegeAdminAction = async (data: TCollegeAdminInvite) => {
@@ -16,7 +16,7 @@ export const InviteCollegeAdminAction = async (data: TCollegeAdminInvite) => {
       return {
         success: false,
         message: "Validation failed",
-        errors: getZodErrors(validatedFields.error),
+        errors: getZodFieldErrors(validatedFields.error),
       };
     }
 

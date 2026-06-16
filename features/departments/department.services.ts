@@ -5,33 +5,43 @@ import {
   getCollegeDepatmentByName,
   getCollegeDepatmentById,
 } from "./department.queries";
-import { AppError } from "@/lib/app-error";
+import AppError from "@/lib/errors/app-error";
+import { ERROR_CODES } from "@/lib/errors/error-codes";
 import {
   createDepartmentMutation,
   softDeleteDepartmentMutation,
 } from "./department.mutations";
 import { TAddDepartment } from "./department.schema";
+import { mapSupabaseError } from "@/lib/errors/supabase-error";
 
 export async function getDepartmentsService(filters?: TDepartmentFilters) {
   const profile = await getProfile();
 
   if (!profile) {
-    throw new Error("user not logged in");
+    throw new AppError("Authentication required", 401, "UNAUTHORIZED");
   }
 
   if (!profile.college_id) {
-    throw new Error("Profile is not associated with a college");
+    throw new AppError(
+      "College association missing",
+      403,
+      ERROR_CODES.COLLEGE_NOT_ASSIGNED,
+    );
   }
 
   const query = getDepartmentsQuery(profile.college_id, filters);
 
-  const { data: departmentsData, error } = await query;
+  const { data, error } = await query;
 
   if (error) {
-    throw error;
+    console.error("getDepartmentsService error", error);
+
+    const mapped = mapSupabaseError(error);
+
+    throw new AppError(mapped.message, 500, mapped.code);
   }
 
-  return departmentsData;
+  return data ?? [];
 }
 
 type DepartmentsListResponse = Awaited<

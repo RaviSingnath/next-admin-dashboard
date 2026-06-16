@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { zStudentInvite } from "@/features/students/students.schema";
-import { getZodErrors } from "@/lib/helper/get-zod-errors";
-import { AppError } from "@/lib/app-error";
+import { getZodFieldErrors } from "@/lib/helper/get-zod-field-errors";
+import AppError from "@/lib/errors/app-error";
 import { inviteStudent } from "@/lib/services/student.service";
 
 export async function POST(req: Request) {
@@ -15,7 +15,7 @@ export async function POST(req: Request) {
         {
           success: false,
           message: "Validation failed",
-          errors: getZodErrors(validatedFields.error),
+          errors: getZodFieldErrors(validatedFields.error),
         },
         { status: 400 },
       );

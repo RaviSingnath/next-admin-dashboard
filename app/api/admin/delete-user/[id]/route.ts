@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import z4 from "zod/v4";
-import { AppError } from "@/lib/app-error";
+import AppError from "@/lib/errors/app-error";
 import { softDeleteUser } from "@/lib/services/super-admin.service";
 
 type RouteParams = {

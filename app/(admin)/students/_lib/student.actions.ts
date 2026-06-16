@@ -5,7 +5,7 @@ import {
   TStudentInvite,
 } from "@/features/students/students.schema";
 import { inviteStudentService } from "@/features/students/students.services";
-import { getZodErrors } from "@/lib/helper/get-zod-errors";
+import { getZodFieldErrors } from "@/lib/helper/get-zod-field-errors";
 import { revalidatePath } from "next/cache";
 
 export const inviteStudentAction = async (data: TStudentInvite) => {
@@ -16,7 +16,7 @@ export const inviteStudentAction = async (data: TStudentInvite) => {
       return {
         success: false,
         message: "Validation failed",
-        errors: getZodErrors(validatedFields.error),
+        errors: getZodFieldErrors(validatedFields.error),
       };
     }
 

@@ -1,6 +1,6 @@
 import { getCurrentUserServer } from "@/lib/autth/getCurrentUserServer";
 import { getInvitesQuery } from "./invite.queries";
-import { AppError } from "@/lib/app-error";
+import AppError from "@/lib/errors/app-error";
 
 export async function getInvitesService() {
   const profile = await getCurrentUserServer();

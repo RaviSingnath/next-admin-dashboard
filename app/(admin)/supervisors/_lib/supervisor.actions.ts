@@ -5,7 +5,7 @@ import {
   zSupervisorInvite,
 } from "@/features/supervisors/supervisors.schema";
 import { inviteSupervisorService } from "@/features/supervisors/supervisors.services";
-import { getZodErrors } from "@/lib/helper/get-zod-errors";
+import { getZodFieldErrors } from "@/lib/helper/get-zod-field-errors";
 import { revalidatePath } from "next/cache";
 
 export const InviteSupervisorAction = async (data: TSupervisorInvite) => {
@@ -16,7 +16,7 @@ export const InviteSupervisorAction = async (data: TSupervisorInvite) => {
       return {
         success: false,
         message: "Validation failed",
-        errors: getZodErrors(validatedFields.error),
+        errors: getZodFieldErrors(validatedFields.error),
       };
     }
 

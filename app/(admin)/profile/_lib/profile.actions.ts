@@ -11,7 +11,7 @@ import {
   updateAvatarService,
   updateProfifleInfoService,
 } from "@/features/profile/profile.services";
-import { getZodErrors } from "@/lib/helper/get-zod-errors";
+import { getZodFieldErrors } from "@/lib/helper/get-zod-field-errors";
 import { revalidatePath } from "next/cache";
 
 export async function uploadAvatarAction(formData: FormData) {
@@ -22,7 +22,7 @@ export async function uploadAvatarAction(formData: FormData) {
   if (!validatedFields.success) {
     return {
       success: false,
-      errors: getZodErrors(validatedFields.error),
+      errors: getZodFieldErrors(validatedFields.error),
     };
   }
 
@@ -49,7 +49,7 @@ export async function updateProfileInfoAction(formData: TProfileInfo) {
   if (!validatedFields.success) {
     return {
       success: false,
-      errors: getZodErrors(validatedFields.error),
+      errors: getZodFieldErrors(validatedFields.error),
     };
   }
 
@@ -76,7 +76,7 @@ export async function updateAddressAction(formData: TEditAddress) {
   if (!validatedFields.success) {
     return {
       success: false,
-      errors: getZodErrors(validatedFields.error),
+      errors: getZodFieldErrors(validatedFields.error),
     };
   }
 

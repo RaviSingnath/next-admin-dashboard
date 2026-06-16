@@ -1,4 +1,4 @@
-import { AppError } from "@/lib/app-error";
+import AppError from "@/lib/errors/app-error";
 import { getCurrentUserServer } from "@/lib/autth/getCurrentUserServer";
 import { getStudentsQuery } from "./students.queries";
 import { getCreatorByIdsQuery } from "../college-admins/college-admin.queries";

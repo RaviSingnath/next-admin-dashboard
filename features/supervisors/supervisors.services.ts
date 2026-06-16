@@ -1,7 +1,7 @@
 "use server";
 
 import { getCurrentUserServer } from "@/lib/autth/getCurrentUserServer";
-import { AppError } from "@/lib/app-error";
+import AppError from "@/lib/errors/app-error";
 import { TSupervisorInvite } from "./supervisors.schema";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { generateToken } from "@/lib/helper/generate-token";

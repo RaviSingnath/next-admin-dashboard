@@ -6,7 +6,7 @@ import {
   uploadAvatar,
 } from "./profile.mutations";
 import { getCurrentUserServer } from "@/lib/autth/getCurrentUserServer";
-import { AppError } from "@/lib/app-error";
+import AppError from "@/lib/errors/app-error";
 
 export async function updateAvatarService(data: TImageFile) {
   const user = await getCurrentUserServer();

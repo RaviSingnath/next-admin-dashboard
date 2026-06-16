@@ -1,5 +1,3 @@
-// lib/helper/handle-action-result.ts
-
 import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
 import { appToast } from "../toast";
 
@@ -13,10 +11,16 @@ export function handleActionError(
 ) {
   if (result.success) return;
 
-  if (result.code === "UNAUTHORIZED") {
-    router.push("/login");
-    return;
-  }
+  switch (result.code) {
+    case "UNAUTHORIZED":
+      router.push("/login");
+      break;
 
-  appToast.error(result.message ?? "Something went wrong");
+    case "FORBIDDEN":
+      appToast.error("You don't have permission");
+      break;
+
+    default:
+      appToast.error(result.message ?? "Something went wrong");
+  }
 }

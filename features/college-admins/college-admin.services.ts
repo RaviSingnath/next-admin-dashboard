@@ -1,4 +1,4 @@
-import { AppError } from "@/lib/app-error";
+import AppError from "@/lib/errors/app-error";
 import { getInviteByEmail } from "../invite/invite.queries";
 import {
   getCollegeAdminsQuery,

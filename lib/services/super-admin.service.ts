@@ -1,5 +1,5 @@
 import createClient from "@/lib/supabase/server";
-import { AppError } from "@/lib/app-error";
+import AppError from "@/lib/errors/app-error";
 
 export async function softDeleteUser(userID: string) {
   const supabase = await createClient();
