@@ -5,6 +5,8 @@ import {
   TStudentInvite,
 } from "@/features/students/students.schema";
 import { inviteStudentService } from "@/features/students/students.services";
+import { ERROR_CODES } from "@/lib/errors/error-codes";
+import { handleError } from "@/lib/errors/handle-error";
 import { getZodFieldErrors } from "@/lib/helper/get-zod-field-errors";
 import { revalidatePath } from "next/cache";
 
@@ -15,7 +17,7 @@ export const inviteStudentAction = async (data: TStudentInvite) => {
     if (!validatedFields.success) {
       return {
         success: false,
-        message: "Validation failed",
+        code: ERROR_CODES.VALIDATION_ERROR,
         errors: getZodFieldErrors(validatedFields.error),
       };
     }
@@ -29,9 +31,6 @@ export const inviteStudentAction = async (data: TStudentInvite) => {
       data: college,
     };
   } catch (error) {
-    return {
-      success: false,
-      message: error instanceof Error ? error.message : "Internal server error",
-    };
+    return handleError(error);
   }
 };

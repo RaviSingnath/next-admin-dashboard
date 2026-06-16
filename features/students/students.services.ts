@@ -1,4 +1,3 @@
-import AppError from "@/lib/errors/app-error";
 import { getCurrentUserServer } from "@/lib/autth/getCurrentUserServer";
 import { getStudentsQuery } from "./students.queries";
 import { getCreatorByIdsQuery } from "../college-admins/college-admin.queries";
@@ -12,18 +11,21 @@ import {
 } from "../invite/invite.mutations";
 import { generateToken } from "@/lib/helper/generate-token";
 import { StudentInvite } from "../invite/invite.types";
+import { Errors } from "@/lib/errors/error-factory";
+import { mapSupabaseError } from "@/lib/errors/supabase-error";
+import { mapSupabaseAuthError } from "@/lib/errors/supabase-auth-error";
 
 export async function getStudentsService() {
   const profile = await getCurrentUserServer();
 
   if (!profile) {
-    throw new AppError("Profile not found", 403, "NOT_FOUND");
+    throw Errors.unauthorized();
   }
 
   const { data: students, error } = await getStudentsQuery(profile);
 
   if (error) {
-    throw error;
+    throw mapSupabaseError(error);
   }
 
   if (!students?.length) {
@@ -44,7 +46,7 @@ export async function getStudentsService() {
     await getCreatorByIdsQuery(creatorIds);
 
   if (creatorsError) {
-    throw creatorsError;
+    throw mapSupabaseError(creatorsError);
   }
 
   const creatorsById = new Map(
@@ -69,13 +71,13 @@ export async function inviteStudentService(data: TStudentInvite) {
   const { data: existingInvite } = await getInviteByEmail(data.invite_email);
 
   if (existingInvite) {
-    throw new AppError("Invitation already exists", 409, "INVITATION_EXISTS");
+    throw Errors.alreadyExists("Invitation already exists");
   }
 
   const profile = await getCurrentUserServer();
 
   if (profile?.role !== UserRole.SUPERVISOR) {
-    throw new AppError("Forbidden", 403, "FORBIDDEN");
+    throw Errors.forbidden();
   }
 
   // Invalidate older invites automatically for email reuse
@@ -84,7 +86,7 @@ export async function inviteStudentService(data: TStudentInvite) {
   );
 
   if (revokeOldInviteError) {
-    throw new Error(revokeOldInviteError.message);
+    throw mapSupabaseError(revokeOldInviteError);
   }
 
   const token = generateToken();
@@ -102,11 +104,7 @@ export async function inviteStudentService(data: TStudentInvite) {
     });
 
   if (inviteError) {
-    throw new AppError(
-      inviteError.message,
-      400,
-      inviteError.code || "INVITE_ERROR",
-    );
+    throw mapSupabaseAuthError(inviteError);
   }
 
   const inviteData: StudentInvite = {
@@ -121,7 +119,7 @@ export async function inviteStudentService(data: TStudentInvite) {
   const { data: invitation, error } = await createInvite(inviteData);
 
   if (error) {
-    throw new AppError(error.message, 400, error.code || "DATABASE_ERROR");
+    throw mapSupabaseError(error);
   }
 
   return invitation;

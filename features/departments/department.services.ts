@@ -66,7 +66,7 @@ export async function createDepartmentService(data: TAddDepartment) {
   );
 
   if (existingDepartment) {
-    throw new AppError("Department already exists", 409, "DEPARTMENT_EXISTS");
+    throw Errors.alreadyExists("Department already exists");
   }
 
   const { data: department, error } = await createDepartmentMutation(

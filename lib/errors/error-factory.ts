@@ -1,3 +1,4 @@
+import { AuthError } from "@supabase/supabase-js";
 import AppError from "./app-error";
 import { ERROR_CODES } from "./error-codes";
 
@@ -38,11 +39,16 @@ export const Errors = {
     );
   },
 
-  inviteFailed() {
+  inviteFailed(error: AuthError) {
     return new AppError(
-      "Unable to send invitation.",
-      500,
-      ERROR_CODES.INVITE_FAILED,
+      "A user with this email already exists.",
+      409,
+      ERROR_CODES.ALREADY_EXISTS,
+      {
+        provider: "supabase",
+        originalCode: error.code,
+        originalMessage: error.message,
+      },
     );
   },
 

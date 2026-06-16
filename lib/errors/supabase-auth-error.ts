@@ -1,24 +1,12 @@
+import { AuthError } from "@supabase/supabase-js";
 import AppError from "./app-error";
 import { ERROR_CODES } from "./error-codes";
+import { Errors } from "./error-factory";
 
-type SupabaseAuthError = {
-  message: string;
-  code?: string;
-};
-
-export function mapSupabaseAuthError(error: SupabaseAuthError) {
+export function mapSupabaseAuthError(error: AuthError) {
   switch (error.code) {
     case "email_exists":
-      return new AppError(
-        "A user with this email already exists.",
-        409,
-        ERROR_CODES.ALREADY_EXISTS,
-        {
-          provider: "supabase",
-          originalCode: error.code,
-          originalMessage: error.message,
-        },
-      );
+      return Errors.inviteFailed(error);
 
     case "over_email_send_rate_limit":
       return new AppError(
