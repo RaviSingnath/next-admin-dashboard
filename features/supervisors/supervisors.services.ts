@@ -1,7 +1,6 @@
 "use server";
 
 import { getCurrentUserServer } from "@/lib/autth/getCurrentUserServer";
-import AppError from "@/lib/errors/app-error";
 import { TSupervisorInvite } from "./supervisors.schema";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { generateToken } from "@/lib/helper/generate-token";
@@ -14,12 +13,15 @@ import {
 } from "../invite/invite.mutations";
 import UserRole from "@/lib/rbac/roles";
 import { SupervisorInvite } from "../invite/invite.types";
+import { mapSupabaseError } from "@/lib/errors/supabase-error";
+import { Errors } from "@/lib/errors/error-factory";
+import { mapSupabaseAuthError } from "@/lib/errors/supabase-auth-error";
 
 export async function getSupervisorsService() {
   const { data: supervisors, error } = await getSupervisorsQuery();
 
   if (error) {
-    throw error;
+    throw mapSupabaseError(error);
   }
 
   if (!supervisors?.length) {
@@ -42,7 +44,7 @@ export async function getSupervisorsService() {
     await getCreatorByIdsQuery(creatorIds);
 
   if (creatorsError) {
-    throw creatorsError;
+    throw mapSupabaseError(creatorsError);
   }
 
   const creatorsById = new Map(
@@ -66,13 +68,13 @@ export async function inviteSupervisorService(data: TSupervisorInvite) {
   const { data: existingInvite } = await getInviteByEmail(data.invite_email);
 
   if (existingInvite) {
-    throw new AppError("Invitation already exists", 409, "INVITATION_EXISTS");
+    throw Errors.alreadyExists("Invitation already exists");
   }
 
   const profile = await getCurrentUserServer();
 
   if (profile?.role !== "college_admin") {
-    throw new AppError("Forbidden", 403, "FORBIDDEN");
+    throw Errors.forbidden();
   }
 
   // Invalidate older invites automatically for email reuse
@@ -81,7 +83,7 @@ export async function inviteSupervisorService(data: TSupervisorInvite) {
   );
 
   if (revokeOldInviteError) {
-    throw new Error(revokeOldInviteError.message);
+    throw mapSupabaseError(revokeOldInviteError);
   }
 
   const token = generateToken();
@@ -99,11 +101,7 @@ export async function inviteSupervisorService(data: TSupervisorInvite) {
     });
 
   if (inviteError) {
-    throw new AppError(
-      inviteError.message,
-      400,
-      inviteError.code || "INVITE_ERROR",
-    );
+    throw mapSupabaseAuthError(inviteError);
   }
 
   const inviteData: SupervisorInvite = {
@@ -118,7 +116,7 @@ export async function inviteSupervisorService(data: TSupervisorInvite) {
   const { data: invitation, error } = await createInvite(inviteData);
 
   if (error) {
-    throw new AppError(error.message, 400, error.code || "DATABASE_ERROR");
+    throw mapSupabaseError(error);
   }
 
   return invitation;

@@ -16,6 +16,8 @@ import {
 } from "@/features/supervisors/supervisors.schema";
 import { InviteSupervisorAction } from "../_lib/supervisor.actions";
 import { handleActionError } from "@/lib/helper/handle-action-error";
+import { ERROR_CODES } from "@/lib/errors/error-codes";
+import { handleUnexpectedError } from "@/lib/helper/handle-unexpected-error";
 
 type InviteSupervisorFormProps = {
   closeModal: () => void;
@@ -50,7 +52,7 @@ export default function InviteSupervisorForm({
       const result = await InviteSupervisorAction(formData);
 
       if (!result.success) {
-        if (result.errors) {
+        if (result.code === ERROR_CODES.VALIDATION_ERROR && result.errors) {
           Object.entries(result.errors).forEach(([field, messages]) => {
             setError(field as keyof TSupervisorInvite, {
               type: "server",
@@ -71,6 +73,7 @@ export default function InviteSupervisorForm({
       closeModal();
     } catch (error) {
       console.error(error);
+      handleUnexpectedError(error);
     }
   };
 
