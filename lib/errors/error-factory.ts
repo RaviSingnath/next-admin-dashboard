@@ -38,6 +38,14 @@ export const Errors = {
     );
   },
 
+  inviteFailed() {
+    return new AppError(
+      "Unable to send invitation.",
+      500,
+      ERROR_CODES.INVITE_FAILED,
+    );
+  },
+
   database() {
     return new AppError(
       "Database operation failed",

@@ -15,6 +15,8 @@ import {
 } from "@/features/college-admins/college-admin.schema";
 import { InviteCollegeAdminAction } from "../_lib/college-admin.actions";
 import { handleActionError } from "@/lib/helper/handle-action-error";
+import { ERROR_CODES } from "@/lib/errors/error-codes";
+import { handleUnexpectedError } from "@/lib/helper/handle-unexpected-error";
 
 type InviteCollegeAdminFormProps = {
   closeModal: () => void;
@@ -45,7 +47,7 @@ export default function InviteCollegeAdminForm({
       const result = await InviteCollegeAdminAction(formData);
 
       if (!result.success) {
-        if (result.errors) {
+        if (result.code === ERROR_CODES.VALIDATION_ERROR && result.errors) {
           Object.entries(result.errors).forEach(([field, messages]) => {
             setError(field as keyof TCollegeAdminInvite, {
               type: "server",
@@ -67,6 +69,7 @@ export default function InviteCollegeAdminForm({
       closeModal();
     } catch (error) {
       console.error(error);
+      handleUnexpectedError(error);
     }
   };
 

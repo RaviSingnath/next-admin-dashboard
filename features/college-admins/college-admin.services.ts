@@ -1,4 +1,3 @@
-import AppError from "@/lib/errors/app-error";
 import { getInviteByEmail } from "../invite/invite.queries";
 import {
   getCollegeAdminsQuery,
@@ -11,6 +10,9 @@ import UserRole from "@/lib/rbac/roles";
 import { CollegeAdminInvite } from "../invite/invite.types";
 import { createInvite } from "../invite/invite.mutations";
 import { generateToken } from "@/lib/helper/generate-token";
+import { Errors } from "@/lib/errors/error-factory";
+import { mapSupabaseAuthError } from "@/lib/errors/supabase-auth-error";
+import { mapSupabaseError } from "@/lib/errors/supabase-error";
 
 export const getCollegeAdminsService = async () => {
   const query = getCollegeAdminsQuery();
@@ -63,17 +65,17 @@ export const inviteCollegeAdminService = async (data: TCollegeAdminInvite) => {
   const { data: existingInvite } = await getInviteByEmail(data.invite_email);
 
   if (existingInvite) {
-    throw new AppError("Invitation already exists", 409, "INVITATION_EXISTS");
+    throw Errors.alreadyExists("Invitation");
   }
 
   const user = await getCurrentUserServer();
 
   if (!user) {
-    throw new AppError("Unauthorized", 401, "UNAUTHORIZED");
+    throw Errors.unauthorized();
   }
 
   if (user?.role !== "super_admin") {
-    throw new AppError("Forbidden", 403, "FORBIDDEN");
+    throw Errors.forbidden();
   }
 
   const token = generateToken();
@@ -87,11 +89,7 @@ export const inviteCollegeAdminService = async (data: TCollegeAdminInvite) => {
     });
 
   if (inviteError) {
-    throw new AppError(
-      inviteError.message,
-      400,
-      inviteError.code || "INVITE_ERROR",
-    );
+    throw mapSupabaseAuthError(inviteError);
   }
 
   const inviteData: CollegeAdminInvite = {
@@ -105,7 +103,7 @@ export const inviteCollegeAdminService = async (data: TCollegeAdminInvite) => {
   const { data: invitation, error } = await createInvite(inviteData);
 
   if (error) {
-    throw new AppError(error.message, 400, error.code || "DATABASE_ERROR");
+    throw mapSupabaseError(error);
   }
 
   return invitation;
