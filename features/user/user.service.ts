@@ -1,4 +1,4 @@
-import { withCreatorService } from "../services";
+import { getAvatarSignedUrlService, withCreatorService } from "../services";
 import {
   getCollegeAdminDetails,
   getStudentDetails,
@@ -6,62 +6,99 @@ import {
   getUserQuery,
 } from "./user.queries";
 
-export async function getProfile(userId: string) {
-  const { data: profile, error: profileError } = await getUserQuery(userId);
+export async function getProfile(userId: string): Promise<UserProfileView> {
+  const { data: profileData, error: profileError } = await getUserQuery(userId);
+  if (profileError) throw profileError;
 
-  if (profileError) return profileError;
-
-  if (profile.role === "college_admin") {
-    const { data: collegeAdmin, error: collegeAdminError } =
-      await getCollegeAdminDetails(profile.id);
-
-    if (collegeAdminError) return collegeAdminError;
-
-    if (collegeAdmin.created_by) {
-      const studentwithCreator = await withCreatorService(collegeAdmin);
-      return { ...profile, details: studentwithCreator };
+  let avatarURL: string | null = null;
+  if (profileData.avatar) {
+    try {
+      avatarURL = await getAvatarSignedUrlService(profileData.avatar);
+    } catch {
+      avatarURL = null;
     }
-
-    return {
-      ...profile,
-      details: collegeAdmin,
-    };
   }
 
-  if (profile.role === "supervisor") {
-    const { data: supervisor, error: supervisorError } =
-      await getSupervisorDetails(profile.id);
+  const profile = { ...profileData, avatar: avatarURL };
 
-    if (supervisorError) return supervisorError;
-
-    if (supervisor.created_by) {
-      const studentwithCreator = await withCreatorService(supervisor);
-      return { ...profile, details: studentwithCreator };
+  switch (profile.role) {
+    case "super_admin": {
+      return { ...profile, role: "super_admin" };
     }
 
-    return {
-      ...profile,
-      details: supervisor,
-    };
-  }
+    case "college_admin": {
+      const { data: collegeAdmin, error } = await getCollegeAdminDetails(
+        profile.id,
+      );
+      if (error) throw error;
 
-  if (profile?.role === "student") {
-    const { data: student, error: studentError } = await getStudentDetails(
-      profile?.id,
-    );
+      const details = collegeAdmin.created_by
+        ? await withCreatorService(collegeAdmin)
+        : collegeAdmin;
 
-    if (studentError) return studentError;
-
-    if (student.created_by) {
-      const studentwithCreator = await withCreatorService(student);
-      return { ...profile, details: studentwithCreator };
+      return { ...profile, role: "college_admin", details };
     }
 
-    return {
-      ...profile,
-      details: student,
-    };
-  }
+    case "supervisor": {
+      const { data: supervisor, error } = await getSupervisorDetails(
+        profile.id,
+      );
+      if (error) throw error;
 
-  return profile;
+      const details = supervisor.created_by
+        ? await withCreatorService(supervisor)
+        : supervisor;
+
+      return { ...profile, role: "supervisor", details };
+    }
+
+    case "student": {
+      const { data: student, error } = await getStudentDetails(profile.id);
+      if (error) throw error;
+
+      const details = student.created_by
+        ? await withCreatorService(student)
+        : student;
+
+      return { ...profile, role: "student", details };
+    }
+  }
 }
+
+type BaseUserProfile = NonNullable<
+  Awaited<ReturnType<typeof getUserQuery>>["data"]
+>;
+
+type WithCreator = Awaited<ReturnType<typeof withCreatorService>>;
+type CollegeAdmin = NonNullable<
+  Awaited<ReturnType<typeof getCollegeAdminDetails>>["data"]
+>;
+type CollegeAdminWithCreator = CollegeAdmin & WithCreator;
+
+type Supervisor = NonNullable<
+  Awaited<ReturnType<typeof getSupervisorDetails>>["data"]
+>;
+type SupervisorWithCreator = Supervisor & WithCreator;
+
+type Student = NonNullable<
+  Awaited<ReturnType<typeof getStudentDetails>>["data"]
+>;
+type StudentWithCreator = Student & WithCreator;
+
+export type UserProfileView =
+  | (BaseUserProfile & {
+      role: "super_admin";
+      details?: undefined;
+    })
+  | (BaseUserProfile & {
+      role: "student";
+      details: Student | StudentWithCreator;
+    })
+  | (BaseUserProfile & {
+      role: "supervisor";
+      details: Supervisor | SupervisorWithCreator;
+    })
+  | (BaseUserProfile & {
+      role: "college_admin";
+      details: CollegeAdmin | CollegeAdminWithCreator;
+    });

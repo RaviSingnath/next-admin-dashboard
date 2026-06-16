@@ -7,7 +7,7 @@ import { useModal } from "@/hooks/useModal";
 import UploadUserAvatarForm from "./upload-user-avatar-form";
 import { useAuth } from "@/context/AuthProvider";
 
-export default function UserAvatar() {
+export default function UserAvatarEdit() {
   const { isOpen, openModal, closeModal } = useModal();
   const { user } = useAuth();
 

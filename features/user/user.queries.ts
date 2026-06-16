@@ -10,10 +10,12 @@ export const getUserQuery = async (id: string) => {
     .select(
       `
       id,
+      avatar,
       full_name,
       email,
       role,
       status,
+      phone,
       college_id,
       department_id,
       created_at,
