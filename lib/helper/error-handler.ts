@@ -1,6 +1,8 @@
-import { AppRouterInstance } from "next/dist/shared/lib/app-router-context.shared-runtime";
+import { useRouter } from "next/navigation";
 import { appToast } from "../toast";
 import { ERROR_CODES } from "../errors/error-codes";
+
+type Router = ReturnType<typeof useRouter>;
 
 export function handleActionError(
   result: {
@@ -8,13 +10,13 @@ export function handleActionError(
     code?: string;
     message?: string;
   },
-  router: AppRouterInstance,
+  router: Router | undefined,
 ) {
   if (result.success) return;
 
   switch (result.code) {
     case ERROR_CODES.UNAUTHORIZED:
-      router.push("/login");
+      if (router) router.push("/login");
       break;
 
     case ERROR_CODES.FORBIDDEN:
@@ -28,4 +30,10 @@ export function handleActionError(
     default:
       appToast.error(result.message ?? "Something went wrong");
   }
+}
+
+export function handleUnexpectedError(error: unknown) {
+  console.error(error);
+
+  appToast.error("Something went wrong. Please try again.");
 }

@@ -14,8 +14,10 @@ import {
   zAddDepartment,
   type TAddDepartment,
 } from "@/features/departments/department.schema";
-import { handleActionError } from "@/lib/helper/handle-action-error";
-import { handleUnexpectedError } from "@/lib/helper/handle-unexpected-error";
+import {
+  handleActionError,
+  handleUnexpectedError,
+} from "@/lib/helper/error-handler";
 import { ERROR_CODES } from "@/lib/errors/error-codes";
 
 type AddDepartmentFormProps = {

@@ -8,7 +8,10 @@ import Input from "@/components/form/input/InputField";
 import Label from "@/components/form/Label";
 import { AddressSearch } from "@/features/address/components/address-search";
 import { TEditAddress, zEditAddress } from "@/features/address/address.schema";
-import { handleActionError } from "@/lib/helper/handle-action-error";
+import {
+  handleActionError,
+  handleUnexpectedError,
+} from "@/lib/helper/error-handler";
 import { updateAddressAction } from "../_lib/profile.actions";
 
 type EditAddressFormProps = {
@@ -74,6 +77,7 @@ export default function EditAddressForm({ closeModal }: EditAddressFormProps) {
       closeModal();
     } catch (error) {
       console.error(error);
+      handleUnexpectedError(error);
     }
   };
 

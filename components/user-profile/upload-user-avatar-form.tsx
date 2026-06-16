@@ -9,7 +9,10 @@ import { zImageFile, TImageFile } from "@/features/profile/profile.schema";
 import Button from "../ui/button/Button";
 import { appToast } from "@/lib/toast";
 import { uploadAvatarAction } from "@/app/(admin)/profile/_lib/profile.actions";
-import { handleActionError } from "@/lib/helper/handle-action-error";
+import {
+  handleActionError,
+  handleUnexpectedError,
+} from "@/lib/helper/error-handler";
 import { useAuth } from "@/context/AuthProvider";
 
 type UploadUserAvatarFormProps = {
@@ -95,6 +98,7 @@ export default function UploadUserAvatarForm({
       closeModal();
     } catch (error) {
       console.error(error);
+      handleUnexpectedError(error);
     }
   };
 

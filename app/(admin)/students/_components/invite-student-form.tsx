@@ -15,9 +15,12 @@ import {
   type TStudentInvite,
 } from "@/features/students/students.schema";
 import { inviteStudentAction } from "../_lib/student.actions";
-import { handleActionError } from "@/lib/helper/handle-action-error";
+import {
+  handleActionError,
+  handleUnexpectedError,
+} from "@/lib/helper/error-handler";
 import { ERROR_CODES } from "@/lib/errors/error-codes";
-import { handleUnexpectedError } from "@/lib/helper/handle-unexpected-error";
+import { handleFormSubmit } from "@/lib/helper/handle-form-submit";
 
 type InviteStudentFormProps = {
   closeModal: () => void;
@@ -27,8 +30,8 @@ export default function InviteStudentForm({
   closeModal,
 }: InviteStudentFormProps) {
   const { user } = useAuth();
-
   const router = useRouter();
+
   const {
     register,
     handleSubmit,
@@ -48,33 +51,44 @@ export default function InviteStudentForm({
     register("department_id", { value: user?.department_id });
 
   const onSubmit = async (formData: TStudentInvite) => {
-    try {
-      const result = await inviteStudentAction(formData);
+    console.log(formData);
+    await handleFormSubmit({
+      action: () => inviteStudentAction(formData),
+      setError,
+      router,
+      successMessage: "Student invited successfully",
+      onSuccess: () => {
+        reset();
+        closeModal();
+      },
+    });
+    // try {
+    //   const result = await inviteStudentAction(formData);
 
-      if (!result.success) {
-        if (result.code === ERROR_CODES.VALIDATION_ERROR && result.errors) {
-          Object.entries(result.errors).forEach(([field, messages]) => {
-            setError(field as keyof TStudentInvite, {
-              type: "server",
-              message: (messages as string[])[0],
-            });
-          });
-          return;
-        }
+    //   if (!result.success) {
+    //     if (result.code === ERROR_CODES.VALIDATION_ERROR && result.errors) {
+    //       Object.entries(result.errors).forEach(([field, messages]) => {
+    //         setError(field as keyof TStudentInvite, {
+    //           type: "server",
+    //           message: (messages as string[])[0],
+    //         });
+    //       });
+    //       return;
+    //     }
 
-        handleActionError(result, router);
+    //     handleActionError(result, router);
 
-        return;
-      }
+    //     return;
+    //   }
 
-      appToast.success("Student invited successfully");
+    //   appToast.success("Student invited successfully");
 
-      reset();
-      closeModal();
-    } catch (error) {
-      console.error(error);
-      handleUnexpectedError(error);
-    }
+    //   reset();
+    //   closeModal();
+    // } catch (error) {
+    //   console.error(error);
+    //   handleUnexpectedError(error);
+    // }
   };
 
   return (

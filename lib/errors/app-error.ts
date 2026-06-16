@@ -1,12 +1,14 @@
+import { ERROR_CODES, ErrorCode } from "./error-codes";
+
 export default class AppError extends Error {
   statusCode: number;
-  code: string;
+  code: ErrorCode;
   details?: unknown;
 
   constructor(
     message: string,
     statusCode = 500,
-    code = "INTERNAL_ERROR",
+    code = ERROR_CODES.INTERNAL_ERROR,
     details?: unknown,
   ) {
     super(message);

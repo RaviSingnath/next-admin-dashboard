@@ -11,7 +11,10 @@ import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthProvider";
 
 import { zProfileInfo, TProfileInfo } from "@/features/profile/profile.schema";
-import { handleActionError } from "@/lib/helper/handle-action-error";
+import {
+  handleActionError,
+  handleUnexpectedError,
+} from "@/lib/helper/error-handler";
 import { updateProfileInfoAction } from "../_lib/profile.actions";
 
 type EditProfileFormProps = {
@@ -64,6 +67,7 @@ export default function EditProfileForm({ closeModal }: EditProfileFormProps) {
       closeModal();
     } catch (error) {
       console.error(error);
+      handleUnexpectedError(error);
     }
   };
 

@@ -2,9 +2,11 @@ import { useRouter } from "next/navigation";
 import { Modal } from "@/components/ui/modal";
 import Button from "@/components/ui/button/Button";
 import { softDeleteDepartmentAction } from "../_lib/department.actions";
-import { handleActionError } from "@/lib/helper/handle-action-error";
+import {
+  handleActionError,
+  handleUnexpectedError,
+} from "@/lib/helper/error-handler";
 import { appToast } from "@/lib/toast";
-import { handleUnexpectedError } from "@/lib/helper/handle-unexpected-error";
 
 type DeleteDepartmentModalProps = {
   departmentID: string;

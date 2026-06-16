@@ -11,8 +11,10 @@ import { zCollege, TCollege } from "@/features/colleges/college.schema";
 import { createCollegeAction } from "../_lib/college.actions";
 import { appToast } from "@/lib/toast";
 import { ERROR_CODES } from "@/lib/errors/error-codes";
-import { handleActionError } from "@/lib/helper/handle-action-error";
-import { handleUnexpectedError } from "@/lib/helper/handle-unexpected-error";
+import {
+  handleActionError,
+  handleUnexpectedError,
+} from "@/lib/helper/error-handler";
 
 type AddCollegeFormProps = {
   closeModal: () => void;

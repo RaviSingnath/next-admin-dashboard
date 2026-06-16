@@ -15,9 +15,11 @@ import {
   TSupervisorInvite,
 } from "@/features/supervisors/supervisors.schema";
 import { InviteSupervisorAction } from "../_lib/supervisor.actions";
-import { handleActionError } from "@/lib/helper/handle-action-error";
+import {
+  handleActionError,
+  handleUnexpectedError,
+} from "@/lib/helper/error-handler";
 import { ERROR_CODES } from "@/lib/errors/error-codes";
-import { handleUnexpectedError } from "@/lib/helper/handle-unexpected-error";
 
 type InviteSupervisorFormProps = {
   closeModal: () => void;

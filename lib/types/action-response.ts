@@ -1,11 +1,13 @@
+import { ErrorCode } from "../errors/error-codes";
+
 export type ActionResponse<T = unknown> =
   | {
       success: true;
-      data: T;
+      data?: T;
     }
   | {
       success: false;
-      code: string;
-      message?: string;
+      code: ErrorCode;
+      message: string;
       errors?: Record<string, string[]>;
     };
