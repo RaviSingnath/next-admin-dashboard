@@ -1,27 +1,24 @@
-import createClient from "@/lib/supabase/server";
 import { QueryData } from "@supabase/supabase-js";
 import { TCollege } from "./college.schema";
 import { createCollegeMutation } from "./college.mutations";
-import { getCollegesQuery } from "./college.queries";
+import { getCollegeByEmailQuery, getCollegesQuery } from "./college.queries";
+import { Errors } from "@/lib/errors/error-factory";
+import { mapSupabaseError } from "@/lib/errors/supabase-error";
 
 export async function createCollege(data: TCollege) {
-  const supabase = await createClient();
-
   // We have constraint colleges_official_email_unique. It's an optional duplicate check
-  const { data: existingCollege } = await supabase
-    .from("colleges")
-    .select("id")
-    .eq("official_email", data.official_email)
-    .maybeSingle();
+  const { data: existingCollege } = await getCollegeByEmailQuery(
+    data.official_email,
+  );
 
   if (existingCollege) {
-    throw new Error("College email already exists");
+    throw Errors.alreadyExists("College");
   }
 
   const { data: college, error } = await createCollegeMutation(data);
 
   if (error) {
-    throw error;
+    throw mapSupabaseError(error);
   }
 
   return college;
@@ -35,7 +32,7 @@ export async function getCollegesService() {
   const { data, error } = await query;
 
   if (error) {
-    throw error;
+    throw mapSupabaseError(error);
   }
 
   const collegesData: RawCollegesResponse =

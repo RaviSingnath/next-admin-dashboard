@@ -4,6 +4,8 @@ import { getZodFieldErrors } from "@/lib/helper/get-zod-field-errors";
 import { createCollege } from "@/features/colleges/college.service";
 import { TCollege, zCollege } from "@/features/colleges/college.schema";
 import { revalidatePath } from "next/cache";
+import { ERROR_CODES } from "@/lib/errors/error-codes";
+import { handleError } from "@/lib/errors/handle-error";
 
 export const createCollegeAction = async (data: TCollege) => {
   try {
@@ -12,7 +14,7 @@ export const createCollegeAction = async (data: TCollege) => {
     if (!validatedFields.success) {
       return {
         success: false,
-        message: "Validation failed",
+        code: ERROR_CODES.VALIDATION_ERROR,
         errors: getZodFieldErrors(validatedFields.error),
       };
     }
@@ -26,9 +28,6 @@ export const createCollegeAction = async (data: TCollege) => {
       data: college,
     };
   } catch (error) {
-    return {
-      success: false,
-      message: error instanceof Error ? error.message : "Internal server error",
-    };
+    return handleError(error);
   }
 };

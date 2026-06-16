@@ -3,12 +3,16 @@
 import { useTransition } from "react";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useRouter } from "next/navigation";
 import Label from "@/components/form/Label";
 import Button from "@/components/ui/button/Button";
 import Input from "@/components/form/input/InputField";
 import { zCollege, TCollege } from "@/features/colleges/college.schema";
 import { createCollegeAction } from "../_lib/college.actions";
 import { appToast } from "@/lib/toast";
+import { ERROR_CODES } from "@/lib/errors/error-codes";
+import { handleActionError } from "@/lib/helper/handle-action-error";
+import { handleUnexpectedError } from "@/lib/helper/handle-unexpected-error";
 
 type AddCollegeFormProps = {
   closeModal: () => void;
@@ -16,6 +20,7 @@ type AddCollegeFormProps = {
 
 export default function AddCollegeForm({ closeModal }: AddCollegeFormProps) {
   const [isPending, startTransition] = useTransition();
+  const router = useRouter();
 
   const {
     register,
@@ -43,14 +48,18 @@ export default function AddCollegeForm({ closeModal }: AddCollegeFormProps) {
         const result = await createCollegeAction(formData);
 
         if (!result.success) {
-          if (result.errors) {
+          if (result.code === ERROR_CODES.VALIDATION_ERROR && result.errors) {
             Object.entries(result.errors).forEach(([field, messages]) => {
               setError(field as keyof TCollege, {
                 type: "server",
                 message: (messages as string[])[0],
               });
             });
+            return;
           }
+
+          handleActionError(result, router);
+
           return;
         }
 
@@ -60,6 +69,7 @@ export default function AddCollegeForm({ closeModal }: AddCollegeFormProps) {
         closeModal();
       } catch (error) {
         console.error(error);
+        handleUnexpectedError(error);
       }
     });
   };

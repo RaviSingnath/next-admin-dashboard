@@ -28,3 +28,13 @@ export async function getCollegesQuery() {
     )
     .order("created_at", { ascending: false });
 }
+
+export async function getCollegeByEmailQuery(email: string) {
+  const supabase = await createClient();
+
+  return supabase
+    .from("colleges")
+    .select("id")
+    .eq("official_email", email)
+    .maybeSingle();
+}
