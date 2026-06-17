@@ -1,16 +1,15 @@
 import { getCurrentUserServer } from "@/lib/autth/getCurrentUserServer";
 import { getInvitesQuery } from "./invite.queries";
-import AppError from "@/lib/errors/app-error";
+import { Errors } from "@/lib/errors/error-factory";
 
 export async function getInvitesService() {
   const profile = await getCurrentUserServer();
 
   if (!profile) {
-    throw new AppError("Forbidden", 403, "FORBIDDEN");
+    throw Errors.forbidden();
   }
 
   const { data, error } = await getInvitesQuery(profile);
-  console.log("getInvitesQuery: ", profile.role, data);
 
   if (error) {
     throw error;

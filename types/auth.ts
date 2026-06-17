@@ -1,30 +1,10 @@
 import { Database } from "@/supabase/database.types";
+import { currentUserProfile } from "@/lib/helper/current-user-profile";
 
-export type AuthUser = {
-  id: string;
-  email: string;
-  phone: string | null;
-
-  full_name: string | null;
-  role: string | null;
-  avatar_url: string | null;
-
-  college_id: string | null;
-  college_name: string | null;
-  college_status: string | null;
-
-  department_id: string | null;
-  department_name: string | null;
-
-  city: string | null;
-  state_province: string | null;
-  country: string | null;
-  country_code: string | null;
-  postal_code: string | null;
-};
+export type CurrentUser = Awaited<ReturnType<typeof currentUserProfile>>;
 
 export type AuthContextType = {
-  user: AuthUser | null;
+  user: CurrentUser | null;
   loading: boolean;
 
   refreshUser: () => Promise<void>;

@@ -1,5 +1,6 @@
 import createClient from "@/lib/supabase/server";
-import { AVATAR_BUCKET } from "../constants/db";
+import { getCurrentUserQuery } from "@/features/queries";
+import { currentUserProfile } from "../helper/current-user-profile";
 
 export async function getCurrentUserServer() {
   const supabase = await createClient();
@@ -10,102 +11,13 @@ export async function getCurrentUserServer() {
 
   if (!user) return null;
 
-  const { data: profile, error } = await supabase
-    .from("profiles")
-    .select(
-      `
-      id,
-      full_name,
-      role,
-      college_id,
-      department_id,
-      avatar,
-      phone,
-      status,
-      address_id,
-      addresses (
-        city,
-        state_province,
-        country,
-        country_code,
-        postal_code
-      ),
-      colleges (
-        college_name,
-        status
-      ),
-      departments!department_id (
-        department_name
-      )
-    `,
-    )
-    .eq("id", user.id)
-    .single();
+  const { data: profile, error } = await getCurrentUserQuery(user.id);
 
   if (error || !profile) {
     return null;
   }
 
-  const college = Array.isArray(profile.colleges)
-    ? profile.colleges[0]
-    : profile.colleges;
+  const userProfile = currentUserProfile(profile);
 
-  const department = Array.isArray(profile.departments)
-    ? profile.departments[0]
-    : profile.departments;
-
-  const address = Array.isArray(profile.addresses)
-    ? profile.addresses[0]
-    : profile.addresses;
-
-  const userProfile = {
-    id: user.id,
-    email: user.email ?? "",
-    address_id: profile.address_id,
-    phone: profile.phone,
-
-    role: profile.role,
-    full_name: profile.full_name,
-    status: profile.status,
-
-    college_id: profile.college_id,
-    college_name: college?.college_name ?? null,
-    college_status: college?.status ?? null,
-
-    department_id: profile.department_id,
-    department_name: department?.department_name ?? null,
-
-    city: address?.city ?? null,
-    state_province: address?.state_province,
-    country: address?.country,
-    country_code: address?.country_code,
-    postal_code: address?.postal_code,
-  };
-
-  if (!profile.avatar) {
-    return {
-      ...userProfile,
-      avatar_url: null,
-    };
-  }
-
-  const { data: avatarData, error: bucketError } = await supabase.storage
-    .from(AVATAR_BUCKET)
-    .createSignedUrl(profile.avatar, 60 * 60);
-
-  if (bucketError) {
-    return {
-      ...userProfile,
-      avatar_url: null,
-    };
-  }
-
-  return {
-    ...userProfile,
-    avatar_url: avatarData.signedUrl,
-  };
+  return userProfile;
 }
-
-export type CurrentUserServer = Awaited<
-  ReturnType<typeof getCurrentUserServer>
->;
