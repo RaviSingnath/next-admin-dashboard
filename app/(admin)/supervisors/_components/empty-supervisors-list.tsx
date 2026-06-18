@@ -8,10 +8,6 @@ import { getDepartmentsService } from "@/features/departments/department.service
 export default async function EmptySupervisorList() {
   const departments = await getDepartmentsService();
 
-  const departmentOptions = departments.map((department) => ({
-    value: department.id,
-    label: department.department_name,
-  }));
   return (
     <div className="min-h-screen rounded-2xl border border-gray-200 bg-white px-5 py-7 dark:border-gray-800 dark:bg-white/[0.03] xl:px-10 xl:py-12">
       <div className="mx-auto w-full max-w-[630px] text-center">
@@ -27,7 +23,7 @@ export default async function EmptySupervisorList() {
               managing courses, faculty, and student enrollments.
             </Description>
 
-            <AddSupervisorButton departments={departmentOptions} />
+            <AddSupervisorButton />
           </>
         ) : (
           <>

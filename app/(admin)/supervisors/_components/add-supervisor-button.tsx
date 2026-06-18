@@ -4,13 +4,9 @@ import { Plus } from "lucide-react";
 import Button from "@/components/ui/button/Button";
 import { useModal } from "@/hooks/useModal";
 import AddsupervisortModal from "./add-supervisor-modal";
-import InviteSupervisorForm from "./add-supervisor-form";
+import InviteUserForm from "@/features/invite/components/invite-user-form";
 
-type AddSupervisorButtonProps = {
-  departments: { value: string; label: string }[];
-};
-
-export default function AddSupervisorButton({ departments }: AddSupervisorButtonProps) {
+export default function AddSupervisorButton() {
   const { isOpen, openModal, closeModal } = useModal();
 
   return (
@@ -20,7 +16,7 @@ export default function AddSupervisorButton({ departments }: AddSupervisorButton
         Add Supervisor
       </Button>
       <AddsupervisortModal isOpen={isOpen} closeModal={closeModal}>
-        <InviteSupervisorForm options={departments} closeModal={closeModal} />
+        <InviteUserForm closeModal={closeModal} />
       </AddsupervisortModal>
     </>
   );

@@ -24,7 +24,7 @@ import FormWrapper from "@/components/common/form-wrapper";
 
 type InviteStudentFormProps = {
   closeModal: () => void;
-  colleges: AppSelectOption[];
+  colleges?: AppSelectOption[];
 };
 
 export default function InviteUserForm({

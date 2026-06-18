@@ -4,25 +4,19 @@ import { Plus } from "lucide-react";
 import Button from "@/components/ui/button/Button";
 import { useModal } from "@/hooks/useModal";
 import InviteCollegeAdminModal from "./invite-college-admin-modal";
-import InviteCollegeAdminForm from "./invite-college-admin-form";
+import InviteUserForm from "@/features/invite/components/invite-user-form";
 
-type InviteCollegeAdminButtonProps = {
-  colleges: { value: string; label: string }[];
-};
-
-export default function InviteCollegeAdminButton({
-  colleges,
-}: InviteCollegeAdminButtonProps) {
+export default function InviteCollegeAdminButton() {
   const { isOpen, openModal, closeModal } = useModal();
 
   return (
     <>
       <Button onClick={openModal} size="sm">
         <Plus className="w-4 h-4" />
-        Invite college admin
+        Add college admin
       </Button>
       <InviteCollegeAdminModal isOpen={isOpen} closeModal={closeModal}>
-        <InviteCollegeAdminForm options={colleges} closeModal={closeModal} />
+        <InviteUserForm closeModal={closeModal} />
       </InviteCollegeAdminModal>
     </>
   );
