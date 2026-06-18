@@ -5,12 +5,28 @@ export const ROLE_PERMISSIONS: Record<UserRole, Permission[]> = {
   // =========================
   // SUPER ADMIN (FULL ACCESS)
   // =========================
-  [UserRole.SUPER_ADMIN]: [...Object.values(Permission)],
+  // [UserRole.SUPER_ADMIN]: [...Object.values(Permission)],
+  [UserRole.SUPER_ADMIN]: [
+    // Invite
+    Permission.INVITE_COLLEGE_ADMIN,
+    Permission.CREATE_COLLEGE,
+    Permission.READ_COLLEGE,
+    Permission.UPDATE_COLLEGE,
+    Permission.DELETE_COLLEGE,
+    Permission.SUSPEND_COLLEGE,
+    Permission.MANAGE_PLATFORM_SETTINGS,
+    Permission.MANAGE_BILLING,
+    Permission.FORCE_DEACTIVATE_ACCOUNT,
+  ],
 
   // =========================
   // COLLEGE ADMIN
   // =========================
   [UserRole.COLLEGE_ADMIN]: [
+    // Invte
+    Permission.INVITE_SUPERVISOR,
+    Permission.INVITE_STUDENT,
+
     // Department
     Permission.CREATE_DEPARTMENT,
     Permission.READ_DEPARTMENT,
@@ -18,14 +34,12 @@ export const ROLE_PERMISSIONS: Record<UserRole, Permission[]> = {
     Permission.DELETE_DEPARTMENT,
 
     // Supervisor
-    Permission.CREATE_SUPERVISOR,
     Permission.READ_SUPERVISOR,
     Permission.UPDATE_SUPERVISOR,
     Permission.DELETE_SUPERVISOR,
     Permission.REASSIGN_SUPERVISOR,
 
     // Student
-    Permission.CREATE_STUDENT,
     Permission.READ_STUDENT,
     Permission.UPDATE_STUDENT,
     Permission.DELETE_STUDENT,
@@ -51,8 +65,10 @@ export const ROLE_PERMISSIONS: Record<UserRole, Permission[]> = {
   // SUPERVISOR
   // =========================
   [UserRole.SUPERVISOR]: [
+    //Invite
+    Permission.INVITE_STUDENT,
+
     // Student (OWN ONLY via RLS)
-    Permission.CREATE_STUDENT,
     Permission.READ_OWN_STUDENT,
     Permission.UPDATE_OWN_STUDENT,
 

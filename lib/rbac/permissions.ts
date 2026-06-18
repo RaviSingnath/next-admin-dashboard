@@ -1,5 +1,16 @@
 export enum Permission {
   // =========================
+  // INVITE user
+  // =========================
+  INVITE_COLLEGE_ADMIN = "invite_college_admin",
+  INVITE_SUPERVISOR = "invite_supervisor",
+  INVITE_STUDENT = "invite_student",
+
+  SUSPEND_USER = "suspend_user",
+  VIEW_OWN_PROFILE = "view_own_profile",
+  UPDATE_OWN_PROFILE = "update_own_profile",
+
+  // =========================
   // COLLEGE (Tenant Management)
   // =========================
   CREATE_COLLEGE = "create_college",
@@ -11,7 +22,6 @@ export enum Permission {
   // =========================
   // COLLEGE ADMIN MANAGEMENT
   // =========================
-  INVITE_COLLEGE_ADMIN = "invite_college_admin",
   FORCE_DEACTIVATE_ACCOUNT = "force_deactivate_account",
 
   // =========================
@@ -25,7 +35,6 @@ export enum Permission {
   // =========================
   // SUPERVISOR MANAGEMENT
   // =========================
-  CREATE_SUPERVISOR = "create_supervisor",
   READ_SUPERVISOR = "read_supervisor",
   UPDATE_SUPERVISOR = "update_supervisor",
   DELETE_SUPERVISOR = "delete_supervisor",
@@ -34,7 +43,6 @@ export enum Permission {
   // =========================
   // STUDENT MANAGEMENT
   // =========================
-  CREATE_STUDENT = "create_student",
   READ_STUDENT = "read_student",
   UPDATE_STUDENT = "update_student",
   DELETE_STUDENT = "delete_student",

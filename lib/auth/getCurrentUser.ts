@@ -1,7 +1,7 @@
 import { createClient } from "@/lib/supabase/client";
-import { AuthUser } from "@/types/auth";
+import { AuthUser } from "@/lib/auth/types";
 import { getCurrentUserQuery } from "@/features/queries";
-import { currentUserProfile } from "../helper/current-user-profile";
+import { currentUserProfile } from "./current-user-profile";
 
 const supabase = createClient();
 

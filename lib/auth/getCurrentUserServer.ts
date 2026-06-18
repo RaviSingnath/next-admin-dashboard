@@ -1,8 +1,9 @@
 import createClient from "@/lib/supabase/server";
 import { getCurrentUserQuery } from "@/features/queries";
-import { currentUserProfile } from "../helper/current-user-profile";
+import { currentUserProfile } from "./current-user-profile";
+import { AuthUser } from "./types";
 
-export async function getCurrentUserServer() {
+export async function getCurrentUserServer(): Promise<AuthUser | null> {
   const supabase = await createClient();
 
   const {

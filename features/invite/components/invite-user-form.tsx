@@ -1,23 +1,26 @@
 "use client";
 
-import Button from "@/components/ui/button/Button";
-import Input from "@/components/form/input/InputField";
+import { useEffect } from "react";
 import Label from "@/components/form/Label";
+import Input from "@/components/form/input/InputField";
 
-import { useForm, Controller } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthProvider";
 
-import {
-  zStudentInvite,
-  type TStudentInvite,
-} from "@/features/students/students.schema";
-import { inviteStudentAction } from "@/app/(admin)/students/_lib/student.actions";
+import { UserRoleLabel } from "@/lib/rbac/roles";
+import { getInviteUIRules } from "../invite.rbac";
+import { zInvitePayload, type TInvitePayload } from "../invite.schema";
+import { inviteUserAction } from "@/app/(admin)/invites/_lib/invite.actions";
 
-import { handleFormSubmit } from "@/lib/helper/handle-form-submit";
-import { AppSelect } from "@/components/common/app-select";
 import { AppSelectOption } from "@/lib/types/app-types";
+import { handleFormSubmit } from "@/lib/helper/handle-form-submit";
+
+import RoleSelect from "./role-select";
+import CollegeSelect from "./college-select";
+import DepartmentSelect from "./department-select";
+import FormWrapper from "@/components/common/form-wrapper";
 
 type InviteStudentFormProps = {
   closeModal: () => void;
@@ -30,19 +33,27 @@ export default function InviteUserForm({
 }: InviteStudentFormProps) {
   const { user } = useAuth();
   const router = useRouter();
-  console.log(user, colleges);
+
+  const inviteRules = user ? getInviteUIRules(user) : null;
+  console.log(inviteRules);
+
+  const roleOptions = inviteRules?.targetRoles.map((role) => ({
+    value: role,
+    label: UserRoleLabel[role],
+  }));
 
   const departmentList = user?.departments?.map((department) => ({
     value: department.id,
     label: department.department_name,
   }));
 
-  const form = useForm<TStudentInvite>({
-    resolver: zodResolver(zStudentInvite),
+  const form = useForm<TInvitePayload>({
+    resolver: zodResolver(zInvitePayload),
 
     defaultValues: {
       full_name: "",
       invite_email: "",
+      target_role: undefined,
       college_id: user?.college_id ?? "",
       department_id: user?.department_id ?? "",
     },
@@ -50,16 +61,15 @@ export default function InviteUserForm({
 
   const {
     register,
-    handleSubmit,
     reset,
     setError,
     formState: { errors, isSubmitting },
   } = form;
 
-  const onSubmit = async (formData: TStudentInvite) => {
+  const onSubmit = async (formData: TInvitePayload) => {
     console.log(formData);
     await handleFormSubmit({
-      action: () => inviteStudentAction(formData),
+      action: () => inviteUserAction(formData),
       setError,
       router,
       successMessage: "Student invited successfully",
@@ -70,90 +80,63 @@ export default function InviteUserForm({
     });
   };
 
+  useEffect(() => {
+    if (inviteRules && inviteRules.targetRoles.length === 1) {
+      form.setValue("target_role", inviteRules?.targetRoles[0]);
+    }
+  }, [inviteRules, form]);
+
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col">
-      <div className="custom-scrollbar overflow-visible px-2 pb-3">
-        <div className="mt-7">
-          <h5 className="mb-5 text-lg font-medium text-gray-800 dark:text-white/90 lg:mb-6">
-            Student Information
-          </h5>
+    <FormWrapper
+      form={form}
+      closeModal={closeModal}
+      onSubmit={onSubmit}
+      isPending={isSubmitting}
+      submitLabel="Invite"
+      pendingLabel="Inviting..."
+    >
+      <div className="grid grid-cols-1 gap-x-6 gap-y-5 lg:grid-cols-2">
+        <div className="col-span-2">
+          <Label>Full Name</Label>
 
-          <div className="grid grid-cols-1 gap-x-6 gap-y-5 lg:grid-cols-2">
-            <div className="col-span-2">
-              <Label>Full Name</Label>
-
-              <Input
-                type="text"
-                error={!!errors.full_name}
-                hint={errors.full_name?.message}
-                {...register("full_name")}
-              />
-            </div>
-            <div className="col-span-2">
-              <Label>Email Address</Label>
-
-              <Input
-                type="email"
-                error={!!errors.invite_email}
-                hint={errors.invite_email?.message}
-                {...register("invite_email")}
-              />
-            </div>
-            <div className="col-span-2">
-              <Label>College</Label>
-              <Controller
-                control={form.control}
-                name="college_id"
-                render={({ field }) => (
-                  <AppSelect
-                    options={colleges}
-                    placeholder="Select college"
-                    value={field.value}
-                    onChange={field.onChange}
-                  />
-                )}
-              />
-              {errors.college_id && (
-                <p className="mt-1 text-sm text-red-500">
-                  {errors.college_id.message}
-                </p>
-              )}
-            </div>
-            {departmentList && (
-              <div className="col-span-2">
-                <Label>Department</Label>
-                <Controller
-                  control={form.control}
-                  name="department_id"
-                  render={({ field }) => (
-                    <AppSelect
-                      options={departmentList}
-                      placeholder="Select department"
-                      value={field.value}
-                      onChange={field.onChange}
-                    />
-                  )}
-                />
-                {errors.department_id && (
-                  <p className="mt-1 text-sm text-red-500">
-                    {errors.department_id.message}
-                  </p>
-                )}
-              </div>
-            )}
-          </div>
+          <Input
+            type="text"
+            error={!!errors.full_name}
+            hint={errors.full_name?.message}
+            {...register("full_name")}
+          />
         </div>
-      </div>
+        <div className="col-span-2">
+          <Label>Email Address</Label>
 
-      <div className="mt-6 flex items-center gap-3 px-2 lg:justify-end">
-        <Button size="sm" variant="outline" onClick={closeModal}>
-          Close
-        </Button>
-
-        <Button type="submit" size="sm" disabled={isSubmitting}>
-          {isSubmitting ? "Inviting..." : "Invite Student"}
-        </Button>
+          <Input
+            type="email"
+            error={!!errors.invite_email}
+            hint={errors.invite_email?.message}
+            {...register("invite_email")}
+          />
+        </div>
+        {inviteRules?.showRoleSelector && roleOptions && (
+          <RoleSelect
+            options={roleOptions ?? []}
+            error={errors.target_role?.message}
+          />
+        )}
+        {colleges && inviteRules?.college?.editable && (
+          <CollegeSelect
+            options={colleges ?? []}
+            rules={inviteRules.college}
+            error={errors.college_id?.message}
+          />
+        )}
+        {departmentList && inviteRules?.department?.editable && (
+          <DepartmentSelect
+            options={departmentList ?? []}
+            rules={inviteRules.department}
+            error={errors.department_id?.message}
+          />
+        )}
       </div>
-    </form>
+    </FormWrapper>
   );
 }

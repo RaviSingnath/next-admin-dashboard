@@ -10,12 +10,12 @@ import {
 } from "react";
 
 import { createClient } from "@/lib/supabase/client";
-import { getCurrentUser } from "@/lib/autth/getCurrentUser";
-import type { AuthContextType, CurrentUser } from "@/types/auth";
+import { getCurrentUser } from "@/lib/auth/getCurrentUser";
+import type { AuthContextType, AuthUser } from "@/lib/auth/types";
 
 type AuthProviderProps = {
   children: React.ReactNode;
-  initialUser?: CurrentUser | null;
+  initialUser?: AuthUser | null;
 };
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -26,7 +26,7 @@ export function AuthProvider({
   children,
   initialUser = null,
 }: AuthProviderProps) {
-  const [user, setUser] = useState<CurrentUser | null>(initialUser);
+  const [user, setUser] = useState<AuthUser | null>(initialUser);
 
   const [loading, setLoading] = useState(!initialUser);
 
@@ -84,7 +84,7 @@ export function AuthProvider({
   }, []);
 
   useEffect(() => {
-    const setData = (data: CurrentUser | null) => {
+    const setData = (data: AuthUser | null) => {
       setUser(data);
     };
     setData(initialUser);

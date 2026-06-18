@@ -14,7 +14,7 @@ import {
   zStudentInvite,
   type TStudentInvite,
 } from "@/features/students/students.schema";
-import { inviteStudentAction } from "../_lib/student.actions";
+import { inviteStudentAction } from "../../invites/_lib/invite.actions";
 import {
   handleActionError,
   handleUnexpectedError,

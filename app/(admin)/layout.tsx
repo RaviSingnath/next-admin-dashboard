@@ -3,7 +3,7 @@ import { redirect } from "next/navigation";
 import { AuthProvider } from "@/context/AuthProvider";
 import { SidebarProvider } from "@/context/SidebarContext";
 import AdminLayoutClient from "@/app/(admin)/AdminLayoutClient";
-import { getCurrentUserServer } from "@/lib/autth/getCurrentUserServer";
+import { getCurrentUserServer } from "@/lib/auth/getCurrentUserServer";
 
 export const metadata: Metadata = {
   title: "Admin dashboard",

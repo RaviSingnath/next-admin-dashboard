@@ -8,6 +8,7 @@ type BaseInvite = {
   email: string;
   full_name: string;
   token: string;
+  role: string;
 };
 
 export type CollegeAdminInvite = BaseInvite & {
@@ -18,13 +19,13 @@ export type CollegeAdminInvite = BaseInvite & {
 export type SupervisorInvite = BaseInvite & {
   role: UserRole.SUPERVISOR;
   college_id: string;
-  department_id: string;
+  department_id?: string;
 };
 
 export type StudentInvite = BaseInvite & {
   role: UserRole.STUDENT;
   college_id: string;
-  department_id: string;
+  department_id?: string;
 };
 
 export type InviteData = CollegeAdminInvite | SupervisorInvite | StudentInvite;

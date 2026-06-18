@@ -4,7 +4,7 @@ import {
   getCreatorByIdsQuery,
 } from "./college-admin.queries";
 import { TCollegeAdminInvite } from "./college-admin.schema";
-import { getCurrentUserServer } from "@/lib/autth/getCurrentUserServer";
+import { getCurrentUserServer } from "@/lib/auth/getCurrentUserServer";
 import { createAdminClient } from "@/lib/supabase/admin";
 import UserRole from "@/lib/rbac/roles";
 import { CollegeAdminInvite } from "../invite/invite.types";

@@ -1,4 +1,4 @@
-import { CurrentUserServer } from "@/lib/autth/getCurrentUserServer";
+import { CurrentUserServer } from "@/lib/auth/getCurrentUserServer";
 import UserRole from "@/lib/rbac/roles";
 import createClient from "@/lib/supabase/server";
 

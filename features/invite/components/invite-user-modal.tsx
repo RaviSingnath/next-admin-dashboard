@@ -23,7 +23,7 @@ export default function InviteUserModal({
             Invite user
           </h4>
 
-          <p className="mb-6 text-sm text-gray-500 dark:text-gray-400 lg:mb-7">
+          <p className="mb-3 text-sm text-gray-500 dark:text-gray-400 lg:mb-3">
             Enter the email below to register a new user.
           </p>
         </div>

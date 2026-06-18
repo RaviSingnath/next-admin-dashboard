@@ -1,6 +1,6 @@
 "use server";
 
-import { getCurrentUserServer } from "@/lib/autth/getCurrentUserServer";
+import { getCurrentUserServer } from "@/lib/auth/getCurrentUserServer";
 import { TEditAddress } from "./address.schema";
 import AppError from "@/lib/errors/app-error";
 import {

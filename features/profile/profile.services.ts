@@ -5,7 +5,7 @@ import {
   updateProfileInfo,
   uploadAvatar,
 } from "./profile.mutations";
-import { getCurrentUserServer } from "@/lib/autth/getCurrentUserServer";
+import { getCurrentUserServer } from "@/lib/auth/getCurrentUserServer";
 import AppError from "@/lib/errors/app-error";
 
 export async function updateAvatarService(data: TImageFile) {

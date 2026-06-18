@@ -1,6 +1,6 @@
 import { hasPermission } from "./hasPermission";
 import { Permission } from "../permissions";
-import { UserContext } from "@/lib/autth/types";
+import { UserContext } from "@/lib/auth/types";
 
 type CheckOptions = {
   userId?: string;

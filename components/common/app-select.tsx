@@ -25,9 +25,10 @@ export function AppSelect({
   placeholder = "Select option",
   value,
   onChange,
+  ...props
 }: AppSelectProps) {
   return (
-    <Select value={value} onValueChange={onChange}>
+    <Select value={value} onValueChange={onChange} {...props}>
       <SelectTrigger className="w-full px-4 py-2.5 h-11!">
         <SelectValue placeholder={placeholder} />
       </SelectTrigger>
