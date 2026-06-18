@@ -1,8 +1,8 @@
-import { CurrentUserServer } from "@/lib/auth/getCurrentUserServer";
+import { AuthUser } from "@/lib/auth/types";
 import UserRole from "@/lib/rbac/roles";
 import createClient from "@/lib/supabase/server";
 
-export const getStudentsQuery = async (profile: CurrentUserServer) => {
+export const getStudentsQuery = async (profile: AuthUser) => {
   const supabase = await createClient();
 
   let query = supabase
@@ -15,7 +15,10 @@ export const getStudentsQuery = async (profile: CurrentUserServer) => {
       status,
       created_at,
       deleted_at,
-      created_by
+      created_by,
+      departments!department_id (
+        department_name
+      )
     `,
     )
     .order("created_at", { ascending: false })

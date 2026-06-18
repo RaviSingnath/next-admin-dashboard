@@ -41,6 +41,12 @@ export default function StudentsTable({ students }: StudentsTableProps) {
               isHeader
               className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
             >
+              Department
+            </TableCell>
+            <TableCell
+              isHeader
+              className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
+            >
               Created By
             </TableCell>
             <TableCell
@@ -78,6 +84,9 @@ export default function StudentsTable({ students }: StudentsTableProps) {
               </TableCell>
               <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
                 {student.email}
+              </TableCell>
+              <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
+                {student.departments?.department_name}
               </TableCell>
               <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
                 {student.creator?.full_name}

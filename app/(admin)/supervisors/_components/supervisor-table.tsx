@@ -43,6 +43,12 @@ export default async function SupervisorsTable({
               isHeader
               className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
             >
+              Department
+            </TableCell>
+            <TableCell
+              isHeader
+              className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
+            >
               Created By
             </TableCell>
             <TableCell
@@ -82,6 +88,9 @@ export default async function SupervisorsTable({
               </TableCell>
               <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
                 {supervisor.email}
+              </TableCell>
+              <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
+                {supervisor.departments?.department_name}
               </TableCell>
               <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
                 {supervisor.creator?.full_name}

@@ -15,7 +15,10 @@ export const getSupervisorsQuery = async () => {
     status,
     created_at,
     deleted_at,
-    created_by
+    created_by,
+    departments!department_id (
+      department_name
+    )
   `,
     )
     .order("created_at", { ascending: false })

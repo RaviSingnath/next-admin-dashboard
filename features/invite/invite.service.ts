@@ -13,7 +13,6 @@ import { generateToken } from "@/lib/helper/generate-token";
 import { StudentInvite } from "../invite/invite.types";
 import { mapSupabaseAuthError } from "@/lib/errors/supabase-auth-error";
 import { TInvitePayload } from "../invite/invite.schema";
-import { canInviteRole } from "../invite/invite.rbac";
 import { mapSupabaseError } from "@/lib/errors/supabase-error";
 import { RequestContext } from "@/lib/auth/request-context";
 import { assertCanInvite } from "./invite.security";
