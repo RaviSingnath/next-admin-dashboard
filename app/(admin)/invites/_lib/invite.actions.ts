@@ -5,6 +5,7 @@ import {
   zInvitePayload,
 } from "@/features/invite/invite.schema";
 import { inviteUserService } from "@/features/invite/invite.service";
+import { createRequestContext } from "@/lib/auth/request-context";
 import { ERROR_CODES } from "@/lib/errors/error-codes";
 import { handleError } from "@/lib/errors/handle-error";
 import { getZodFieldErrors } from "@/lib/helper/get-zod-field-errors";
@@ -15,6 +16,8 @@ export const inviteUserAction = async (
   data: TInvitePayload,
 ): Promise<ActionResponse> => {
   try {
+    const ctx = await createRequestContext();
+
     const validatedFields = zInvitePayload.safeParse(data);
 
     if (!validatedFields.success) {
@@ -26,7 +29,10 @@ export const inviteUserAction = async (
       };
     }
 
-    const college = await inviteUserService(validatedFields.data);
+    const college = await inviteUserService({
+      ctx,
+      data: validatedFields.data,
+    });
 
     revalidatePath("/students", "page");
 

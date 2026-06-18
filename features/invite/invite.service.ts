@@ -15,6 +15,8 @@ import { mapSupabaseAuthError } from "@/lib/errors/supabase-auth-error";
 import { TInvitePayload } from "../invite/invite.schema";
 import { canInviteRole } from "../invite/invite.rbac";
 import { mapSupabaseError } from "@/lib/errors/supabase-error";
+import { RequestContext } from "@/lib/auth/request-context";
+import { assertCanInvite } from "./invite.security";
 
 export async function getInvitesService() {
   const profile = await getCurrentUserServer();
@@ -35,23 +37,20 @@ export type InvitesListResponse = Awaited<ReturnType<typeof getInvitesService>>;
 
 export type InvitesListItem = InvitesListResponse[number];
 
-export async function inviteUserService(data: TInvitePayload) {
+type InviteUserServiceInput = {
+  ctx: RequestContext;
+  data: TInvitePayload;
+};
+
+export async function inviteUserService({ ctx, data }: InviteUserServiceInput) {
   const supabaseAdmin = createAdminClient();
+
+  assertCanInvite(ctx, data);
 
   const { data: existingInvite } = await getInviteByEmail(data.invite_email);
 
   if (existingInvite) {
     throw Errors.alreadyExists("Invitation already exists");
-  }
-
-  const profile = await getCurrentUserServer();
-
-  if (!profile) {
-    throw Errors.unauthorized();
-  }
-
-  if (!canInviteRole(profile, data.target_role)) {
-    throw Errors.forbidden();
   }
 
   // Invalidate older invites automatically for email reuse
