@@ -1,3 +1,4 @@
+import { mapSupabaseError } from "@/lib/errors/supabase-error";
 import { getAvatarSignedUrlService, withCreatorService } from "../services";
 import {
   getCollegeAdminDetails,
@@ -8,7 +9,8 @@ import {
 
 export async function getProfile(userId: string): Promise<UserProfileView> {
   const { data: profileData, error: profileError } = await getUserQuery(userId);
-  if (profileError) throw profileError;
+
+  if (profileError) throw mapSupabaseError(profileError);
 
   let avatarURL: string | null = null;
   if (profileData.avatar) {

@@ -5,6 +5,7 @@ import {
   TCollegeAdminInvite,
 } from "@/features/college-admins/college-admin.schema";
 import { inviteCollegeAdminService } from "@/features/college-admins/college-admin.services";
+import { createRequestContext } from "@/lib/auth/request-context";
 import { ERROR_CODES } from "@/lib/errors/error-codes";
 import { handleError } from "@/lib/errors/handle-error";
 import { getZodFieldErrors } from "@/lib/helper/get-zod-field-errors";
@@ -12,6 +13,8 @@ import { revalidatePath } from "next/cache";
 
 export const InviteCollegeAdminAction = async (data: TCollegeAdminInvite) => {
   try {
+    const ctx = await createRequestContext();
+
     const validatedFields = zCollegeAdminInvite.safeParse(data);
 
     if (!validatedFields.success) {
@@ -22,7 +25,10 @@ export const InviteCollegeAdminAction = async (data: TCollegeAdminInvite) => {
       };
     }
 
-    const college = await inviteCollegeAdminService(validatedFields.data);
+    const college = await inviteCollegeAdminService({
+      ctx,
+      data: validatedFields.data,
+    });
 
     revalidatePath("/college-admins", "page");
 

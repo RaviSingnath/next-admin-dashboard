@@ -1,4 +1,3 @@
-import { getCurrentUserServer } from "@/lib/auth/getCurrentUserServer";
 import { getInvitesQuery } from "./invite.queries";
 import { Errors } from "@/lib/errors/error-factory";
 
@@ -14,20 +13,19 @@ import { StudentInvite } from "../invite/invite.types";
 import { mapSupabaseAuthError } from "@/lib/errors/supabase-auth-error";
 import { TInvitePayload } from "../invite/invite.schema";
 import { mapSupabaseError } from "@/lib/errors/supabase-error";
-import { RequestContext } from "@/lib/auth/request-context";
+import {
+  createRequestContext,
+  RequestContext,
+} from "@/lib/auth/request-context";
 import { assertCanInvite } from "./invite.security";
 
 export async function getInvitesService() {
-  const profile = await getCurrentUserServer();
+  const ctx = await createRequestContext();
 
-  if (!profile) {
-    throw Errors.forbidden();
-  }
-
-  const { data, error } = await getInvitesQuery(profile);
+  const { data, error } = await getInvitesQuery(ctx.user);
 
   if (error) {
-    throw error;
+    throw mapSupabaseError(error);
   }
 
   return data;

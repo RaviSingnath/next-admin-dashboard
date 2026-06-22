@@ -1,17 +1,12 @@
-import { getCurrentUserServer } from "@/lib/auth/getCurrentUserServer";
 import { getStudentsQuery } from "./students.queries";
 import { getCreatorByIdsQuery } from "../college-admins/college-admin.queries";
-import { Errors } from "@/lib/errors/error-factory";
 import { mapSupabaseError } from "@/lib/errors/supabase-error";
+import { createRequestContext } from "@/lib/auth/request-context";
 
 export async function getStudentsService() {
-  const profile = await getCurrentUserServer();
+  const ctx = await createRequestContext();
 
-  if (!profile) {
-    throw Errors.unauthorized();
-  }
-
-  const { data: students, error } = await getStudentsQuery(profile);
+  const { data: students, error } = await getStudentsQuery(ctx.user);
 
   if (error) {
     throw mapSupabaseError(error);

@@ -16,10 +16,8 @@ export async function withCreatorService<
 }
 
 export async function getAvatarSignedUrlService(avatar: string) {
-  console.log("getAvatarSignedUrlService: ", avatar);
   const { data: avatarData, error: bucketError } =
     await getAvatarSignedUrlQuery(avatar);
-  console.log(bucketError);
 
   if (bucketError) throw bucketError;
 

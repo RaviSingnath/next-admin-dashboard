@@ -1,9 +1,9 @@
 "use server";
 
-import { CurrentUserServer } from "@/lib/auth/getCurrentUserServer";
+import { AuthUser } from "@/lib/auth/types";
 import createClient from "@/lib/supabase/server";
 
-export const getInvitesQuery = async (profile: CurrentUserServer) => {
+export const getInvitesQuery = async (profile: AuthUser) => {
   const supabase = await createClient();
 
   let query = supabase

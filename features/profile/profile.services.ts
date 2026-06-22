@@ -6,6 +6,7 @@ import {
   uploadAvatar,
 } from "./profile.mutations";
 import { RequestContext } from "@/lib/auth/request-context";
+import { mapSupabaseError } from "@/lib/errors/supabase-error";
 
 type updateAvatarServiceInput = {
   ctx: RequestContext;
@@ -38,7 +39,7 @@ export async function updateAvatarService({
   const { data: updatedData, error: profileUpdateError } =
     await updateAvatarPath(ctx.user.id, filePath);
 
-  if (profileUpdateError) throw profileUpdateError;
+  if (profileUpdateError) throw mapSupabaseError(profileUpdateError);
 
   return {
     profile: updatedData,
@@ -61,7 +62,7 @@ export async function updateProfifleInfoService({
   const { data: updatedProfile, error: profileUpdateError } =
     await updateProfileInfo(ctx.user.id, data);
 
-  if (profileUpdateError) throw profileUpdateError;
+  if (profileUpdateError) throw mapSupabaseError(profileUpdateError);
 
   return {
     profile: updatedProfile,

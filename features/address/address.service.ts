@@ -1,8 +1,6 @@
 "use server";
 
-import { getCurrentUserServer } from "@/lib/auth/getCurrentUserServer";
 import { TEditAddress } from "./address.schema";
-import AppError from "@/lib/errors/app-error";
 import {
   addAddress,
   addAddressToProfile,
@@ -10,6 +8,7 @@ import {
 } from "./address.mutations";
 import { AddressAdd, AddressUpdate } from "./types";
 import { RequestContext } from "@/lib/auth/request-context";
+import { mapSupabaseError } from "@/lib/errors/supabase-error";
 
 export async function retrieveAddress(sessionToken: string, mapboxId: string) {
   const token = process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN;
@@ -67,7 +66,8 @@ export async function updateAddrerssService({
     const { data: updatedProfileAddress, error: updateProfileAddressError } =
       await updateProfileAddress(ctx.user.address_id, dbData);
 
-    if (updateProfileAddressError) throw updateProfileAddressError;
+    if (updateProfileAddressError)
+      throw mapSupabaseError(updateProfileAddressError);
 
     return {
       profile: updatedProfileAddress,
@@ -85,7 +85,7 @@ export async function updateAddrerssService({
       addressAdded.id,
     );
 
-    if (addProfileAddressError) throw addProfileAddressError;
+    if (addProfileAddressError) throw mapSupabaseError(addProfileAddressError);
 
     return {
       profile: addressAdded,

@@ -4,7 +4,6 @@ import {
   getCreatorByIdsQuery,
 } from "./college-admin.queries";
 import { TCollegeAdminInvite } from "./college-admin.schema";
-import { getCurrentUserServer } from "@/lib/auth/getCurrentUserServer";
 import { createAdminClient } from "@/lib/supabase/admin";
 import UserRole from "@/lib/rbac/roles";
 import { CollegeAdminInvite } from "../invite/invite.types";
@@ -13,6 +12,7 @@ import { generateToken } from "@/lib/helper/generate-token";
 import { Errors } from "@/lib/errors/error-factory";
 import { mapSupabaseAuthError } from "@/lib/errors/supabase-auth-error";
 import { mapSupabaseError } from "@/lib/errors/supabase-error";
+import { RequestContext } from "@/lib/auth/request-context";
 
 export const getCollegeAdminsService = async () => {
   const query = getCollegeAdminsQuery();
@@ -20,7 +20,7 @@ export const getCollegeAdminsService = async () => {
   const { data, error } = await query;
 
   if (error) {
-    throw error;
+    throw mapSupabaseError(error);
   }
 
   if (!data?.length) {
@@ -41,7 +41,7 @@ export const getCollegeAdminsService = async () => {
     await getCreatorByIdsQuery(creatorIds);
 
   if (creatorsError) {
-    throw creatorsError;
+    throw mapSupabaseError(creatorsError);
   }
 
   const creatorsById = new Map(
@@ -59,7 +59,15 @@ type CollegeAdminsListResponse = Awaited<
 >;
 export type CollegeAdminsListItem = CollegeAdminsListResponse[number];
 
-export const inviteCollegeAdminService = async (data: TCollegeAdminInvite) => {
+type inviteCollegeAdminServiceInput = {
+  ctx: RequestContext;
+  data: TCollegeAdminInvite;
+};
+
+export const inviteCollegeAdminService = async ({
+  ctx,
+  data,
+}: inviteCollegeAdminServiceInput) => {
   const supabaseAdmin = createAdminClient();
 
   const { data: existingInvite } = await getInviteByEmail(data.invite_email);
@@ -68,13 +76,7 @@ export const inviteCollegeAdminService = async (data: TCollegeAdminInvite) => {
     throw Errors.alreadyExists("Invitation");
   }
 
-  const user = await getCurrentUserServer();
-
-  if (!user) {
-    throw Errors.unauthorized();
-  }
-
-  if (user?.role !== "super_admin") {
+  if (ctx.user?.role !== "super_admin") {
     throw Errors.forbidden();
   }
 
