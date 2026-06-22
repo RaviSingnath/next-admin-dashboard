@@ -1,6 +1,5 @@
 "use client";
 
-import Button from "@/components/ui/button/Button";
 import Input from "@/components/form/input/InputField";
 import Label from "@/components/form/Label";
 
@@ -19,6 +18,7 @@ import {
   handleUnexpectedError,
 } from "@/lib/helper/error-handler";
 import { ERROR_CODES } from "@/lib/errors/error-codes";
+import FormWrapper from "@/components/common/form-wrapper";
 
 type AddDepartmentFormProps = {
   closeModal: () => void;
@@ -28,19 +28,21 @@ export default function AddDepartmentForm({
   closeModal,
 }: AddDepartmentFormProps) {
   const router = useRouter();
-  const {
-    register,
-    handleSubmit,
-    reset,
-    setError,
-    formState: { errors, isSubmitting },
-  } = useForm<TAddDepartment>({
+
+  const form = useForm<TAddDepartment>({
     resolver: zodResolver(zAddDepartment),
 
     defaultValues: {
       department_name: "",
     },
   });
+
+  const {
+    register,
+    reset,
+    setError,
+    formState: { errors, isSubmitting },
+  } = form;
 
   const onSubmit = async (formData: TAddDepartment) => {
     try {
@@ -74,37 +76,26 @@ export default function AddDepartmentForm({
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col">
-      <div className="custom-scrollbar overflow-y-auto px-2 pb-3">
-        <div className="mt-7">
-          <h5 className="mb-5 text-lg font-medium text-gray-800 dark:text-white/90 lg:mb-6">
-            Department Information
-          </h5>
+    <FormWrapper
+      form={form}
+      closeModal={closeModal}
+      onSubmit={onSubmit}
+      isPending={isSubmitting}
+      submitLabel="Add"
+      pendingLabel="Adding..."
+    >
+      <div className="grid grid-cols-1 gap-x-6 gap-y-5 lg:grid-cols-2">
+        <div className="col-span-2">
+          <Label>Department Name</Label>
 
-          <div className="grid grid-cols-1 gap-x-6 gap-y-5 lg:grid-cols-2">
-            <div className="col-span-2">
-              <Label>Department Name</Label>
-
-              <Input
-                type="text"
-                error={!!errors.department_name}
-                hint={errors.department_name?.message}
-                {...register("department_name")}
-              />
-            </div>
-          </div>
+          <Input
+            type="text"
+            error={!!errors.department_name}
+            hint={errors.department_name?.message}
+            {...register("department_name")}
+          />
         </div>
       </div>
-
-      <div className="mt-6 flex items-center gap-3 px-2 lg:justify-end">
-        <Button size="sm" variant="outline" onClick={closeModal}>
-          Close
-        </Button>
-
-        <Button type="submit" size="sm" disabled={isSubmitting}>
-          {isSubmitting ? "Adding..." : "Add Department"}
-        </Button>
-      </div>
-    </form>
+    </FormWrapper>
   );
 }

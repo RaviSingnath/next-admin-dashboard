@@ -1,6 +1,6 @@
 "use client";
 
-import Button from "@/components/ui/button/Button";
+import FormWrapper from "@/components/common/form-wrapper";
 import Input from "@/components/form/input/InputField";
 import Label from "@/components/form/Label";
 
@@ -25,13 +25,7 @@ export default function EditProfileForm({ closeModal }: EditProfileFormProps) {
   const router = useRouter();
   const { user } = useAuth();
 
-  const {
-    register,
-    handleSubmit,
-    reset,
-    setError,
-    formState: { errors, isSubmitting },
-  } = useForm<TProfileInfo>({
+  const form = useForm<TProfileInfo>({
     resolver: zodResolver(zProfileInfo),
 
     defaultValues: {
@@ -39,6 +33,12 @@ export default function EditProfileForm({ closeModal }: EditProfileFormProps) {
       phone: user?.phone || "",
     },
   });
+  const {
+    register,
+    reset,
+    setError,
+    formState: { errors, isSubmitting },
+  } = form;
 
   const onSubmit = async (formData: TProfileInfo) => {
     try {
@@ -72,40 +72,35 @@ export default function EditProfileForm({ closeModal }: EditProfileFormProps) {
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col">
-      <div className="custom-scrollbar overflow-y-auto px-2 pb-3">
-        <div className="grid grid-cols-1 gap-x-6 gap-y-5 lg:grid-cols-2">
-          <div className="col-span-2 lg:col-span-1">
-            <Label>First Name</Label>
-            <Input
-              type="text"
-              error={!!errors.full_name}
-              hint={errors.full_name?.message}
-              {...register("full_name")}
-            />
-          </div>
+    <FormWrapper
+      form={form}
+      closeModal={closeModal}
+      onSubmit={onSubmit}
+      isPending={isSubmitting}
+      submitLabel="Update"
+      pendingLabel="Updating..."
+    >
+      <div className="grid grid-cols-1 gap-x-6 gap-y-5 lg:grid-cols-2">
+        <div className="col-span-2 lg:col-span-1">
+          <Label>First Name</Label>
+          <Input
+            type="text"
+            error={!!errors.full_name}
+            hint={errors.full_name?.message}
+            {...register("full_name")}
+          />
+        </div>
 
-          <div className="col-span-2 lg:col-span-1">
-            <Label>Phone</Label>
-            <Input
-              type="text"
-              error={!!errors.phone}
-              hint={errors.phone?.message}
-              {...register("phone")}
-            />
-          </div>
+        <div className="col-span-2 lg:col-span-1">
+          <Label>Phone</Label>
+          <Input
+            type="text"
+            error={!!errors.phone}
+            hint={errors.phone?.message}
+            {...register("phone")}
+          />
         </div>
       </div>
-
-      <div className="mt-6 flex items-center gap-3 px-2 lg:justify-end">
-        <Button size="sm" variant="outline" onClick={closeModal}>
-          Close
-        </Button>
-
-        <Button type="submit" size="sm" disabled={isSubmitting}>
-          {isSubmitting ? "Saving..." : "Save Changes"}
-        </Button>
-      </div>
-    </form>
+    </FormWrapper>
   );
 }

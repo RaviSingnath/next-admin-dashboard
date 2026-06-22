@@ -7,6 +7,7 @@ import DropZone from "../ui/drop-zone/drop-zone";
 import { useRouter } from "next/navigation";
 import { zImageFile, TImageFile } from "@/features/profile/profile.schema";
 import Button from "../ui/button/Button";
+import FormWrapper from "@/components/common/form-wrapper";
 import { appToast } from "@/lib/toast";
 import { uploadAvatarAction } from "@/app/(admin)/profile/_lib/profile.actions";
 import {
@@ -50,17 +51,18 @@ export default function UploadUserAvatarForm({
     setPreview(objectUrl);
   };
 
+  const form = useForm<TImageFile>({
+    resolver: zodResolver(zImageFile),
+  });
+
   const {
     register,
-    handleSubmit,
     setValue,
     watch,
     setError,
     reset,
     formState: { errors, isSubmitting },
-  } = useForm<TImageFile>({
-    resolver: zodResolver(zImageFile),
-  });
+  } = form;
 
   useEffect(() => {
     register("imageFile");
@@ -103,7 +105,14 @@ export default function UploadUserAvatarForm({
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4">
+    <FormWrapper
+      form={form}
+      closeModal={closeModal}
+      onSubmit={onSubmit}
+      isPending={isSubmitting}
+      submitLabel="Update"
+      pendingLabel="Updating..."
+    >
       <DropZone onFilesSelected={handleUpload} />
       {preview && (
         <div className="flex flex-col gap-2">
@@ -144,6 +153,6 @@ export default function UploadUserAvatarForm({
           </div>
         </div>
       )}
-    </form>
+    </FormWrapper>
   );
 }
