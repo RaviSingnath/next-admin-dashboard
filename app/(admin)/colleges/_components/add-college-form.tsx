@@ -7,13 +7,8 @@ import Label from "@/components/form/Label";
 import Input from "@/components/form/input/InputField";
 import { zCollege, TCollege } from "@/features/colleges/college.schema";
 import { createCollegeAction } from "../_lib/college.actions";
-import { appToast } from "@/lib/toast";
-import { ERROR_CODES } from "@/lib/errors/error-codes";
-import {
-  handleActionError,
-  handleUnexpectedError,
-} from "@/lib/helper/error-handler";
 import FormWrapper from "@/components/common/form-wrapper";
+import handleFormSubmit from "@/lib/helper/handle-form-submit";
 
 type AddCollegeFormProps = {
   closeModal: () => void;
@@ -44,33 +39,16 @@ export default function AddCollegeForm({ closeModal }: AddCollegeFormProps) {
   } = form;
 
   const onSubmit = async (formData: TCollege) => {
-    try {
-      const result = await createCollegeAction(formData);
-
-      if (!result.success) {
-        if (result.code === ERROR_CODES.VALIDATION_ERROR && result.errors) {
-          Object.entries(result.errors).forEach(([field, messages]) => {
-            setError(field as keyof TCollege, {
-              type: "server",
-              message: (messages as string[])[0],
-            });
-          });
-          return;
-        }
-
-        handleActionError(result, router);
-
-        return;
-      }
-
-      appToast.success("College created successfully");
-
-      reset();
-      closeModal();
-    } catch (error) {
-      console.error(error);
-      handleUnexpectedError(error);
-    }
+    await handleFormSubmit({
+      action: () => createCollegeAction(formData),
+      setError,
+      router,
+      successMessage: "College created successfully",
+      onSuccess: () => {
+        reset();
+        closeModal();
+      },
+    });
   };
 
   return (

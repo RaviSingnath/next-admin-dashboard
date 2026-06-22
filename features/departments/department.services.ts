@@ -13,6 +13,7 @@ import {
 import { TAddDepartment } from "./department.schema";
 import { mapSupabaseError } from "@/lib/errors/supabase-error";
 import { Errors } from "@/lib/errors/error-factory";
+import { RequestContext } from "@/lib/auth/request-context";
 
 export async function getDepartmentsService(filters?: TDepartmentFilters) {
   const profile = await getProfile();
@@ -41,28 +42,30 @@ type DepartmentsListResponse = Awaited<
 >;
 export type DepartmentsListItem = DepartmentsListResponse[number];
 
-export async function createDepartmentService(data: TAddDepartment) {
-  const profile = await getProfile();
+type InviteUserServiceInput = {
+  ctx: RequestContext;
+  data: TAddDepartment;
+};
 
-  if (!profile) {
-    throw Errors.unauthorized();
-  }
-
-  if (profile?.role !== "college_admin") {
+export async function createDepartmentService({
+  ctx,
+  data,
+}: InviteUserServiceInput) {
+  if (ctx.user.role !== "college_admin") {
     throw Errors.forbidden("Only college admins can create departments");
   }
 
-  if (profile.status !== "active") {
+  if (ctx.user.status !== "active") {
     throw Errors.forbidden("Inactive users cannot perform this action");
   }
 
-  if (!profile.college_id) {
+  if (!ctx.user.college_id) {
     throw Errors.collegeNotAssigned();
   }
 
   const { data: existingDepartment } = await getCollegeDepatmentByName(
     data.department_name,
-    profile.college_id,
+    ctx.user.college_id,
   );
 
   if (existingDepartment) {
@@ -71,8 +74,8 @@ export async function createDepartmentService(data: TAddDepartment) {
 
   const { data: department, error } = await createDepartmentMutation(
     data,
-    profile.college_id,
-    profile.id,
+    ctx.user.college_id,
+    ctx.user.id,
   );
 
   if (error) {

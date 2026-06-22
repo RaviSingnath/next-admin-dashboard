@@ -4,6 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { appToast } from "@/lib/toast";
 import { useAuth } from "@/context/AuthProvider";
 import FormWrapper from "@/components/common/form-wrapper";
+import handleFormSubmit from "@/lib/helper/handle-form-submit";
 import Input from "@/components/form/input/InputField";
 import Label from "@/components/form/Label";
 import { AddressSearch } from "@/features/address/components/address-search";
@@ -49,36 +50,16 @@ export default function EditAddressForm({ closeModal }: EditAddressFormProps) {
   };
 
   const onSubmit = async (formData: TEditAddress) => {
-    try {
-      console.log("formData: ", formData);
-
-      const result = await updateAddressAction(formData);
-
-      if (!result.success) {
-        if (result.errors) {
-          Object.entries(result.errors).forEach(([field, messages]) => {
-            setError(field as keyof TEditAddress, {
-              type: "server",
-              message: (messages as string[])[0],
-            });
-          });
-
-          return;
-        }
-
-        handleActionError(result, router);
-
-        return;
-      }
-
-      appToast.success("Address added successfully");
-
-      reset();
-      closeModal();
-    } catch (error) {
-      console.error(error);
-      handleUnexpectedError(error);
-    }
+    await handleFormSubmit({
+      action: () => updateAddressAction(formData),
+      setError,
+      router,
+      successMessage: "Address updated successfully",
+      onSuccess: () => {
+        reset();
+        closeModal();
+      },
+    });
   };
 
   return (

@@ -19,6 +19,7 @@ import {
 } from "@/lib/helper/error-handler";
 import { ERROR_CODES } from "@/lib/errors/error-codes";
 import FormWrapper from "@/components/common/form-wrapper";
+import handleFormSubmit from "@/lib/helper/handle-form-submit";
 
 type AddDepartmentFormProps = {
   closeModal: () => void;
@@ -45,34 +46,16 @@ export default function AddDepartmentForm({
   } = form;
 
   const onSubmit = async (formData: TAddDepartment) => {
-    try {
-      const result = await createDepartmentAction(formData);
-
-      if (!result.success) {
-        if (result.code === ERROR_CODES.VALIDATION_ERROR && result.errors) {
-          Object.entries(result.errors).forEach(([field, messages]) => {
-            setError(field as keyof TAddDepartment, {
-              type: "server",
-              message: (messages as string[])[0],
-            });
-          });
-
-          return;
-        }
-
-        handleActionError(result, router);
-
-        return;
-      }
-
-      appToast.success("Department added successfully");
-
-      reset();
-      closeModal();
-    } catch (error) {
-      console.error(error);
-      handleUnexpectedError(error);
-    }
+    await handleFormSubmit({
+      action: () => createDepartmentAction(formData),
+      setError,
+      router,
+      successMessage: "Department added successfully",
+      onSuccess: () => {
+        reset();
+        closeModal();
+      },
+    });
   };
 
   return (

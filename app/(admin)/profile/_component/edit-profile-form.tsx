@@ -1,6 +1,7 @@
 "use client";
 
 import FormWrapper from "@/components/common/form-wrapper";
+import handleFormSubmit from "@/lib/helper/handle-form-submit";
 import Input from "@/components/form/input/InputField";
 import Label from "@/components/form/Label";
 
@@ -41,6 +42,16 @@ export default function EditProfileForm({ closeModal }: EditProfileFormProps) {
   } = form;
 
   const onSubmit = async (formData: TProfileInfo) => {
+    await handleFormSubmit({
+      action: () => updateProfileInfoAction(formData),
+      setError,
+      router,
+      successMessage: "Profile updated successfully",
+      onSuccess: () => {
+        reset();
+        closeModal();
+      },
+    });
     try {
       const result = await updateProfileInfoAction(formData);
 

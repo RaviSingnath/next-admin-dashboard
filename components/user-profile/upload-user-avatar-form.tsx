@@ -8,12 +8,8 @@ import { useRouter } from "next/navigation";
 import { zImageFile, TImageFile } from "@/features/profile/profile.schema";
 import Button from "../ui/button/Button";
 import FormWrapper from "@/components/common/form-wrapper";
-import { appToast } from "@/lib/toast";
+import handleFormSubmit from "@/lib/helper/handle-form-submit";
 import { uploadAvatarAction } from "@/app/(admin)/profile/_lib/profile.actions";
-import {
-  handleActionError,
-  handleUnexpectedError,
-} from "@/lib/helper/error-handler";
 import { useAuth } from "@/context/AuthProvider";
 
 type UploadUserAvatarFormProps = {
@@ -71,37 +67,20 @@ export default function UploadUserAvatarForm({
   const profileAvatar = watch("imageFile");
 
   const onSubmit = async (formData: TImageFile) => {
-    try {
-      const payload = new FormData();
-      payload.append("imageFile", formData.imageFile);
+    const payload = new FormData();
+    payload.append("imageFile", formData.imageFile);
 
-      const result = await uploadAvatarAction(payload);
-
-      if (!result.success) {
-        if (result.errors) {
-          Object.entries(result.errors).forEach(([field, messages]) => {
-            setError(field as keyof TImageFile, {
-              type: "server",
-              message: (messages as string[])[0],
-            });
-          });
-          return;
-        }
-
-        handleActionError(result, router);
-        return;
-      }
-
-      await refreshUser();
-
-      appToast.success("Avatar changed successfully");
-
-      reset();
-      closeModal();
-    } catch (error) {
-      console.error(error);
-      handleUnexpectedError(error);
-    }
+    await handleFormSubmit({
+      action: () => uploadAvatarAction(payload),
+      setError,
+      router,
+      successMessage: "Avatar changed successfully",
+      onSuccess: async () => {
+        reset();
+        closeModal();
+        await refreshUser();
+      },
+    });
   };
 
   return (

@@ -25,7 +25,7 @@ type HandleFormSubmitOptions<TForm extends FieldValues, TData = unknown> = {
   onSuccess?: (data?: TData) => void | Promise<void>;
 };
 
-export async function handleFormSubmit<
+export default async function handleFormSubmit<
   TForm extends FieldValues,
   TData = unknown,
 >({

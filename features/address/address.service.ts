@@ -9,6 +9,7 @@ import {
   updateProfileAddress,
 } from "./address.mutations";
 import { AddressAdd, AddressUpdate } from "./types";
+import { RequestContext } from "@/lib/auth/request-context";
 
 export async function retrieveAddress(sessionToken: string, mapboxId: string) {
   const token = process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN;
@@ -47,24 +48,24 @@ export async function retrieveAddress(sessionToken: string, mapboxId: string) {
   };
 }
 
-export async function updateAddrerssService(data: TEditAddress) {
-  const profile = await getCurrentUserServer();
+type updateAddrerssServiceInput = {
+  ctx: RequestContext;
+  data: TEditAddress;
+};
 
-  if (!profile) {
-    throw new AppError("Unauthorized", 401, "UNAUTHORIZED");
-  }
-
-  if (profile.status !== "active") {
+export async function updateAddrerssService({
+  ctx,
+  data,
+}: updateAddrerssServiceInput) {
+  if (ctx.user.status !== "active") {
     throw new Error("Inactive users cannot edit address");
   }
 
   let dbData: AddressAdd | AddressUpdate = await mapAddressFormToDb(data);
 
-  console.log("dbData: ", dbData);
-
-  if (profile.address_id) {
+  if (ctx.user.address_id) {
     const { data: updatedProfileAddress, error: updateProfileAddressError } =
-      await updateProfileAddress(profile.address_id, dbData);
+      await updateProfileAddress(ctx.user.address_id, dbData);
 
     if (updateProfileAddressError) throw updateProfileAddressError;
 
@@ -72,16 +73,17 @@ export async function updateAddrerssService(data: TEditAddress) {
       profile: updatedProfileAddress,
     };
   } else {
-    dbData = { ...dbData, created_by: profile.id };
-    console.log("dbData: ", dbData);
+    dbData = { ...dbData, created_by: ctx.user.id };
+
     const { data: addressAdded, error: addressAddedError } =
       await addAddress(dbData);
-    console.log("addressAddedError: ", addressAddedError);
+
     if (addressAddedError) throw addressAddedError;
 
-    const { data: addProfileAddress, error: addProfileAddressError } =
-      await addAddressToProfile(profile.id, addressAdded.id);
-    console.log("addProfileAddressError: ", addProfileAddressError);
+    const { error: addProfileAddressError } = await addAddressToProfile(
+      ctx.user.id,
+      addressAdded.id,
+    );
 
     if (addProfileAddressError) throw addProfileAddressError;
 

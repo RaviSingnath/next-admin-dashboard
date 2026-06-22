@@ -15,7 +15,7 @@ import { zInvitePayload, type TInvitePayload } from "../invite.schema";
 import { inviteUserAction } from "@/app/(admin)/invites/_lib/invite.actions";
 
 import { AppSelectOption } from "@/lib/types/app-types";
-import { handleFormSubmit } from "@/lib/helper/handle-form-submit";
+import handleFormSubmit from "@/lib/helper/handle-form-submit";
 
 import RoleSelect from "./role-select";
 import CollegeSelect from "./college-select";
@@ -67,7 +67,6 @@ export default function InviteUserForm({
   } = form;
 
   const onSubmit = async (formData: TInvitePayload) => {
-    console.log(formData);
     await handleFormSubmit({
       action: () => inviteUserAction(formData),
       setError,

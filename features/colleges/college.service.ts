@@ -4,8 +4,17 @@ import { createCollegeMutation } from "./college.mutations";
 import { getCollegeByEmailQuery, getCollegesQuery } from "./college.queries";
 import { Errors } from "@/lib/errors/error-factory";
 import { mapSupabaseError } from "@/lib/errors/supabase-error";
+import { RequestContext } from "@/lib/auth/request-context";
 
-export async function createCollege(data: TCollege) {
+type createCollegeServiceInput = {
+  ctx: RequestContext;
+  data: TCollege;
+};
+
+export async function createCollegeService({
+  ctx,
+  data,
+}: createCollegeServiceInput) {
   // We have constraint colleges_official_email_unique. It's an optional duplicate check
   const { data: existingCollege } = await getCollegeByEmailQuery(
     data.official_email,

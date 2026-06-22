@@ -5,19 +5,20 @@ import {
   updateProfileInfo,
   uploadAvatar,
 } from "./profile.mutations";
-import { getCurrentUserServer } from "@/lib/auth/getCurrentUserServer";
-import AppError from "@/lib/errors/app-error";
+import { RequestContext } from "@/lib/auth/request-context";
 
-export async function updateAvatarService(data: TImageFile) {
-  const user = await getCurrentUserServer();
+type updateAvatarServiceInput = {
+  ctx: RequestContext;
+  data: TImageFile;
+};
 
-  if (!user?.id) {
-    throw new Error("Your not authenticated.");
-  }
-
+export async function updateAvatarService({
+  ctx,
+  data,
+}: updateAvatarServiceInput) {
   const file = data.imageFile;
 
-  const filePath = `${user.id}/avatar.webp`;
+  const filePath = `${ctx.user.id}/avatar.webp`;
 
   const arrayBuffer = await file.arrayBuffer();
   const buffer = Buffer.from(arrayBuffer);
@@ -35,7 +36,7 @@ export async function updateAvatarService(data: TImageFile) {
   if (uploadError) throw uploadError;
 
   const { data: updatedData, error: profileUpdateError } =
-    await updateAvatarPath(user.id, filePath);
+    await updateAvatarPath(ctx.user.id, filePath);
 
   if (profileUpdateError) throw profileUpdateError;
 
@@ -44,19 +45,21 @@ export async function updateAvatarService(data: TImageFile) {
   };
 }
 
-export async function updateProfifleInfoService(data: TProfileInfo) {
-  const profile = await getCurrentUserServer();
+type updateProfifleInfoServiceInput = {
+  ctx: RequestContext;
+  data: TProfileInfo;
+};
 
-  if (!profile) {
-    throw new AppError("Unauthorized", 401, "UNAUTHORIZED");
-  }
-
-  if (profile.status !== "active") {
+export async function updateProfifleInfoService({
+  ctx,
+  data,
+}: updateProfifleInfoServiceInput) {
+  if (ctx.user.status !== "active") {
     throw new Error("Inactive users cannot create departments");
   }
 
   const { data: updatedProfile, error: profileUpdateError } =
-    await updateProfileInfo(profile.id, data);
+    await updateProfileInfo(ctx.user.id, data);
 
   if (profileUpdateError) throw profileUpdateError;
 
