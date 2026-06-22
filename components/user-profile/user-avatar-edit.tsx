@@ -23,7 +23,7 @@ export default function UserAvatarEdit() {
             className="object-cover w-full rounded-full"
           />
         ) : (
-          <div className="flex h-8 w-8 items-center justify-center rounded-full bg-muted text-xs font-semibold uppercase">
+          <div className="flex h-full w-full items-center justify-center rounded-full bg-muted text-base font-semibold uppercase">
             {user?.full_name?.[0] ?? "U"}
           </div>
         )}
