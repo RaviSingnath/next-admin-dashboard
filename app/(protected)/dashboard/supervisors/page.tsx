@@ -1,8 +1,8 @@
 import { Metadata } from "next";
 import PageWrapperBreadcrumb from "@/components/layout/page-wrapper-breadcrumb";
 import { getSupervisorsService } from "@/features/supervisors/supervisors.services";
-import EmptySupervisorList from "@/app/(admin)/supervisors/_components/empty-supervisors-list";
-import SupervisorsList from "@/app/(admin)/supervisors/_components/supervisor-list";
+import EmptySupervisorList from "./_components/empty-supervisors-list";
+import SupervisorsList from "./_components/supervisor-list";
 
 export const metadata: Metadata = {
   title: "Supervisors page",

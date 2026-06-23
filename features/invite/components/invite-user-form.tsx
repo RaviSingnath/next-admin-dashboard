@@ -12,7 +12,7 @@ import { useAuth } from "@/context/AuthProvider";
 import { UserRoleLabel } from "@/lib/rbac/roles";
 import { getInviteUIRules } from "../invite.rbac";
 import { zInvitePayload, type TInvitePayload } from "../invite.schema";
-import { inviteUserAction } from "@/app/(admin)/invites/_lib/invite.actions";
+import { inviteUserAction } from "@/app/(protected)/invites/_lib/invite.actions";
 
 import { AppSelectOption } from "@/lib/types/app-types";
 import handleFormSubmit from "@/lib/helper/handle-form-submit";

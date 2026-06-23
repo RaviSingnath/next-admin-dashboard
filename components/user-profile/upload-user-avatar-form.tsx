@@ -9,7 +9,7 @@ import { zImageFile, TImageFile } from "@/features/profile/profile.schema";
 import Button from "../ui/button/Button";
 import FormWrapper from "@/components/common/form-wrapper";
 import handleFormSubmit from "@/lib/helper/handle-form-submit";
-import { uploadAvatarAction } from "@/app/(admin)/profile/_lib/profile.actions";
+import { uploadAvatarAction } from "@/app/(protected)/admin/profile/_lib/profile.actions";
 import { useAuth } from "@/context/AuthProvider";
 
 type UploadUserAvatarFormProps = {

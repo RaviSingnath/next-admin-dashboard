@@ -20,6 +20,18 @@ import {
   ClipboardList,
   BookOpen,
   Mail,
+  Layers,
+  Receipt,
+  TrendingUp,
+  Plug,
+  ToggleRight,
+  Lock,
+  Calendar,
+  WalletCards,
+  MessageSquare,
+  Megaphone,
+  Bell,
+  Building,
   type LucideIcon,
 } from "lucide-react";
 
@@ -66,16 +78,16 @@ export const MENU_CONFIG: Record<UserRole, MenuGroup[]> = {
       subItems: [
         {
           name: "Colleges",
-          path: "/colleges",
+          path: "/admin/colleges",
           icon: School,
         },
         {
           name: "College Admins",
-          path: "/college-admins",
+          path: "/admin/college-admins",
           icon: UserCog,
         },
         {
-          name: "invites",
+          name: "Invites",
           path: "/invites",
           icon: Mail,
         },
@@ -83,18 +95,67 @@ export const MENU_CONFIG: Record<UserRole, MenuGroup[]> = {
     },
 
     {
-      name: "Finance & Security",
-      icon: ShieldCheck,
+      name: "User Management",
+      icon: Users,
       subItems: [
         {
-          name: "Billing",
-          path: "/admin/billing",
+          name: "Users",
+          path: "/admin/users",
+          icon: Users,
+        },
+        {
+          name: "Roles & Permissions",
+          path: "/admin/roles",
+          icon: ShieldCheck,
+        },
+      ],
+    },
+
+    {
+      name: "Finance",
+      icon: Landmark,
+      subItems: [
+        {
+          name: "Plans",
+          path: "/admin/plans",
+          icon: Layers,
+        },
+        {
+          name: "Subscriptions",
+          path: "/admin/subscriptions",
           icon: CreditCard,
         },
+        {
+          name: "Payments",
+          path: "/admin/payments",
+          icon: Receipt,
+        },
+        {
+          name: "Invoices",
+          path: "/admin/invoices",
+          icon: FileText,
+        },
+        {
+          name: "Revenue Reports",
+          path: "/admin/revenue",
+          icon: TrendingUp,
+        },
+      ],
+    },
+
+    {
+      name: "Security",
+      icon: ShieldCheck,
+      subItems: [
         {
           name: "Audit Logs",
           path: "/admin/audit-logs",
           icon: ClipboardList,
+        },
+        {
+          name: "Security Settings",
+          path: "/admin/security",
+          icon: Lock,
         },
       ],
     },
@@ -107,6 +168,16 @@ export const MENU_CONFIG: Record<UserRole, MenuGroup[]> = {
           name: "Platform Settings",
           path: "/admin/settings",
           icon: Settings,
+        },
+        {
+          name: "Integrations",
+          path: "/admin/integrations",
+          icon: Plug,
+        },
+        {
+          name: "Feature Flags",
+          path: "/admin/features",
+          icon: ToggleRight,
         },
       ],
     },
@@ -141,23 +212,50 @@ export const MENU_CONFIG: Record<UserRole, MenuGroup[]> = {
       subItems: [
         {
           name: "Departments",
-          path: "/departments",
+          path: "/dashboard/departments",
           icon: FolderKanban,
         },
         {
-          name: "Supervisors",
-          path: "/supervisors",
-          icon: Users,
-        },
-        {
-          name: "Students",
-          path: "/students",
+          name: "Programs",
+          path: "/dashboard/programs",
           icon: GraduationCap,
         },
         {
-          name: "invites",
+          name: "Courses",
+          path: "/dashboard/courses",
+          icon: BookOpen,
+        },
+        {
+          name: "Academic Years",
+          path: "/dashboard/academic-years",
+          icon: Calendar,
+        },
+      ],
+    },
+
+    {
+      name: "People",
+      icon: Users,
+      subItems: [
+        {
+          name: "Students",
+          path: "/dashboard/students",
+          icon: GraduationCap,
+        },
+        {
+          name: "Supervisors",
+          path: "/dashboard/supervisors",
+          icon: UserCog,
+        },
+        {
+          name: "Invites",
           path: "/invites",
           icon: Mail,
+        },
+        {
+          name: "Roles & Permissions",
+          path: "/dashboard/roles",
+          icon: ShieldCheck,
         },
       ],
     },
@@ -167,26 +265,68 @@ export const MENU_CONFIG: Record<UserRole, MenuGroup[]> = {
       icon: Landmark,
       subItems: [
         {
+          name: "Subscription",
+          path: "/dashboard/billing",
+          icon: CreditCard,
+        },
+        {
           name: "Payments",
           path: "/dashboard/payments",
-          icon: CreditCard,
+          icon: Receipt,
+        },
+        {
+          name: "Payment Settings",
+          path: "/dashboard/payment-settings",
+          icon: WalletCards,
+        },
+      ],
+    },
+
+    {
+      name: "Communication",
+      icon: MessageSquare,
+      subItems: [
+        {
+          name: "Announcements",
+          path: "/dashboard/announcements",
+          icon: Megaphone,
+        },
+        {
+          name: "Notifications",
+          path: "/dashboard/notifications",
+          icon: Bell,
+        },
+        {
+          name: "Email Templates",
+          path: "/dashboard/email-templates",
+          icon: Mail,
         },
       ],
     },
 
     {
       name: "Administration",
-      icon: ShieldCheck,
+      icon: Settings,
       subItems: [
         {
-          name: "Audit Logs",
-          path: "/dashboard/audit-logs",
-          icon: ClipboardList,
+          name: "College Profile",
+          path: "/settings/profile",
+          icon: Building,
         },
         {
           name: "Settings",
-          path: "/dashboard/settings",
+          path: "/settings",
           icon: Settings,
+        },
+        {
+          name: "Audit Logs",
+          path: "/audit-logs",
+          icon: ClipboardList,
+        },
+        {
+          name: "Integrations",
+          path: "/integrations",
+          icon: Plug,
         },
       ],
     },
