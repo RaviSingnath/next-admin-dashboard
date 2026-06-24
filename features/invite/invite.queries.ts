@@ -61,3 +61,13 @@ export const getInviteByEmail = async (inviteEmail: string) => {
     .eq("email", inviteEmail)
     .maybeSingle();
 };
+
+export const getInviteById = async (id: string) => {
+  const supabase = await createClient();
+
+  return supabase
+    .from("invitations")
+    .select("id, email")
+    .eq("id", id)
+    .maybeSingle();
+};

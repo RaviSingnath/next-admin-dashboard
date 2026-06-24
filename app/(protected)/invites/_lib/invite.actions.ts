@@ -4,7 +4,10 @@ import {
   TInvitePayload,
   zInvitePayload,
 } from "@/features/invite/invite.schema";
-import { inviteUserService } from "@/features/invite/invite.service";
+import {
+  inviteUserService,
+  resendInviteService,
+} from "@/features/invite/invite.service";
 import { createRequestContext } from "@/lib/auth/request-context";
 import { ERROR_CODES } from "@/lib/errors/error-codes";
 import { handleError } from "@/lib/errors/handle-error";
@@ -39,6 +42,35 @@ export const inviteUserAction = async (
     return {
       success: true,
       data: college,
+    };
+  } catch (error) {
+    return handleError(error);
+  }
+};
+
+export const resendInviteAction = async (
+  id: string,
+): Promise<ActionResponse> => {
+  try {
+    const ctx = await createRequestContext();
+
+    if (!id) {
+      return {
+        success: false,
+        code: ERROR_CODES.NOT_FOUND,
+        message: "Old invite not found",
+      };
+    }
+
+    const invite = await resendInviteService({
+      id,
+    });
+
+    revalidatePath("/invites", "page");
+
+    return {
+      success: true,
+      data: invite,
     };
   } catch (error) {
     return handleError(error);

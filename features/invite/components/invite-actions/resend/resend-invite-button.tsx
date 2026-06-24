@@ -1,5 +1,10 @@
 "use client";
 
+import { resendInviteAction } from "@/app/(protected)/invites/_lib/invite.actions";
+import {
+  handleActionError,
+  handleUnexpectedError,
+} from "@/lib/helper/error-handler";
 import { RefreshCw } from "lucide-react";
 import { Tooltip } from "react-tooltip";
 
@@ -8,7 +13,17 @@ type ResendInviteButtonProps = {
 };
 
 const ResendInviteButton = ({ inviteID }: ResendInviteButtonProps) => {
-  const handleResendInvite = () => console.log(inviteID);
+  const handleResendInvite = async () => {
+    try {
+      const newInvite = await resendInviteAction(inviteID);
+
+      if (!newInvite.success) handleActionError(newInvite);
+    } catch (error) {
+      handleUnexpectedError(error);
+
+      return false;
+    }
+  };
   return (
     <>
       <RefreshCw

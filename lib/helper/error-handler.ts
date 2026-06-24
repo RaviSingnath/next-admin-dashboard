@@ -10,7 +10,7 @@ export function handleActionError(
     code?: string;
     message?: string;
   },
-  router: Router | undefined,
+  router?: Router | undefined,
 ) {
   if (result.success) return;
 

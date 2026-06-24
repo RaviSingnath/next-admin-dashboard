@@ -10,9 +10,9 @@ import {
 } from "@/components/ui/table";
 import { CollegeAdminsListItem } from "@/features/college-admins/college-admin.services";
 import { formatDateTime } from "@/utils/date";
-import DeleteInviteButton from "@/components/admin/invites/invite-actions/delete/delete-invite-button";
-import ResendInviteButton from "@/components/admin/invites/invite-actions/resend/resend-invite-button";
-import RevokeInviteButton from "@/components/admin/invites/invite-actions/revoke-invite-button";
+import DeleteInviteButton from "@/features/invite/components/invite-actions/delete/delete-invite-button";
+import ResendInviteButton from "@/features/invite/components/invite-actions/resend/resend-invite-button";
+import RevokeInviteButton from "@/features/invite/components/invite-actions/revoke-invite-button";
 
 type CollegeAdminsTableProps = {
   collegeAdmins: CollegeAdminsListItem[];

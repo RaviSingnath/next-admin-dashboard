@@ -8,7 +8,7 @@ export default class AppError extends Error {
   constructor(
     message: string,
     statusCode = 500,
-    code = ERROR_CODES.INTERNAL_ERROR,
+    code: ErrorCode = ERROR_CODES.INTERNAL_ERROR,
     details?: unknown,
   ) {
     super(message);

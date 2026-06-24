@@ -1,4 +1,4 @@
-import { getInvitesQuery } from "./invite.queries";
+import { getInviteById, getInvitesQuery } from "./invite.queries";
 import { Errors } from "@/lib/errors/error-factory";
 
 import { createAdminClient } from "@/lib/supabase/admin";
@@ -93,4 +93,54 @@ export async function inviteUserService({ ctx, data }: InviteUserServiceInput) {
   }
 
   return invitation;
+}
+
+export async function resendInviteService({ id }: { id: string }) {
+  const supabaseAdmin = createAdminClient();
+
+  const { data: oldInvite, error } = await getInviteById(id);
+
+  if (error) {
+    throw mapSupabaseError(error);
+  }
+
+  if (!oldInvite) {
+    throw Errors.notFound("Old invite not found");
+  }
+
+  const token = generateToken();
+  const inviteUrl = `${process.env.NEXT_PUBLIC_SITE_URL}/accept-invite?token=${token}`;
+
+  const { data, error: resendInviteError } =
+    await supabaseAdmin.auth.admin.generateLink({
+      type: "invite",
+      email: oldInvite.email,
+      options: {
+        redirectTo: inviteUrl,
+      },
+    });
+
+  console.log(resendInviteError);
+  if (resendInviteError) {
+    throw mapSupabaseAuthError(resendInviteError);
+  }
+
+  const inviteLink = data.properties.action_link;
+  console.log(inviteLink);
+
+  // After getting the invite link, need to send email manually
+  // await resend.emails.send({
+  //   from: "College Admin <noreply@college.com>",
+  //   to: email,
+  //   subject: "Your college account invitation",
+  //   html: `
+  //   <h2>You have been invited</h2>
+  //   <p>Click below to activate your account:</p>
+  //   <a href="${inviteLink}">
+  //     Accept Invitation
+  //   </a>
+  // `,
+  // });
+
+  return data.user;
 }

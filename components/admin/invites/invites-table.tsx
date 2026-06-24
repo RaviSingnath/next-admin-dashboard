@@ -9,9 +9,9 @@ import {
 } from "@/components/ui/table";
 import { InvitesListItem } from "@/features/invite/invite.service";
 import { formatDateTime } from "@/utils/date";
-import DeleteInviteButton from "./invite-actions/delete/delete-invite-button";
-import ResendInviteButton from "./invite-actions/resend/resend-invite-button";
-import RevokeInviteButton from "./invite-actions/revoke-invite-button";
+import DeleteInviteButton from "@/features/invite/components/invite-actions/delete/delete-invite-button";
+import ResendInviteButton from "@/features/invite/components/invite-actions/resend/resend-invite-button";
+import RevokeInviteButton from "@/features/invite/components/invite-actions/revoke-invite-button";
 
 type InvitesTableProps = {
   invites: InvitesListItem[];
