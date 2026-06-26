@@ -32,7 +32,7 @@ export const Errors = {
   },
 
   collegeNotAssigned() {
-    throw new AppError(
+    return new AppError(
       "College association missing",
       403,
       ERROR_CODES.COLLEGE_NOT_ASSIGNED,

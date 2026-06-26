@@ -35,9 +35,9 @@ export const INVITE_PERMISSION_MAP: [Permission, InviteTargetRole][] = [
 ];
 
 /**
- * Returns roles that current user is allowed to invite
+ * Returns roles that current user is allowed to invite.
  *
- * This uses permissions as the source of truth.
+ * Uses permissions as the source of truth.
  * Do not duplicate role_permissions here.
  */
 export function getInvitableRoles(user: AuthUser): InviteTargetRole[] {
@@ -47,7 +47,7 @@ export function getInvitableRoles(user: AuthUser): InviteTargetRole[] {
 }
 
 /**
- * Invite feature policy
+ * Invite feature policy.
  *
  * Controls form behaviour.
  */
@@ -76,20 +76,12 @@ export function getInviteUIRules(user: AuthUser): InviteUIRules {
     },
 
     department: {
-      // Hidden when inviting college_admin (not dept-scoped).
-      // super_admin only invites college_admin → always false for super_admin.
       /**
-       * College admins and supervisors
-       * work inside departments.
+       * College admins and supervisors work inside departments.
        *
-       * College admin:
-       *   can choose department
-       *
-       * Supervisor:
-       *   locked to own department
-       *
-       * Student:
-       *   belongs to department
+       * College admin: can choose department
+       * Supervisor:    locked to own department
+       * Student:       belongs to department
        */
       visible:
         targetRoles.includes(UserRole.SUPERVISOR) ||
@@ -101,7 +93,7 @@ export function getInviteUIRules(user: AuthUser): InviteUIRules {
 }
 
 /**
- * Optional server-side check
+ * Optional server-side check.
  *
  * Use this in invite action.
  */
@@ -111,4 +103,36 @@ export function canInviteRole(
 ): boolean {
   if (!user) return false;
   return getInvitableRoles(user).includes(targetRole);
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Revoke permissions
+// ─────────────────────────────────────────────────────────────────────────────
+
+export type RevokePermissions = {
+  /**
+   * REVOKE_INVITE — can revoke any invite within scope.
+   * Held by: super_admin, college_admin
+   */
+  canRevokeAny: boolean;
+
+  /**
+   * REVOKE_OWN_INVITE — can only revoke invites the user sent.
+   * Held by: supervisor
+   */
+  canRevokeOwn: boolean;
+};
+
+/**
+ * Resolves which revocation scope the current user holds.
+ *
+ * Both flags are kept separate so assertRevokeOwnership can
+ * distinguish between a supervisor (canRevokeOwn only) and
+ * a college_admin who might theoretically hold both.
+ */
+export function getRevokePermissions(user: AuthUser): RevokePermissions {
+  return {
+    canRevokeAny: hasPermission(user, Permission.REVOKE_INVITE),
+    canRevokeOwn: hasPermission(user, Permission.REVOKE_OWN_INVITE),
+  };
 }

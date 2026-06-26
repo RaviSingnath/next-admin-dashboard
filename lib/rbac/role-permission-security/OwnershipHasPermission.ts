@@ -1,14 +1,21 @@
 import { hasPermission } from "./hasPermission";
 import { Permission } from "../permissions";
-import { UserContext } from "@/lib/auth/types";
+import { AuthUser } from "@/lib/auth/types";
 
 type CheckOptions = {
   userId?: string;
   ownerId?: string;
 };
 
+const OWNERSHIP_PERMISSIONS = new Set([
+  Permission.READ_OWN_STUDENT,
+  Permission.UPDATE_OWN_STUDENT,
+  Permission.REVOKE_OWN_INVITE,
+  Permission.DELETE_OWN_INVITE,
+]);
+
 export function canAccess(
-  user: UserContext,
+  user: AuthUser,
   permission: Permission,
   options?: CheckOptions,
 ) {
@@ -16,11 +23,9 @@ export function canAccess(
   if (hasPermission(user, permission)) return true;
 
   // Ownership fallback
-  if (
-    permission === Permission.UPDATE_OWN_STUDENT ||
-    permission === Permission.READ_OWN_STUDENT
-  ) {
-    return options?.userId === options?.ownerId;
+  if (OWNERSHIP_PERMISSIONS.has(permission)) {
+    if (!options?.userId || !options?.ownerId) return false;
+    return options.userId === options.ownerId;
   }
 
   return false;

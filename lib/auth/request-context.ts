@@ -1,5 +1,3 @@
-// lib/auth/request-context.ts
-
 import { getCurrentUserServer } from "./getCurrentUserServer";
 import type { AuthUser } from "./types";
 import { Errors } from "../errors/error-factory";

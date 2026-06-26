@@ -7,6 +7,7 @@ import {
 import {
   inviteUserService,
   resendInviteService,
+  revokeInviteService,
 } from "@/features/invite/invite.service";
 import { createRequestContext } from "@/lib/auth/request-context";
 import { ERROR_CODES } from "@/lib/errors/error-codes";
@@ -49,21 +50,51 @@ export const inviteUserAction = async (
 };
 
 export const resendInviteAction = async (
-  id: string,
+  inviteID: string,
 ): Promise<ActionResponse> => {
   try {
     const ctx = await createRequestContext();
 
-    if (!id) {
+    if (!inviteID) {
       return {
         success: false,
         code: ERROR_CODES.NOT_FOUND,
-        message: "Old invite not found",
+        message: "Invite not found",
       };
     }
 
     const invite = await resendInviteService({
-      id,
+      inviteID,
+    });
+
+    revalidatePath("/invites", "page");
+
+    return {
+      success: true,
+      data: invite,
+    };
+  } catch (error) {
+    return handleError(error);
+  }
+};
+
+export const revokeInviteAction = async (
+  inviteID: string,
+): Promise<ActionResponse> => {
+  try {
+    const ctx = await createRequestContext();
+
+    if (!inviteID) {
+      return {
+        success: false,
+        code: ERROR_CODES.NOT_FOUND,
+        message: "Invite not found",
+      };
+    }
+
+    const invite = await revokeInviteService({
+      ctx,
+      inviteID,
     });
 
     revalidatePath("/invites", "page");

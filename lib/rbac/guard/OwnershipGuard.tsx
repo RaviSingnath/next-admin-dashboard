@@ -18,8 +18,11 @@ export function OwnershipGuard({
   children,
   fallback = null,
 }: Props) {
-  const { user } = useAuth();
-  if (!user) return;
+  const { user, loading } = useAuth();
+
+  if (loading) return null; // later add a skeleton
+
+  if (!user) return null;
 
   const hasAccess =
     hasPermission(user, permission) || (ownerId && user?.id === ownerId);

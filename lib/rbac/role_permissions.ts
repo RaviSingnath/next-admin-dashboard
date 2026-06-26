@@ -7,8 +7,15 @@ export const ROLE_PERMISSIONS: Record<UserRole, Permission[]> = {
   // =========================
   // [UserRole.SUPER_ADMIN]: [...Object.values(Permission)],
   [UserRole.SUPER_ADMIN]: [
+    Permission.VIEW_OWN_PROFILE,
+    Permission.UPDATE_OWN_PROFILE,
+
     // Invite
     Permission.INVITE_COLLEGE_ADMIN,
+    Permission.RESEND_INVITE,
+    Permission.REVOKE_INVITE,
+    Permission.DELETE_INVITE,
+
     Permission.CREATE_COLLEGE,
     Permission.READ_COLLEGE,
     Permission.UPDATE_COLLEGE,
@@ -23,9 +30,15 @@ export const ROLE_PERMISSIONS: Record<UserRole, Permission[]> = {
   // COLLEGE ADMIN
   // =========================
   [UserRole.COLLEGE_ADMIN]: [
+    Permission.VIEW_OWN_PROFILE,
+    Permission.UPDATE_OWN_PROFILE,
+
     // Invte
     Permission.INVITE_SUPERVISOR,
     Permission.INVITE_STUDENT,
+    Permission.RESEND_INVITE,
+    Permission.REVOKE_INVITE,
+    Permission.DELETE_INVITE,
 
     // Department
     Permission.CREATE_DEPARTMENT,
@@ -65,8 +78,14 @@ export const ROLE_PERMISSIONS: Record<UserRole, Permission[]> = {
   // SUPERVISOR
   // =========================
   [UserRole.SUPERVISOR]: [
+    Permission.VIEW_OWN_PROFILE,
+    Permission.UPDATE_OWN_PROFILE,
+
     //Invite
     Permission.INVITE_STUDENT,
+    Permission.RESEND_INVITE,
+    Permission.REVOKE_OWN_INVITE,
+    Permission.DELETE_OWN_INVITE,
 
     // Student (OWN ONLY via RLS)
     Permission.READ_OWN_STUDENT,
@@ -83,6 +102,9 @@ export const ROLE_PERMISSIONS: Record<UserRole, Permission[]> = {
   // STUDENT
   // =========================
   [UserRole.STUDENT]: [
+    Permission.VIEW_OWN_PROFILE,
+    Permission.UPDATE_OWN_PROFILE,
+
     Permission.READ_OWN_STUDENT,
     Permission.UPDATE_OWN_STUDENT,
 

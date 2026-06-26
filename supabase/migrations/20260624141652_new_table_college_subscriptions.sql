@@ -55,11 +55,11 @@ using (
   or college_id = public.current_college_id()
 );
 
-create policy "only super admin can insert college subscriptions"
-on public.college_subscriptions
-for insert
-as restrictive
-with check (public.is_super_admin());
+CREATE POLICY "only super admin can insert college subscriptions"
+ON public.college_subscriptions
+AS RESTRICTIVE
+FOR INSERT
+WITH CHECK (public.is_super_admin());
 
 -- Super admin UPDATE path (for manual corrections only — normal lifecycle via service_role)
 create policy "super admin manage college subscriptions"

@@ -107,9 +107,198 @@ export type Database = {
         }
         Relationships: []
       }
+      billing_transactions: {
+        Row: {
+          amount: number
+          amount_minor: number
+          application_fee_amount_minor: number | null
+          college_id: string
+          created_at: string
+          currency: string
+          failure_reason: string | null
+          id: string
+          invoice_number: string | null
+          invoice_pdf_url: string | null
+          metadata: Json
+          paid_at: string | null
+          parent_transaction_id: string | null
+          refunded_at: string | null
+          source_type: string
+          status: Database["public"]["Enums"]["payment_status"]
+          stripe_charge_id: string | null
+          stripe_checkout_session_id: string | null
+          stripe_connected_account_id: string | null
+          stripe_customer_id: string | null
+          stripe_invoice_id: string | null
+          stripe_payment_intent_id: string | null
+          stripe_refund_id: string | null
+          stripe_subscription_id: string | null
+          stripe_transfer_id: string | null
+          student_id: string | null
+          transaction_action: string
+          updated_at: string
+        }
+        Insert: {
+          amount: number
+          amount_minor: number
+          application_fee_amount_minor?: number | null
+          college_id: string
+          created_at?: string
+          currency?: string
+          failure_reason?: string | null
+          id?: string
+          invoice_number?: string | null
+          invoice_pdf_url?: string | null
+          metadata?: Json
+          paid_at?: string | null
+          parent_transaction_id?: string | null
+          refunded_at?: string | null
+          source_type: string
+          status?: Database["public"]["Enums"]["payment_status"]
+          stripe_charge_id?: string | null
+          stripe_checkout_session_id?: string | null
+          stripe_connected_account_id?: string | null
+          stripe_customer_id?: string | null
+          stripe_invoice_id?: string | null
+          stripe_payment_intent_id?: string | null
+          stripe_refund_id?: string | null
+          stripe_subscription_id?: string | null
+          stripe_transfer_id?: string | null
+          student_id?: string | null
+          transaction_action: string
+          updated_at?: string
+        }
+        Update: {
+          amount?: number
+          amount_minor?: number
+          application_fee_amount_minor?: number | null
+          college_id?: string
+          created_at?: string
+          currency?: string
+          failure_reason?: string | null
+          id?: string
+          invoice_number?: string | null
+          invoice_pdf_url?: string | null
+          metadata?: Json
+          paid_at?: string | null
+          parent_transaction_id?: string | null
+          refunded_at?: string | null
+          source_type?: string
+          status?: Database["public"]["Enums"]["payment_status"]
+          stripe_charge_id?: string | null
+          stripe_checkout_session_id?: string | null
+          stripe_connected_account_id?: string | null
+          stripe_customer_id?: string | null
+          stripe_invoice_id?: string | null
+          stripe_payment_intent_id?: string | null
+          stripe_refund_id?: string | null
+          stripe_subscription_id?: string | null
+          stripe_transfer_id?: string | null
+          student_id?: string | null
+          transaction_action?: string
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "billing_transactions_college_id_fkey"
+            columns: ["college_id"]
+            isOneToOne: false
+            referencedRelation: "colleges"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "billing_transactions_parent_transaction_id_fkey"
+            columns: ["parent_transaction_id"]
+            isOneToOne: false
+            referencedRelation: "billing_transactions"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "billing_transactions_student_id_fkey"
+            columns: ["student_id"]
+            isOneToOne: false
+            referencedRelation: "students"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      college_subscriptions: {
+        Row: {
+          cancel_at_period_end: boolean
+          cancel_reason: string | null
+          canceled_at: string | null
+          college_id: string
+          created_at: string
+          current_period_end: string | null
+          current_period_start: string | null
+          id: string
+          metadata: Json
+          plan_id: string
+          status: string
+          stripe_customer_id: string
+          stripe_subscription_id: string
+          trial_end: string | null
+          trial_start: string | null
+          updated_at: string
+        }
+        Insert: {
+          cancel_at_period_end?: boolean
+          cancel_reason?: string | null
+          canceled_at?: string | null
+          college_id: string
+          created_at?: string
+          current_period_end?: string | null
+          current_period_start?: string | null
+          id?: string
+          metadata?: Json
+          plan_id: string
+          status?: string
+          stripe_customer_id: string
+          stripe_subscription_id: string
+          trial_end?: string | null
+          trial_start?: string | null
+          updated_at?: string
+        }
+        Update: {
+          cancel_at_period_end?: boolean
+          cancel_reason?: string | null
+          canceled_at?: string | null
+          college_id?: string
+          created_at?: string
+          current_period_end?: string | null
+          current_period_start?: string | null
+          id?: string
+          metadata?: Json
+          plan_id?: string
+          status?: string
+          stripe_customer_id?: string
+          stripe_subscription_id?: string
+          trial_end?: string | null
+          trial_start?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "college_subscriptions_college_id_fkey"
+            columns: ["college_id"]
+            isOneToOne: false
+            referencedRelation: "colleges"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "college_subscriptions_plan_id_fkey"
+            columns: ["plan_id"]
+            isOneToOne: false
+            referencedRelation: "subscription_plans"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       colleges: {
         Row: {
           address_id: string | null
+          billing_email: string | null
+          billing_name: string | null
           city: string | null
           college_name: string
           country: string | null
@@ -124,10 +313,13 @@ export type Database = {
           state: string | null
           status: string | null
           stripe_connected_account_id: string | null
+          stripe_customer_id: string | null
           updated_at: string | null
         }
         Insert: {
           address_id?: string | null
+          billing_email?: string | null
+          billing_name?: string | null
           city?: string | null
           college_name: string
           country?: string | null
@@ -142,10 +334,13 @@ export type Database = {
           state?: string | null
           status?: string | null
           stripe_connected_account_id?: string | null
+          stripe_customer_id?: string | null
           updated_at?: string | null
         }
         Update: {
           address_id?: string | null
+          billing_email?: string | null
+          billing_name?: string | null
           city?: string | null
           college_name?: string
           country?: string | null
@@ -160,6 +355,7 @@ export type Database = {
           state?: string | null
           status?: string | null
           stripe_connected_account_id?: string | null
+          stripe_customer_id?: string | null
           updated_at?: string | null
         }
         Relationships: [
@@ -284,6 +480,9 @@ export type Database = {
           full_name: string | null
           id: string
           invited_by: string
+          revoked_at: string | null
+          revoked_by: string | null
+          revoked_reason: string | null
           role: Database["public"]["Enums"]["user_role"]
           status: Database["public"]["Enums"]["invitation_status"] | null
           token: string | null
@@ -300,6 +499,9 @@ export type Database = {
           full_name?: string | null
           id?: string
           invited_by?: string
+          revoked_at?: string | null
+          revoked_by?: string | null
+          revoked_reason?: string | null
           role: Database["public"]["Enums"]["user_role"]
           status?: Database["public"]["Enums"]["invitation_status"] | null
           token?: string | null
@@ -316,6 +518,9 @@ export type Database = {
           full_name?: string | null
           id?: string
           invited_by?: string
+          revoked_at?: string | null
+          revoked_by?: string | null
+          revoked_reason?: string | null
           role?: Database["public"]["Enums"]["user_role"]
           status?: Database["public"]["Enums"]["invitation_status"] | null
           token?: string | null
@@ -349,7 +554,47 @@ export type Database = {
             referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
+          {
+            foreignKeyName: "invitations_revoked_by_fkey"
+            columns: ["revoked_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
+            referencedColumns: ["id"]
+          },
         ]
+      }
+      payment_gateway_settings: {
+        Row: {
+          created_at: string
+          default_currency: string
+          id: string
+          is_active: boolean
+          mode: string
+          provider: string
+          stripe_account_id: string | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          default_currency?: string
+          id?: string
+          is_active?: boolean
+          mode?: string
+          provider?: string
+          stripe_account_id?: string | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          default_currency?: string
+          id?: string
+          is_active?: boolean
+          mode?: string
+          provider?: string
+          stripe_account_id?: string | null
+          updated_at?: string
+        }
+        Relationships: []
       }
       payments: {
         Row: {
@@ -488,6 +733,63 @@ export type Database = {
           },
         ]
       }
+      stripe_webhook_events: {
+        Row: {
+          api_version: string | null
+          attempt_count: number
+          created_at: string
+          event_type: string
+          expires_at: string | null
+          id: string
+          livemode: boolean
+          locked_by: string | null
+          payload: Json
+          processed: boolean
+          processed_at: string | null
+          processing_completed_at: string | null
+          processing_error: string | null
+          processing_started_at: string | null
+          stripe_event_id: string
+          updated_at: string
+        }
+        Insert: {
+          api_version?: string | null
+          attempt_count?: number
+          created_at?: string
+          event_type: string
+          expires_at?: string | null
+          id?: string
+          livemode?: boolean
+          locked_by?: string | null
+          payload: Json
+          processed?: boolean
+          processed_at?: string | null
+          processing_completed_at?: string | null
+          processing_error?: string | null
+          processing_started_at?: string | null
+          stripe_event_id: string
+          updated_at?: string
+        }
+        Update: {
+          api_version?: string | null
+          attempt_count?: number
+          created_at?: string
+          event_type?: string
+          expires_at?: string | null
+          id?: string
+          livemode?: boolean
+          locked_by?: string | null
+          payload?: Json
+          processed?: boolean
+          processed_at?: string | null
+          processing_completed_at?: string | null
+          processing_error?: string | null
+          processing_started_at?: string | null
+          stripe_event_id?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       students: {
         Row: {
           admission_number: string | null
@@ -572,6 +874,60 @@ export type Database = {
           },
         ]
       }
+      subscription_plans: {
+        Row: {
+          active: boolean
+          amount: number
+          amount_minor: number
+          created_at: string
+          currency: string
+          id: string
+          interval: string
+          metadata: Json
+          name: string
+          stripe_price_created_at: string | null
+          stripe_price_id: string
+          stripe_product_created_at: string | null
+          stripe_product_id: string | null
+          synced_at: string | null
+          updated_at: string
+        }
+        Insert: {
+          active?: boolean
+          amount: number
+          amount_minor: number
+          created_at?: string
+          currency?: string
+          id?: string
+          interval?: string
+          metadata?: Json
+          name: string
+          stripe_price_created_at?: string | null
+          stripe_price_id: string
+          stripe_product_created_at?: string | null
+          stripe_product_id?: string | null
+          synced_at?: string | null
+          updated_at?: string
+        }
+        Update: {
+          active?: boolean
+          amount?: number
+          amount_minor?: number
+          created_at?: string
+          currency?: string
+          id?: string
+          interval?: string
+          metadata?: Json
+          name?: string
+          stripe_price_created_at?: string | null
+          stripe_price_id?: string
+          stripe_product_created_at?: string | null
+          stripe_product_id?: string | null
+          synced_at?: string | null
+          updated_at?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
@@ -597,7 +953,16 @@ export type Database = {
         | "expired"
         | "cancelled"
         | "onboarding"
-      payment_status: "pending" | "paid" | "failed" | "refunded"
+        | "revoked"
+      payment_status:
+        | "pending"
+        | "paid"
+        | "failed"
+        | "refunded"
+        | "processing"
+        | "succeeded"
+        | "partially_refunded"
+        | "disputed"
       user_role: "super_admin" | "college_admin" | "supervisor" | "student"
       user_status: "active" | "inactive" | "suspended" | "deleted"
     }
@@ -733,8 +1098,18 @@ export const Constants = {
         "expired",
         "cancelled",
         "onboarding",
+        "revoked",
       ],
-      payment_status: ["pending", "paid", "failed", "refunded"],
+      payment_status: [
+        "pending",
+        "paid",
+        "failed",
+        "refunded",
+        "processing",
+        "succeeded",
+        "partially_refunded",
+        "disputed",
+      ],
       user_role: ["super_admin", "college_admin", "supervisor", "student"],
       user_status: ["active", "inactive", "suspended", "deleted"],
     },

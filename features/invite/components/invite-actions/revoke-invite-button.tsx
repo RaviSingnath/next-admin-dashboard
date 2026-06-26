@@ -1,5 +1,6 @@
 "use client";
 
+import { revokeInviteAction } from "@/app/(protected)/invites/_lib/invite.actions";
 import { Undo2 } from "lucide-react";
 import { Tooltip } from "react-tooltip";
 
@@ -8,7 +9,7 @@ type RevokeInviteButtonProps = {
 };
 
 const RevokeInviteButton = ({ inviteID }: RevokeInviteButtonProps) => {
-  const handleRevokeInvite = () => console.log(inviteID);
+  const handleRevokeInvite = () => revokeInviteAction(inviteID);
   return (
     <>
       <Undo2

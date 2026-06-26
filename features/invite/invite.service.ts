@@ -1,4 +1,8 @@
-import { getInviteById, getInvitesQuery } from "./invite.queries";
+import {
+  getInviteById,
+  getInviteOrThrow,
+  getInvitesQuery,
+} from "./invite.queries";
 import { Errors } from "@/lib/errors/error-factory";
 
 import { createAdminClient } from "@/lib/supabase/admin";
@@ -7,9 +11,10 @@ import UserRole from "@/lib/rbac/roles";
 import {
   cancelOlderInviteByEmail,
   createInvite,
+  revokeInviteMutation,
 } from "../invite/invite.mutations";
 import { generateToken } from "@/lib/helper/generate-token";
-import { StudentInvite } from "../invite/invite.types";
+import { Invitation, StudentInvite } from "../invite/invite.types";
 import { mapSupabaseAuthError } from "@/lib/errors/supabase-auth-error";
 import { TInvitePayload } from "../invite/invite.schema";
 import { mapSupabaseError } from "@/lib/errors/supabase-error";
@@ -18,6 +23,15 @@ import {
   RequestContext,
 } from "@/lib/auth/request-context";
 import { assertCanInvite } from "./invite.security";
+import { getRevokePermissions } from "./invite.rbac";
+import {
+  assertCanRevoke,
+  assertInviteIsRevocable,
+  assertRevokeCollegeScope,
+  assertRevokeRoleHierarchy,
+  assertRevokeOwnership,
+  assertNotSelfRevoke,
+} from "./invite.security";
 
 export async function getInvitesService() {
   const ctx = await createRequestContext();
@@ -95,10 +109,10 @@ export async function inviteUserService({ ctx, data }: InviteUserServiceInput) {
   return invitation;
 }
 
-export async function resendInviteService({ id }: { id: string }) {
+export async function resendInviteService({ inviteID }: { inviteID: string }) {
   const supabaseAdmin = createAdminClient();
 
-  const { data: oldInvite, error } = await getInviteById(id);
+  const { data: oldInvite, error } = await getInviteById(inviteID);
 
   if (error) {
     throw mapSupabaseError(error);
@@ -120,27 +134,57 @@ export async function resendInviteService({ id }: { id: string }) {
       },
     });
 
-  console.log(resendInviteError);
   if (resendInviteError) {
     throw mapSupabaseAuthError(resendInviteError);
   }
 
+  // TODO: send invite link via email (e.g. Resend)
+  // await resend.emails.send({ ... })
   const inviteLink = data.properties.action_link;
-  console.log(inviteLink);
-
-  // After getting the invite link, need to send email manually
-  // await resend.emails.send({
-  //   from: "College Admin <noreply@college.com>",
-  //   to: email,
-  //   subject: "Your college account invitation",
-  //   html: `
-  //   <h2>You have been invited</h2>
-  //   <p>Click below to activate your account:</p>
-  //   <a href="${inviteLink}">
-  //     Accept Invitation
-  //   </a>
-  // `,
-  // });
 
   return data.user;
 }
+
+export const revokeInviteService = async ({
+  ctx,
+  inviteID,
+}: {
+  ctx: RequestContext;
+  inviteID: string;
+}): Promise<Invitation> => {
+  const { user } = ctx;
+  const permissions = getRevokePermissions(user);
+
+  // 1. Permission Gate — fail before any DB call
+  assertCanRevoke(user, permissions);
+
+  // 2. Invite Existence — fetch once; all checks below use this record
+  const invite = await getInviteOrThrow(inviteID);
+
+  // 3. Status Guard
+  assertInviteIsRevocable(invite);
+
+  // 4. College Scope
+  assertRevokeCollegeScope(user, invite);
+
+  // 5. Role Hierarchy
+  assertRevokeRoleHierarchy(user, invite);
+
+  // 6. Ownership Check
+  assertRevokeOwnership(user, invite, permissions);
+
+  // 7. Self-invite Guard
+  assertNotSelfRevoke(user, invite);
+
+  // 8. Update — audit trigger fires automatically on this UPDATE
+  const { data: revoked, error: updateError } = await revokeInviteMutation(
+    invite.id,
+    user.id,
+  );
+
+  if (updateError || !revoked) {
+    throw Errors.database();
+  }
+
+  return revoked;
+};

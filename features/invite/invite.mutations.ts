@@ -26,3 +26,21 @@ export const cancelOlderInviteByEmail = async (email: string) => {
     .eq("email", email)
     .in("status", ["pending", "onboarding"]);
 };
+
+export const revokeInviteMutation = async (
+  inviteID: string,
+  userID: string,
+) => {
+  const supabase = await createClient();
+
+  return supabase
+    .from("invitations")
+    .update({
+      status: "revoked",
+      revoked_by: userID,
+      revoked_at: new Date().toISOString(),
+    })
+    .eq("id", inviteID)
+    .select()
+    .single();
+};

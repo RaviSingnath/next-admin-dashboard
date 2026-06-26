@@ -12,8 +12,11 @@ type Props = {
 };
 
 export function ActionGuard({ permission, children, fallback = null }: Props) {
-  const { user } = useAuth();
-  if (!user) return;
+  const { user, loading } = useAuth();
+
+  if (loading) return null; // later add a skeleton
+
+  if (!user) return null;
 
   if (!hasPermission(user, permission)) {
     return <>{fallback}</>;

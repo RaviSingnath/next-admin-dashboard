@@ -138,7 +138,7 @@ create policy "college admin insert student fee transactions"
 on public.billing_transactions
 for insert
 with check (
-  public.current_user_role() = 'college_admin'
+  public.current_role() = 'college_admin'
   and college_id = public.current_college_id()
   and source_type = 'student_fee'
   and student_id is not null
