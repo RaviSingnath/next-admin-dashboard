@@ -1,4 +1,4 @@
-import { assertInviteIsResendable } from "@/features/invite/invite.security";
+import { assertInviteIsResendable } from "@/features/invite/security/invite.resend.security";
 import { createInvite } from "../test-factories";
 import { dayAfterDate, dayBeforeDate } from "@/lib/helper/date";
 
