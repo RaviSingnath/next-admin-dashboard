@@ -2,8 +2,6 @@ import UserRole from "@/lib/rbac/roles";
 import { Invitation } from "./invite.types";
 import { InvitationStatus } from "./invite.types";
 
-export const EXPIRES_AT = new Date(Date.now() + 3600 * 1000);
-
 export const INVITATION_STATUS = {
   PENDING: "pending",
   ACCEPTED: "accepted",
@@ -29,4 +27,10 @@ export const SUPERVISOR_BLOCKED_ROLES: Invitation["role"][] = [
 export const REVOCABLE_STATUSES = [
   INVITATION_STATUS.PENDING,
   INVITATION_STATUS.ONBOARDING,
+] as const satisfies ReadonlyArray<InvitationStatus>;
+
+// Statuses that are eligible for resend
+export const RESENDABLE_STATUSES = [
+  INVITATION_STATUS.EXPIRED,
+  INVITATION_STATUS.PENDING,
 ] as const satisfies ReadonlyArray<InvitationStatus>;

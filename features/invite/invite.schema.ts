@@ -87,3 +87,19 @@ export const INVITE_SCHEMA_BY_TARGET_ROLE = {
 
   [UserRole.STUDENT]: zInviteStudent,
 } as const;
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Resend invite schema
+// ─────────────────────────────────────────────────────────────────────────────
+
+/**
+ * Input schema for resend invite action.
+ *
+ * Only the invitation ID is needed — all other data is derived from the
+ * existing invitation row after the security checks pass.
+ */
+export const zResendInvitePayload = z.object({
+  invitationId: z.string().uuid("Invalid invitation ID"),
+});
+
+export type TResendInvitePayload = z.infer<typeof zResendInvitePayload>;

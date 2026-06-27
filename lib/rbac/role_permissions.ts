@@ -5,7 +5,6 @@ export const ROLE_PERMISSIONS: Record<UserRole, Permission[]> = {
   // =========================
   // SUPER ADMIN (FULL ACCESS)
   // =========================
-  // [UserRole.SUPER_ADMIN]: [...Object.values(Permission)],
   [UserRole.SUPER_ADMIN]: [
     Permission.VIEW_OWN_PROFILE,
     Permission.UPDATE_OWN_PROFILE,
@@ -33,7 +32,7 @@ export const ROLE_PERMISSIONS: Record<UserRole, Permission[]> = {
     Permission.VIEW_OWN_PROFILE,
     Permission.UPDATE_OWN_PROFILE,
 
-    // Invte
+    // Invite
     Permission.INVITE_SUPERVISOR,
     Permission.INVITE_STUDENT,
     Permission.RESEND_INVITE,
@@ -81,9 +80,9 @@ export const ROLE_PERMISSIONS: Record<UserRole, Permission[]> = {
     Permission.VIEW_OWN_PROFILE,
     Permission.UPDATE_OWN_PROFILE,
 
-    //Invite
+    // Invite — scoped to own invites only (matches REVOKE_OWN_INVITE pattern)
     Permission.INVITE_STUDENT,
-    Permission.RESEND_INVITE,
+    Permission.RESEND_OWN_INVITE,
     Permission.REVOKE_OWN_INVITE,
     Permission.DELETE_OWN_INVITE,
 

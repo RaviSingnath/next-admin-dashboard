@@ -1,6 +1,10 @@
 "use client";
 
 import { revokeInviteAction } from "@/app/(protected)/invites/_lib/invite.actions";
+import {
+  handleActionError,
+  handleUnexpectedError,
+} from "@/lib/helper/error-handler";
 import { Undo2 } from "lucide-react";
 import { Tooltip } from "react-tooltip";
 
@@ -9,7 +13,19 @@ type RevokeInviteButtonProps = {
 };
 
 const RevokeInviteButton = ({ inviteID }: RevokeInviteButtonProps) => {
-  const handleRevokeInvite = () => revokeInviteAction(inviteID);
+  const handleRevokeInvite = async () => {
+    try {
+      const result = await revokeInviteAction(inviteID);
+      console.log(result);
+
+      if (!result.success) handleActionError(result);
+    } catch (error) {
+      handleUnexpectedError(error);
+
+      return false;
+    }
+  };
+
   return (
     <>
       <Undo2

@@ -1,15 +1,14 @@
 "use server";
 
 import createClient from "@/lib/supabase/server";
-import { EXPIRES_AT } from "./invite.constants";
 import { InvitationInsert, InviteData } from "./invite.types";
 
-export const createInvite = async (data: InviteData) => {
+export const createInvite = async (data: InviteData, expiresAt: string) => {
   const supabase = await createClient();
 
   const inviteData: InvitationInsert = {
     ...data,
-    expires_at: EXPIRES_AT.toISOString(),
+    expires_at: expiresAt,
   };
 
   return supabase.from("invitations").insert(inviteData);
@@ -39,6 +38,37 @@ export const revokeInviteMutation = async (
       status: "revoked",
       revoked_by: userID,
       revoked_at: new Date().toISOString(),
+    })
+    .eq("id", inviteID)
+    .select()
+    .single();
+};
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Resend mutation
+// ─────────────────────────────────────────────────────────────────────────────
+
+/**
+ * Rotates the token and resets expires_at on an existing invitation row.
+ *
+ * Called after generateLink() succeeds so the DB stays in sync with
+ * Supabase Auth. The audit trigger fires automatically on this UPDATE.
+ *
+ * Status is intentionally left as 'pending' — resending an expired invite
+ * does not change its lifecycle state, only refreshes the credentials.
+ */
+export const resendInviteMutation = async (
+  inviteID: string,
+  token: string,
+  expiresAt: string,
+) => {
+  const supabase = await createClient();
+
+  return supabase
+    .from("invitations")
+    .update({
+      token,
+      expires_at: expiresAt,
     })
     .eq("id", inviteID)
     .select()

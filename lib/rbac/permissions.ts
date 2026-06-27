@@ -7,6 +7,8 @@ export enum Permission {
   INVITE_STUDENT = "invite_student",
 
   RESEND_INVITE = "resend_invite",
+  RESEND_OWN_INVITE = "resend_own_invite",
+
   REVOKE_INVITE = "revoke_invite",
   DELETE_INVITE = "delete_invite",
 

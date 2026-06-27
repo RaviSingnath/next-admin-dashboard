@@ -94,3 +94,46 @@ export async function getInviteOrThrow(
 
   return invite;
 }
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Resend-specific query
+// ─────────────────────────────────────────────────────────────────────────────
+
+/**
+ * Fetches the fields needed for all resend security checks.
+ *
+ * Extends the base getInviteById projection with department_id and
+ * expires_at, which are required for department scope and expiry checks
+ * respectively. A separate query avoids changing getInviteById's return
+ * type and breaking its existing callers (revokeInviteService etc.).
+ */
+export const getInviteForResend = async (id: string) => {
+  const supabase = await createClient();
+
+  return supabase
+    .from("invitations")
+    .select(
+      "id, email, status, college_id, department_id, role, invited_by, expires_at",
+    )
+    .eq("id", id)
+    .single();
+};
+
+export type GetInviteForResendResult = QueryData<
+  ReturnType<typeof getInviteForResend>
+>;
+
+/**
+ * Fetches the resend projection and throws a typed 404 if the row is missing.
+ */
+export async function getInviteForResendOrThrow(
+  id: string,
+): Promise<GetInviteForResendResult> {
+  const { data: invite, error } = await getInviteForResend(id);
+
+  if (error || !invite) {
+    throw Errors.notFound("Invite not found");
+  }
+
+  return invite;
+}

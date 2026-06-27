@@ -3,6 +3,7 @@
 import {
   TInvitePayload,
   zInvitePayload,
+  zResendInvitePayload,
 } from "@/features/invite/invite.schema";
 import {
   inviteUserService,
@@ -49,34 +50,36 @@ export const inviteUserAction = async (
   }
 };
 
-export const resendInviteAction = async (
-  inviteID: string,
-): Promise<ActionResponse> => {
+/**
+ * Server action — Resend Invite
+ **/
+export async function resendInviteAction(
+  invitationId: string,
+): Promise<ActionResponse> {
   try {
+    // 1. Input validation — rejects missing, empty, or non-UUID values
+    //    before any auth or DB call is made.
+    const { invitationId: validatedId } = zResendInvitePayload.parse({
+      invitationId,
+    });
+
+    // 2. Build request context — authenticates the caller via getUser().
+    //    Throws Errors.unauthorized() if the session is missing or expired.
     const ctx = await createRequestContext();
 
-    if (!inviteID) {
-      return {
-        success: false,
-        code: ERROR_CODES.NOT_FOUND,
-        message: "Invite not found",
-      };
-    }
-
-    const invite = await resendInviteService({
-      inviteID,
+    // 3. Delegate to service — all RBAC and business checks run here.
+    const invitation = await resendInviteService({
+      ctx,
+      inviteID: validatedId,
     });
 
     revalidatePath("/invites", "page");
 
-    return {
-      success: true,
-      data: invite,
-    };
+    return { success: true, data: invitation };
   } catch (error) {
     return handleError(error);
   }
-};
+}
 
 export const revokeInviteAction = async (
   inviteID: string,

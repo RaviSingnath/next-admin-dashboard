@@ -7,9 +7,16 @@ type CheckOptions = {
   ownerId?: string;
 };
 
+/**
+ * Permissions that require ownership verification in addition to RBAC.
+ *
+ * When a user holds one of these permissions, canAccess() will also check
+ * that options.userId === options.ownerId before granting access.
+ */
 const OWNERSHIP_PERMISSIONS = new Set([
   Permission.READ_OWN_STUDENT,
   Permission.UPDATE_OWN_STUDENT,
+  Permission.RESEND_OWN_INVITE,
   Permission.REVOKE_OWN_INVITE,
   Permission.DELETE_OWN_INVITE,
 ]);

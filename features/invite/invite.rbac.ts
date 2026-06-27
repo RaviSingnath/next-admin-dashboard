@@ -136,3 +136,35 @@ export function getRevokePermissions(user: AuthUser): RevokePermissions {
     canRevokeOwn: hasPermission(user, Permission.REVOKE_OWN_INVITE),
   };
 }
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Resend permissions
+// ─────────────────────────────────────────────────────────────────────────────
+
+export type ResendPermissions = {
+  /**
+   * RESEND_INVITE — can resend any invite within college scope.
+   * Held by: super_admin, college_admin
+   */
+  canResendAny: boolean;
+
+  /**
+   * RESEND_OWN_INVITE — can only resend invites the user sent.
+   * Held by: supervisor
+   */
+  canResendOwn: boolean;
+};
+
+/**
+ * Resolves which resend scope the current user holds.
+ *
+ * Mirrors getRevokePermissions() — both flags are kept separate so
+ * assertResendOwnership can distinguish a supervisor (canResendOwn only)
+ * from a college_admin (canResendAny only).
+ */
+export function getResendPermissions(user: AuthUser): ResendPermissions {
+  return {
+    canResendAny: hasPermission(user, Permission.RESEND_INVITE),
+    canResendOwn: hasPermission(user, Permission.RESEND_OWN_INVITE),
+  };
+}
