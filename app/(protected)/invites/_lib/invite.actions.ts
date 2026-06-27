@@ -5,11 +5,9 @@ import {
   zInvitePayload,
   zResendInvitePayload,
 } from "@/features/invite/invite.schema";
-import {
-  inviteUserService,
-  resendInviteService,
-  revokeInviteService,
-} from "@/features/invite/invite.service";
+import { inviteUserService } from "@/features/invite/service/invite.create.service";
+import { resendInviteService } from "@/features/invite/service/invite.resend.service";
+import { revokeInviteService } from "@/features/invite/service/invite.revoke.service";
 import { createRequestContext } from "@/lib/auth/request-context";
 import { ERROR_CODES } from "@/lib/errors/error-codes";
 import { handleError } from "@/lib/errors/handle-error";
