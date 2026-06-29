@@ -29,9 +29,9 @@ export default function RootLayout({
       <body
         className={`${outfit.className} min-h-full flex flex-col dark:bg-gray-900`}
       >
-        <SpeedInsights />
         <ThemeProvider>{children}</ThemeProvider>
         <Toaster richColors position="top-right" />
+        <SpeedInsights />
       </body>
     </html>
   );
