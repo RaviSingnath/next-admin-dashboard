@@ -7,6 +7,7 @@ import { ThemeProvider } from "@/context/ThemeContext";
 import { Toaster } from "sonner";
 import { cn } from "@/lib/utils";
 import { SpeedInsights } from "@vercel/speed-insights/next";
+import { Analytics } from "@vercel/analytics/next";
 
 const geist = Geist({ subsets: ["latin"], variable: "--font-sans" });
 
@@ -32,6 +33,7 @@ export default function RootLayout({
         <ThemeProvider>{children}</ThemeProvider>
         <Toaster richColors position="top-right" />
         <SpeedInsights />
+        <Analytics />
       </body>
     </html>
   );
