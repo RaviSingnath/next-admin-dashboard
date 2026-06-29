@@ -10,18 +10,12 @@ type CollegeAdminsListProps = {
 };
 
 export default async function CollegeAdminsList({
-  colleges,
   collegeAdmins,
 }: CollegeAdminsListProps) {
-  const collegeList = colleges.map((college) => ({
-    value: college.id,
-    label: college.college_name,
-  }));
-
   return (
     <ComponentCard
       title="College Admins List"
-      ActionButton={<InviteCollegeAdminButton colleges={collegeList} />}
+      ActionButton={<InviteCollegeAdminButton />}
     >
       <CollegeAdminsTable collegeAdmins={collegeAdmins} />
     </ComponentCard>

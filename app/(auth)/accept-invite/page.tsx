@@ -1,4 +1,5 @@
 import { Metadata } from "next";
+import { Suspense } from "react";
 import AcceptInviteForm from "@/components/auth/accept-invite-form";
 
 export const metadata: Metadata = {
@@ -7,5 +8,9 @@ export const metadata: Metadata = {
 };
 
 export default function AcceptInvitePage() {
-  return <AcceptInviteForm />;
+  return (
+    <Suspense fallback={<div>Loading search...</div>}>
+      <AcceptInviteForm />
+    </Suspense>
+  );
 }

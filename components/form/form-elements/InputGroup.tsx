@@ -1,9 +1,9 @@
 "use client";
-import React from "react";
+
 import ComponentCard from "../../common/cmponent-card";
 import Label from "../Label";
 import Input from "../input/InputField";
-import { EnvelopeIcon } from "../../../icons";
+import { EnvelopeIcon } from "@/components/icons";
 import PhoneInput from "../group-input/PhoneInput";
 
 export default function InputGroup() {
