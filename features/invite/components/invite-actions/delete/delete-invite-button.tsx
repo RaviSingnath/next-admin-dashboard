@@ -4,12 +4,13 @@ import { useModal } from "@/hooks/useModal";
 import DeleteInviteModal from "./delete-invite-modal";
 import { Trash2 } from "lucide-react";
 import { Tooltip } from "react-tooltip";
+import { InviteActionProps } from "@/features/invite/config/invite-actions";
 
 type DeleteInviteButtonProps = {
-  inviteID: string;
+  context: InviteActionProps;
 };
 
-const DeleteInviteButton = ({ inviteID }: DeleteInviteButtonProps) => {
+const DeleteInviteButton = ({ context }: DeleteInviteButtonProps) => {
   const { isOpen, openModal, closeModal } = useModal();
   return (
     <>
@@ -22,7 +23,7 @@ const DeleteInviteButton = ({ inviteID }: DeleteInviteButtonProps) => {
         Delete invite
       </Tooltip>
       <DeleteInviteModal
-        userID={inviteID}
+        inviteId={context.inviteId}
         isOpen={isOpen}
         closeModal={closeModal}
       />

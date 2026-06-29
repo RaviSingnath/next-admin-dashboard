@@ -41,6 +41,7 @@ export const getInvitesQuery = async (profile: AuthUser) => {
     )
   `,
     )
+    .is("deleted_at", null)
     .order("created_at", { ascending: false });
 
   if (profile?.college_id) {
@@ -130,6 +131,52 @@ export async function getInviteForResendOrThrow(
   id: string,
 ): Promise<GetInviteForResendResult> {
   const { data: invite, error } = await getInviteForResend(id);
+
+  if (error || !invite) {
+    throw Errors.notFound("Invite not found");
+  }
+
+  return invite;
+}
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Delete-specific query
+// ─────────────────────────────────────────────────────────────────────────────
+
+/**
+ * Fetches the fields needed for all delete security checks.
+ *
+ * Includes deleted_at so assertInviteIsDeletable can detect rows that
+ * have already been soft-deleted and return an informative error rather
+ * than silently re-stamping them.
+ *
+ * Requires: migration 20260628000000_add_soft_delete_to_invitations.sql
+ * and regenerated Supabase types before the deleted_at column resolves
+ * correctly in the QueryData type.
+ */
+export const getInviteForDelete = async (id: string) => {
+  const supabase = await createClient();
+
+  return supabase
+    .from("invitations")
+    .select(
+      "id, email, status, college_id, department_id, role, invited_by, deleted_at",
+    )
+    .eq("id", id)
+    .single();
+};
+
+export type GetInviteForDeleteResult = QueryData<
+  ReturnType<typeof getInviteForDelete>
+>;
+
+/**
+ * Fetches the delete projection and throws a typed 404 if the row is missing.
+ */
+export async function getInviteForDeleteOrThrow(
+  id: string,
+): Promise<GetInviteForDeleteResult> {
+  const { data: invite, error } = await getInviteForDelete(id);
 
   if (error || !invite) {
     throw Errors.notFound("Invite not found");

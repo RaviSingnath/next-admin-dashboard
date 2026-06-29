@@ -4,7 +4,9 @@ import {
   TInvitePayload,
   zInvitePayload,
   zResendInvitePayload,
+  zDeleteInvitePayload,
 } from "@/features/invite/invite.schema";
+import { deleteInviteService } from "@/features/invite/service/invite.delete.service";
 import { inviteUserService } from "@/features/invite/service/invite.create.service";
 import { resendInviteService } from "@/features/invite/service/invite.resend.service";
 import { revokeInviteService } from "@/features/invite/service/invite.revoke.service";
@@ -108,3 +110,29 @@ export const revokeInviteAction = async (
     return handleError(error);
   }
 };
+
+export async function deleteInviteAction(invitationId: string) {
+  try {
+    // 1. Input validation — rejects missing, empty, or non-UUID values
+    //    before any auth or DB call is made.
+    const { invitationId: validatedId } = zDeleteInvitePayload.parse({
+      invitationId,
+    });
+
+    // 2. Build request context — authenticates the caller via getUser().
+    //    Throws Errors.unauthorized() if the session is missing or expired.
+    const ctx = await createRequestContext();
+
+    // 3. Delegate to service — all RBAC and business checks run here.
+    const invitation = await deleteInviteService({
+      ctx,
+      inviteID: validatedId,
+    });
+
+    revalidatePath("/invites", "page");
+
+    return { success: true as const, data: invitation };
+  } catch (error) {
+    return handleError(error);
+  }
+}

@@ -5,7 +5,6 @@ import Label from "@/components/form/Label";
 
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { appToast } from "@/lib/toast";
 import { useRouter } from "next/navigation";
 import { createDepartmentAction } from "../_lib/department.actions";
 
@@ -13,11 +12,6 @@ import {
   zAddDepartment,
   type TAddDepartment,
 } from "@/features/departments/department.schema";
-import {
-  handleActionError,
-  handleUnexpectedError,
-} from "@/lib/helper/error-handler";
-import { ERROR_CODES } from "@/lib/errors/error-codes";
 import FormWrapper from "@/components/common/form-wrapper";
 import handleFormSubmit from "@/lib/helper/handle-form-submit";
 

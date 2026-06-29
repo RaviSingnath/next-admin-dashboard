@@ -1,21 +1,34 @@
 import { Modal } from "@/components/ui/modal";
 import Button from "@/components/ui/button/Button";
+import {
+  handleActionError,
+  handleUnexpectedError,
+} from "@/lib/helper/error-handler";
+import { deleteInviteAction } from "@/app/(protected)/invites/_lib/invite.actions";
 
 type DeleteUserModalProps = {
-  userID: string;
+  inviteId: string;
   isOpen: boolean;
   closeModal: () => void;
 };
 
 export default function DeleteInviteModal({
-  userID,
+  inviteId,
   isOpen,
   closeModal,
 }: DeleteUserModalProps) {
-  const handleDeleteUser = async (id: string) => {
-    const res = await fetch(`/api/admin/delete-user/${id}`, {
-      method: "DELETE",
-    });
+  const handleDeleteUser = async () => {
+    try {
+      const deletedInvite = await deleteInviteAction(inviteId);
+
+      if (!deletedInvite.success) handleActionError(deletedInvite);
+
+      closeModal();
+    } catch (error) {
+      handleUnexpectedError(error);
+
+      return false;
+    }
   };
 
   return (
@@ -39,7 +52,7 @@ export default function DeleteInviteModal({
           <Button onClick={closeModal} size="sm">
             Close
           </Button>
-          <Button onClick={() => handleDeleteUser(userID)} size="sm">
+          <Button onClick={() => handleDeleteUser()} size="sm">
             delete
           </Button>
         </div>

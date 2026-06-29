@@ -74,3 +74,34 @@ export const resendInviteMutation = async (
     .select()
     .single();
 };
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Soft delete mutation
+// ─────────────────────────────────────────────────────────────────────────────
+
+/**
+ * Soft-deletes an invitation by stamping deleted_at and deleted_by.
+ *
+ * Status is intentionally left unchanged — preserving the status means
+ * the lifecycle history (pending → revoked → deleted, or pending → deleted)
+ * remains readable in audit logs. The row is hidden from normal queries
+ * via the WHERE deleted_at IS NULL filter in getInvitesQuery.
+ *
+ * The audit trigger fires automatically on this UPDATE.
+ */
+export const softDeleteInviteMutation = async (
+  inviteID: string,
+  userID: string,
+) => {
+  const supabase = await createClient();
+
+  return supabase
+    .from("invitations")
+    .update({
+      deleted_at: new Date().toISOString(),
+      deleted_by: userID,
+    })
+    .eq("id", inviteID)
+    .select()
+    .single();
+};

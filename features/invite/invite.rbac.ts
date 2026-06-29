@@ -168,3 +168,28 @@ export function getResendPermissions(user: AuthUser): ResendPermissions {
     canResendOwn: hasPermission(user, Permission.RESEND_OWN_INVITE),
   };
 }
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Delete permissions
+// ─────────────────────────────────────────────────────────────────────────────
+
+export type DeletePermissions = {
+  /** DELETE_INVITE — any invite within scope. Held by: super_admin, college_admin */
+  canDeleteAny: boolean;
+  /** DELETE_OWN_INVITE — only invites the user sent. Held by: supervisor */
+  canDeleteOwn: boolean;
+};
+
+/**
+ * Resolves which deletion scope the current user holds.
+ *
+ * Mirrors getRevokePermissions() and getResendPermissions() — both flags
+ * are kept separate so assertDeleteOwnership can distinguish a supervisor
+ * (canDeleteOwn only) from a college_admin (canDeleteAny only).
+ */
+export function getDeletePermissions(user: AuthUser): DeletePermissions {
+  return {
+    canDeleteAny: hasPermission(user, Permission.DELETE_INVITE),
+    canDeleteOwn: hasPermission(user, Permission.DELETE_OWN_INVITE),
+  };
+}

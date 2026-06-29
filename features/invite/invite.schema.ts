@@ -103,3 +103,19 @@ export const zResendInvitePayload = z.object({
 });
 
 export type TResendInvitePayload = z.infer<typeof zResendInvitePayload>;
+
+// ─────────────────────────────────────────────────────────────────────────────
+// Delete invite schema
+// ─────────────────────────────────────────────────────────────────────────────
+
+/**
+ * Input schema for the delete invite action.
+ *
+ * Only the invitation ID is required — all other data needed for security
+ * checks is fetched from the DB after the ID is validated.
+ */
+export const zDeleteInvitePayload = z.object({
+  invitationId: z.string().uuid("Invalid invitation ID"),
+});
+
+export type TDeleteInvitePayload = z.infer<typeof zDeleteInvitePayload>;

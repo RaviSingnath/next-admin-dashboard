@@ -9,9 +9,6 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { formatDateTime } from "@/utils/date";
-import DeleteInviteButton from "@/features/invite/components/invite-actions/delete/delete-invite-button";
-import ResendInviteButton from "@/features/invite/components/invite-actions/resend/resend-invite-button";
-import RevokeInviteButton from "@/features/invite/components/invite-actions/revoke-invite-button";
 import { SupervisorsListItem } from "@/features/supervisors/supervisors.services";
 
 type SupervisorsTableProps = {
@@ -108,20 +105,7 @@ export default async function SupervisorsTable({
               </TableCell>
               <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
                 <div className="flex gap-2">
-                  {supervisor.status === "active" ? (
-                    <>
-                      <ResendInviteButton inviteID={supervisor.id} />
-                      <RevokeInviteButton inviteID={supervisor.id} />
-                      <DeleteInviteButton inviteID={supervisor.id} />
-                    </>
-                  ) : supervisor.status === "suspended" ? (
-                    <>
-                      <ResendInviteButton inviteID={supervisor.id} />
-                      <RevokeInviteButton inviteID={supervisor.id} />
-                    </>
-                  ) : (
-                    <Button size="sm">View</Button>
-                  )}
+                  <Button size="sm">View</Button>
                 </div>
               </TableCell>
             </TableRow>

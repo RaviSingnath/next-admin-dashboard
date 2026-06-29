@@ -472,8 +472,10 @@ export type Database = {
           accepted_at: string | null
           accepted_by: string | null
           college_id: string | null
-          created_at: string | null
+          created_at: string
           created_user_id: string | null
+          deleted_at: string | null
+          deleted_by: string | null
           department_id: string | null
           email: string
           expires_at: string
@@ -484,15 +486,17 @@ export type Database = {
           revoked_by: string | null
           revoked_reason: string | null
           role: Database["public"]["Enums"]["user_role"]
-          status: Database["public"]["Enums"]["invitation_status"] | null
+          status: Database["public"]["Enums"]["invitation_status"]
           token: string | null
         }
         Insert: {
           accepted_at?: string | null
           accepted_by?: string | null
           college_id?: string | null
-          created_at?: string | null
+          created_at?: string
           created_user_id?: string | null
+          deleted_at?: string | null
+          deleted_by?: string | null
           department_id?: string | null
           email: string
           expires_at: string
@@ -503,15 +507,17 @@ export type Database = {
           revoked_by?: string | null
           revoked_reason?: string | null
           role: Database["public"]["Enums"]["user_role"]
-          status?: Database["public"]["Enums"]["invitation_status"] | null
+          status?: Database["public"]["Enums"]["invitation_status"]
           token?: string | null
         }
         Update: {
           accepted_at?: string | null
           accepted_by?: string | null
           college_id?: string | null
-          created_at?: string | null
+          created_at?: string
           created_user_id?: string | null
+          deleted_at?: string | null
+          deleted_by?: string | null
           department_id?: string | null
           email?: string
           expires_at?: string
@@ -522,7 +528,7 @@ export type Database = {
           revoked_by?: string | null
           revoked_reason?: string | null
           role?: Database["public"]["Enums"]["user_role"]
-          status?: Database["public"]["Enums"]["invitation_status"] | null
+          status?: Database["public"]["Enums"]["invitation_status"]
           token?: string | null
         }
         Relationships: [
@@ -538,6 +544,13 @@ export type Database = {
             columns: ["college_id"]
             isOneToOne: false
             referencedRelation: "colleges"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "invitations_deleted_by_fkey"
+            columns: ["deleted_by"]
+            isOneToOne: false
+            referencedRelation: "profiles"
             referencedColumns: ["id"]
           },
           {

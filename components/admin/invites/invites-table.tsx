@@ -1,5 +1,4 @@
 import TableWrapper from "@/components/tables/table-wrapper";
-import Button from "@/components/ui/button/Button";
 import {
   Table,
   TableBody,
@@ -9,9 +8,7 @@ import {
 } from "@/components/ui/table";
 import { InvitesListItem } from "@/features/invite/invite.service";
 import { formatDateTime } from "@/utils/date";
-import DeleteInviteButton from "@/features/invite/components/invite-actions/delete/delete-invite-button";
-import ResendInviteButton from "@/features/invite/components/invite-actions/resend/resend-invite-button";
-import RevokeInviteButton from "@/features/invite/components/invite-actions/revoke-invite-button";
+import InviteListActionButtons from "../../../features/invite/components/invite-actions/invite-list-action-buttons";
 
 type InvitesTableProps = {
   invites: InvitesListItem[];
@@ -118,22 +115,7 @@ export default async function InvitesTable({ invites }: InvitesTableProps) {
                 {invite.expires_at ? formatDateTime(invite.expires_at) : "-"}
               </TableCell>
               <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
-                <div className="flex gap-2">
-                  {invite.status === "pending" ? (
-                    <>
-                      <ResendInviteButton inviteID={invite.id} />
-                      <RevokeInviteButton inviteID={invite.id} />
-                      <DeleteInviteButton inviteID={invite.id} />
-                    </>
-                  ) : invite.status === "onboarding" ? (
-                    <>
-                      <ResendInviteButton inviteID={invite.id} />
-                      <RevokeInviteButton inviteID={invite.id} />
-                    </>
-                  ) : (
-                    <Button size="sm">View</Button>
-                  )}
-                </div>
+                <InviteListActionButtons invite={invite} />
               </TableCell>
             </TableRow>
           ))}

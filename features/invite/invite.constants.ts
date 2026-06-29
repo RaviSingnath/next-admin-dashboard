@@ -11,12 +11,14 @@ export const INVITATION_STATUS = {
   ONBOARDING: "onboarding",
 } as const satisfies Record<string, InvitationStatus>;
 
-// Invite roles that a college_admin is NOT allowed to revoke
+// Invite roles that a college_admin is NOT allowed to act on
+// (revoke, resend, delete)
 export const COLLEGE_ADMIN_BLOCKED_ROLES: Invitation["role"][] = [
   UserRole.SUPER_ADMIN,
 ];
 
-// Invite roles that a supervisor is NOT allowed to revoke
+// Invite roles that a supervisor is NOT allowed to act on
+// (revoke, resend, delete)
 export const SUPERVISOR_BLOCKED_ROLES: Invitation["role"][] = [
   UserRole.SUPER_ADMIN,
   UserRole.COLLEGE_ADMIN,
@@ -33,4 +35,18 @@ export const REVOCABLE_STATUSES = [
 export const RESENDABLE_STATUSES = [
   INVITATION_STATUS.EXPIRED,
   INVITATION_STATUS.PENDING,
+] as const satisfies ReadonlyArray<InvitationStatus>;
+
+// Statuses that are eligible for soft deletion.
+//
+// onboarding and accepted are intentionally excluded:
+//   onboarding — the user is mid-flow; deleting the invite would leave
+//                the auth user in an inconsistent state.
+//   accepted   — the invitation has already produced a real user account;
+//                it cannot be deleted without affecting that account.
+export const DELETABLE_STATUSES = [
+  INVITATION_STATUS.PENDING,
+  INVITATION_STATUS.REVOKED,
+  INVITATION_STATUS.EXPIRED,
+  INVITATION_STATUS.CANCELLED,
 ] as const satisfies ReadonlyArray<InvitationStatus>;

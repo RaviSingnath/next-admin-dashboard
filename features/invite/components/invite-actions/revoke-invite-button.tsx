@@ -7,15 +7,16 @@ import {
 } from "@/lib/helper/error-handler";
 import { Undo2 } from "lucide-react";
 import { Tooltip } from "react-tooltip";
+import { InviteActionProps } from "../../config/invite-actions";
 
 type RevokeInviteButtonProps = {
-  inviteID: string;
+  context: InviteActionProps;
 };
 
-const RevokeInviteButton = ({ inviteID }: RevokeInviteButtonProps) => {
+const RevokeInviteButton = ({ context }: RevokeInviteButtonProps) => {
   const handleRevokeInvite = async () => {
     try {
-      const result = await revokeInviteAction(inviteID);
+      const result = await revokeInviteAction(context.inviteId);
       console.log(result);
 
       if (!result.success) handleActionError(result);
