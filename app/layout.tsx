@@ -6,8 +6,9 @@ import "mapbox-gl/dist/mapbox-gl.css";
 import { ThemeProvider } from "@/context/ThemeContext";
 import { Toaster } from "sonner";
 import { cn } from "@/lib/utils";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 
-const geist = Geist({subsets:['latin'],variable:'--font-sans'});
+const geist = Geist({ subsets: ["latin"], variable: "--font-sans" });
 
 const outfit = Outfit({
   subsets: ["latin"],
@@ -28,6 +29,7 @@ export default function RootLayout({
       <body
         className={`${outfit.className} min-h-full flex flex-col dark:bg-gray-900`}
       >
+        <SpeedInsights />
         <ThemeProvider>{children}</ThemeProvider>
         <Toaster richColors position="top-right" />
       </body>
