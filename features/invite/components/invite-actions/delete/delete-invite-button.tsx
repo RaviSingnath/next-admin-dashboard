@@ -5,6 +5,8 @@ import DeleteInviteModal from "./delete-invite-modal";
 import { Trash2 } from "lucide-react";
 import { Tooltip } from "react-tooltip";
 import { InviteActionProps } from "@/features/invite/config/invite-actions";
+import { OwnershipGuard } from "@/lib/rbac/guard/OwnershipGuard";
+import { Permission } from "@/lib/rbac/permissions";
 
 type DeleteInviteButtonProps = {
   context: InviteActionProps;
@@ -13,7 +15,11 @@ type DeleteInviteButtonProps = {
 const DeleteInviteButton = ({ context }: DeleteInviteButtonProps) => {
   const { isOpen, openModal, closeModal } = useModal();
   return (
-    <>
+    <OwnershipGuard
+      anyPermission={Permission.DELETE_INVITE}
+      ownPermission={Permission.DELETE_OWN_INVITE}
+      ownerId={context.invitedBy}
+    >
       <Trash2
         onClick={openModal}
         size={16}
@@ -27,7 +33,7 @@ const DeleteInviteButton = ({ context }: DeleteInviteButtonProps) => {
         isOpen={isOpen}
         closeModal={closeModal}
       />
-    </>
+    </OwnershipGuard>
   );
 };
 

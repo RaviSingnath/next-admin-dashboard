@@ -24,6 +24,7 @@ export default function InviteListActionButtons({
             context={{
               inviteId: invite.id,
               userId: invite.created_user_profile?.id,
+              invitedBy: invite.invited_by_profile.id,
             }}
           />
         );

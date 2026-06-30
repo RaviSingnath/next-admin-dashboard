@@ -6,6 +6,8 @@ import {
   handleActionError,
   handleUnexpectedError,
 } from "@/lib/helper/error-handler";
+import { OwnershipGuard } from "@/lib/rbac/guard/OwnershipGuard";
+import { Permission } from "@/lib/rbac/permissions";
 import { RefreshCw } from "lucide-react";
 import { Tooltip } from "react-tooltip";
 
@@ -26,7 +28,11 @@ const ResendInviteButton = ({ context }: ResendInviteButtonProps) => {
     }
   };
   return (
-    <>
+    <OwnershipGuard
+      anyPermission={Permission.RESEND_INVITE}
+      ownPermission={Permission.RESEND_OWN_INVITE}
+      ownerId={context.invitedBy}
+    >
       <RefreshCw
         size={16}
         className="resend-invite cursor-pointer"
@@ -35,7 +41,7 @@ const ResendInviteButton = ({ context }: ResendInviteButtonProps) => {
       <Tooltip anchorSelect=".resend-invite" place="top">
         Resend invite
       </Tooltip>
-    </>
+    </OwnershipGuard>
   );
 };
 

@@ -8,6 +8,8 @@ import {
 import { Undo2 } from "lucide-react";
 import { Tooltip } from "react-tooltip";
 import { InviteActionProps } from "@/features/invite/config/invite-actions";
+import { OwnershipGuard } from "@/lib/rbac/guard/OwnershipGuard";
+import { Permission } from "@/lib/rbac/permissions";
 
 type RevokeInviteButtonProps = {
   context: InviteActionProps;
@@ -28,7 +30,11 @@ const RevokeInviteButton = ({ context }: RevokeInviteButtonProps) => {
   };
 
   return (
-    <>
+    <OwnershipGuard
+      anyPermission={Permission.REVOKE_INVITE}
+      ownPermission={Permission.REVOKE_OWN_INVITE}
+      ownerId={context.invitedBy}
+    >
       <Undo2
         size={16}
         className="revoke-invite cursor-pointer"
@@ -37,7 +43,7 @@ const RevokeInviteButton = ({ context }: RevokeInviteButtonProps) => {
       <Tooltip anchorSelect=".revoke-invite" place="top">
         Revoke invite
       </Tooltip>
-    </>
+    </OwnershipGuard>
   );
 };
 

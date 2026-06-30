@@ -4,6 +4,7 @@ export type InviteAction = (typeof inviteActions)[number];
 
 export type InviteActionProps = {
   inviteId: string;
+  invitedBy: string;
   userId?: string;
 };
 
