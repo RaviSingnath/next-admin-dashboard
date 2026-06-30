@@ -16,7 +16,9 @@ import { Invitation } from "@/features/invite/invite.types";
  * Default expires_at is one hour in the past so that resend tests that
  * do not care about expiry get a valid (expired) invite out of the box.
  */
-export function createInvite(overrides: Partial<Invitation> = {}): Invitation {
+export function createInviteFactory(
+  overrides: Partial<Invitation> = {},
+): Invitation {
   return {
     id: crypto.randomUUID(),
     email: "test@example.com",
@@ -31,7 +33,9 @@ export function createInvite(overrides: Partial<Invitation> = {}): Invitation {
     full_name: null,
     accepted_at: null,
     accepted_by: null,
-    created_at: null,
+    created_at: new Date(Date.now()).toISOString(),
+    deleted_at: null,
+    deleted_by: null,
     created_user_id: null,
     revoked_at: null,
     revoked_by: null,

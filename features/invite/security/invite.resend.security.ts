@@ -45,8 +45,13 @@ export function assertInviteIsResendable(
   invite: GetInviteForResendResult,
   date: string,
 ): void {
-  // (a) Status guard
-  if (invite.status !== INVITATION_STATUS.PENDING) {
+  // (a) Status guard — pending and expired are the only resendable statuses.
+  //     expired = cron has already confirmed the token is dead.
+  //     pending = token may still be alive; expiry is checked below.
+  if (
+    invite.status !== INVITATION_STATUS.PENDING &&
+    invite.status !== INVITATION_STATUS.EXPIRED
+  ) {
     const message =
       invite.status === INVITATION_STATUS.REVOKED
         ? "This invite has been revoked and cannot be resent"
@@ -59,8 +64,10 @@ export function assertInviteIsResendable(
     throw Errors.conflict(message);
   }
 
-  // (b) Expiry guard — resend is only for expired invites
-  if (invite.expires_at > date) {
+  // (b) Expiry guard — only relevant for pending invites.
+  //     An invite with status 'expired' was set by the cron job precisely
+  //     because expires_at already passed; rechecking it here is redundant.
+  if (invite.status === INVITATION_STATUS.PENDING && invite.expires_at > date) {
     throw Errors.conflict(
       "This invite has not yet expired and does not need to be resent",
     );

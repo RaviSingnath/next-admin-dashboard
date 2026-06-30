@@ -1,6 +1,5 @@
-import Button from "@/components/ui/button/Button";
 import Link from "next/link";
-import { InviteActionProps } from "../../config/invite-actions";
+import { InviteActionProps } from "@/features/invite/config/invite-actions";
 
 type ViewuserButtonProps = {
   context: InviteActionProps;

@@ -10,9 +10,6 @@ import {
 } from "@/components/ui/table";
 import { CollegeAdminsListItem } from "@/features/college-admins/college-admin.services";
 import { formatDateTime } from "@/utils/date";
-import DeleteInviteButton from "@/features/invite/components/invite-actions/delete/delete-invite-button";
-import ResendInviteButton from "@/features/invite/components/invite-actions/resend/resend-invite-button";
-import RevokeInviteButton from "@/features/invite/components/invite-actions/revoke-invite-button";
 
 type CollegeAdminsTableProps = {
   collegeAdmins: CollegeAdminsListItem[];
@@ -109,20 +106,7 @@ export default async function CollegeAdminsTable({
               </TableCell>
               <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
                 <div className="flex gap-2">
-                  {collegeAdmin.status === "active" ? (
-                    <>
-                      <ResendInviteButton inviteID={collegeAdmin.id} />
-                      <RevokeInviteButton inviteID={collegeAdmin.id} />
-                      <DeleteInviteButton inviteID={collegeAdmin.id} />
-                    </>
-                  ) : collegeAdmin.status === "suspended" ? (
-                    <>
-                      <ResendInviteButton inviteID={collegeAdmin.id} />
-                      <RevokeInviteButton inviteID={collegeAdmin.id} />
-                    </>
-                  ) : (
-                    <Button size="sm">View</Button>
-                  )}
+                  <Button size="sm">View</Button>
                 </div>
               </TableCell>
             </TableRow>

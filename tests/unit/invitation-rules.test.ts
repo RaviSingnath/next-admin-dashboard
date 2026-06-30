@@ -1,5 +1,5 @@
 import { assertInviteIsResendable } from "@/features/invite/security/invite.resend.security";
-import { createInvite } from "../test-factories";
+import { createInviteFactory } from "../test-factories";
 import { dayAfterDate, dayBeforeDate } from "@/lib/helper/date";
 
 /**
@@ -15,17 +15,41 @@ describe("assertInviteIsResendable", () => {
 
   describe("does not throw", () => {
     it("when status is pending and the invite has expired", () => {
-      const invite = createInvite({ status: "pending", expires_at: PAST_DATE });
+      const invite = createInviteFactory({
+        status: "pending",
+        expires_at: PAST_DATE,
+      });
 
       expect(() => assertInviteIsResendable(invite, TODAY_DATE)).not.toThrow();
     });
+  });
+
+  // Inside describe("does not throw") — happy paths
+  it("when status is expired (set by cron, no expiry check needed)", () => {
+    // expires_at value is irrelevant for expired status — guard is skipped
+    const invite = createInviteFactory({
+      status: "expired",
+      expires_at: PAST_DATE,
+    });
+    expect(() => assertInviteIsResendable(invite, TODAY_DATE)).not.toThrow();
+  });
+
+  // Inside describe("throws") — the cancelled path now needs an explicit test
+  it("when status is cancelled", () => {
+    const invite = createInviteFactory({
+      status: "cancelled",
+      expires_at: PAST_DATE,
+    });
+    expect(() => assertInviteIsResendable(invite, TODAY_DATE)).toThrow(
+      "This invite cannot be resent in its current state",
+    );
   });
 
   // ─── Status guard ──────────────────────────────────────────────────────────
 
   describe("throws when status is not pending", () => {
     it("status is onboarding — invite was already accepted", () => {
-      const invite = createInvite({
+      const invite = createInviteFactory({
         status: "onboarding",
         expires_at: PAST_DATE,
       });
@@ -36,7 +60,7 @@ describe("assertInviteIsResendable", () => {
     });
 
     it("status is accepted", () => {
-      const invite = createInvite({
+      const invite = createInviteFactory({
         status: "accepted",
         expires_at: PAST_DATE,
       });
@@ -47,7 +71,10 @@ describe("assertInviteIsResendable", () => {
     });
 
     it("status is revoked", () => {
-      const invite = createInvite({ status: "revoked", expires_at: PAST_DATE });
+      const invite = createInviteFactory({
+        status: "revoked",
+        expires_at: PAST_DATE,
+      });
 
       expect(() => assertInviteIsResendable(invite, TODAY_DATE)).toThrow(
         "This invite has been revoked and cannot be resent",
@@ -55,7 +82,7 @@ describe("assertInviteIsResendable", () => {
     });
 
     it("status is cancelled", () => {
-      const invite = createInvite({
+      const invite = createInviteFactory({
         status: "cancelled",
         expires_at: PAST_DATE,
       });
@@ -70,7 +97,7 @@ describe("assertInviteIsResendable", () => {
 
   describe("throws when status is pending but the invite has not expired", () => {
     it("expires_at is in the future", () => {
-      const invite = createInvite({
+      const invite = createInviteFactory({
         status: "pending",
         expires_at: FUTURE_DATE,
       });
@@ -81,7 +108,7 @@ describe("assertInviteIsResendable", () => {
     });
 
     it("expires_at is exactly equal to now (boundary — not yet expired)", () => {
-      const invite = createInvite({
+      const invite = createInviteFactory({
         status: "pending",
         expires_at: TODAY_DATE,
       });

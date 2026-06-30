@@ -69,6 +69,7 @@ export const resendInviteMutation = async (
     .update({
       token,
       expires_at: expiresAt,
+      status: "pending",
     })
     .eq("id", inviteID)
     .select()

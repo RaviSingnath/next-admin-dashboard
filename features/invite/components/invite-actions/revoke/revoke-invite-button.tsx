@@ -7,7 +7,7 @@ import {
 } from "@/lib/helper/error-handler";
 import { Undo2 } from "lucide-react";
 import { Tooltip } from "react-tooltip";
-import { InviteActionProps } from "../../config/invite-actions";
+import { InviteActionProps } from "@/features/invite/config/invite-actions";
 
 type RevokeInviteButtonProps = {
   context: InviteActionProps;
