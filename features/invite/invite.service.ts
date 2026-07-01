@@ -4,6 +4,7 @@ import { createRequestContext } from "@/lib/auth/request-context";
 
 export async function getInvitesService() {
   const ctx = await createRequestContext();
+  console.log("ctx.user.id: ", ctx.user.id);
 
   const { data, error } = await getInvitesQuery(ctx.user);
 

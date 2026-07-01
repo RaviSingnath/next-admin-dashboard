@@ -50,3 +50,12 @@ export const DELETABLE_STATUSES = [
   INVITATION_STATUS.EXPIRED,
   INVITATION_STATUS.CANCELLED,
 ] as const satisfies ReadonlyArray<InvitationStatus>;
+
+// This is the single source of truth for who can view whom.
+// Keep this in invite.constants.ts or a dedicated rbac/view-hierarchy.ts
+export const VIEWABLE_TARGET_ROLES: Record<UserRole, UserRole[]> = {
+  [UserRole.SUPER_ADMIN]: [UserRole.COLLEGE_ADMIN],
+  [UserRole.COLLEGE_ADMIN]: [UserRole.SUPERVISOR, UserRole.STUDENT],
+  [UserRole.SUPERVISOR]: [UserRole.STUDENT],
+  [UserRole.STUDENT]: [], // own profile only — handled at route level
+};

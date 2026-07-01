@@ -6,6 +6,7 @@ export const ROLE_PERMISSIONS: Record<UserRole, Permission[]> = {
   // SUPER ADMIN (FULL ACCESS)
   // =========================
   [UserRole.SUPER_ADMIN]: [
+    Permission.VIEW_USER,
     Permission.VIEW_OWN_PROFILE,
     Permission.UPDATE_OWN_PROFILE,
 
@@ -29,6 +30,8 @@ export const ROLE_PERMISSIONS: Record<UserRole, Permission[]> = {
   // COLLEGE ADMIN
   // =========================
   [UserRole.COLLEGE_ADMIN]: [
+    Permission.VIEW_USER,
+
     Permission.VIEW_OWN_PROFILE,
     Permission.UPDATE_OWN_PROFILE,
 
@@ -77,6 +80,8 @@ export const ROLE_PERMISSIONS: Record<UserRole, Permission[]> = {
   // SUPERVISOR
   // =========================
   [UserRole.SUPERVISOR]: [
+    Permission.VIEW_OWN_USER,
+
     Permission.VIEW_OWN_PROFILE,
     Permission.UPDATE_OWN_PROFILE,
 

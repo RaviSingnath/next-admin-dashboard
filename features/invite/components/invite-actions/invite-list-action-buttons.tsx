@@ -10,6 +10,9 @@ export default function InviteListActionButtons({
   invite,
 }: InviteListActionButtonsProps) {
   const actions = getInviteActions(invite);
+  if (!invite?.invited_by_profile?.id) {
+    console.log(invite);
+  }
 
   return (
     <div className="flex gap-2 items-center justify-center">
@@ -25,6 +28,9 @@ export default function InviteListActionButtons({
               inviteId: invite.id,
               userId: invite.created_user_profile?.id,
               invitedBy: invite.invited_by_profile.id,
+              targetRole: invite.role,
+              targetCollegeId: invite.college?.id,
+              targetDepartmentId: invite.department?.id,
             }}
           />
         );

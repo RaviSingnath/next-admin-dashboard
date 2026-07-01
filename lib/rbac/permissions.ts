@@ -15,6 +15,11 @@ export enum Permission {
   REVOKE_OWN_INVITE = "revoke_own_invite",
   DELETE_OWN_INVITE = "delete_own_invite",
 
+  // =========================
+  // USER MANAGEMENT
+  // =========================
+  VIEW_USER = "view_user",
+  VIEW_OWN_USER = "view_own_user",
   SUSPEND_USER = "suspend_user",
   VIEW_OWN_PROFILE = "view_own_profile",
   UPDATE_OWN_PROFILE = "update_own_profile",
