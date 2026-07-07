@@ -1,5 +1,12 @@
 export enum Permission {
   // =========================
+  // Update PLAN
+  // =========================
+
+  UPDATE_PLAN = "update_plan",
+  SUBSCRIBE_PLAN = "subscribe_plan",
+
+  // =========================
   // INVITE user
   // =========================
   INVITE_COLLEGE_ADMIN = "invite_college_admin",

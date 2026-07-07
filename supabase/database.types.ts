@@ -894,6 +894,7 @@ export type Database = {
           amount_minor: number
           created_at: string
           currency: string
+          display_order: number
           id: string
           interval: string
           metadata: Json
@@ -911,6 +912,7 @@ export type Database = {
           amount_minor: number
           created_at?: string
           currency?: string
+          display_order?: number
           id?: string
           interval?: string
           metadata?: Json
@@ -928,6 +930,7 @@ export type Database = {
           amount_minor?: number
           created_at?: string
           currency?: string
+          display_order?: number
           id?: string
           interval?: string
           metadata?: Json

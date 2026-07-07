@@ -1,6 +1,6 @@
 "use server";
 
-import { PlanPricingForm } from "@/components/stripe/pricing-form";
+import { PlanList } from "@/components/stripe/plan-list";
 import {
   getCollegeSubscription,
   getPlansService,
@@ -10,11 +10,7 @@ export default async function PlansPage() {
   const plans = await getPlansService();
   const subscription = await getCollegeSubscription();
 
-  return (
-    <div>
-      {plans?.map((plan) => (
-        <PlanPricingForm key={plan.id} plan={plan} />
-      ))}
-    </div>
-  );
+  if (!plans) return;
+
+  return <PlanList plans={plans} />;
 }

@@ -1,28 +1,19 @@
-"use server";
-
-import { PlanPricingForm } from "@/components/stripe/pricing-form";
+import ComponentCard from "@/components/common/cmponent-card";
+import PageWrapperBreadcrumb from "@/components/layout/page-wrapper-breadcrumb";
+import { PlanList } from "@/components/stripe/plan-list";
 import { getPlansService } from "@/features/stripe/service/stripe.services";
-import { syncPlansFromStripe } from "@/features/stripe/stripe.action";
+import SyncPlansButton from "./_components/sync-plans";
 
 export default async function SyncPlansPage() {
   const plans = await getPlansService();
 
-  async function handleSync() {
-    "use server";
-    const result = await syncPlansFromStripe();
-    console.log(
-      `Synced ${result.synced} plans, deactivated ${result.deactivated}`,
-    );
-  }
+  if (!plans) return;
 
   return (
-    <div>
-      <form action={handleSync}>
-        <button type="submit">Sync Plans</button>
-      </form>
-      {plans?.map((plan) => (
-        <PlanPricingForm key={plan.id} plan={plan} />
-      ))}
-    </div>
+    <PageWrapperBreadcrumb title="Plans">
+      <ComponentCard title="Plans List" ActionButton={<SyncPlansButton />}>
+        <PlanList plans={plans} />
+      </ComponentCard>
+    </PageWrapperBreadcrumb>
   );
 }

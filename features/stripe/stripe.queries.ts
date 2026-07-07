@@ -17,7 +17,8 @@ export async function getPlansQuery() {
   return supabase
     .from("subscription_plans")
     .select("id, name, amount, currency, interval")
-    .eq("active", true);
+    .eq("active", true)
+    .order("display_order");
 }
 
 export type SubscriptionPlans = QueryData<ReturnType<typeof getPlansQuery>>;
