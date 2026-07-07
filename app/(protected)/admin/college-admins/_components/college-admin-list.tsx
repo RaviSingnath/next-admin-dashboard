@@ -11,11 +11,12 @@ type CollegeAdminsListProps = {
 
 export default async function CollegeAdminsList({
   collegeAdmins,
+  colleges,
 }: CollegeAdminsListProps) {
   return (
     <ComponentCard
       title="College Admins List"
-      ActionButton={<InviteCollegeAdminButton />}
+      ActionButton={<InviteCollegeAdminButton colleges={colleges} />}
     >
       <CollegeAdminsTable collegeAdmins={collegeAdmins} />
     </ComponentCard>

@@ -5,13 +5,16 @@ import Label from "@/components/form/Label";
 import Input from "@/components/form/input/InputField";
 
 import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthProvider";
 
 import { UserRoleLabel } from "@/lib/rbac/roles";
 import { getInviteUIRules } from "../invite.rbac";
-import { zInvitePayload, type TInvitePayload } from "../invite.schema";
+import {
+  inviteFormResolver,
+  TInviteForm,
+  type TInvitePayload,
+} from "../invite.schema";
 import { inviteUserAction } from "@/app/(protected)/invites/_lib/invite.actions";
 
 import { AppSelectOption } from "@/lib/types/app-types";
@@ -35,27 +38,22 @@ export default function InviteUserForm({
   const router = useRouter();
 
   const inviteRules = user ? getInviteUIRules(user) : null;
-  console.log(inviteRules);
 
   const roleOptions = inviteRules?.targetRoles.map((role) => ({
     value: role,
     label: UserRoleLabel[role],
   }));
 
-  const departmentList = user?.departments?.map((department) => ({
+  const departmentList = user?.college_departments?.map((department) => ({
     value: department.id,
     label: department.department_name,
   }));
 
-  const form = useForm<TInvitePayload>({
-    resolver: zodResolver(zInvitePayload),
-
+  const form = useForm<TInviteForm>({
+    resolver: inviteFormResolver, // ← replaces zodResolver(zInvitePayload) as Resolver<TInviteForm>
     defaultValues: {
       full_name: "",
       invite_email: "",
-      target_role: undefined,
-      college_id: user?.college_id ?? "",
-      department_id: user?.department_id ?? "",
     },
   });
 
@@ -66,9 +64,9 @@ export default function InviteUserForm({
     formState: { errors, isSubmitting },
   } = form;
 
-  const onSubmit = async (formData: TInvitePayload) => {
+  const onSubmit = async (formData: TInviteForm) => {
     await handleFormSubmit({
-      action: () => inviteUserAction(formData),
+      action: () => inviteUserAction(formData as TInvitePayload),
       setError,
       router,
       successMessage: "Student invited successfully",
@@ -81,9 +79,20 @@ export default function InviteUserForm({
 
   useEffect(() => {
     if (inviteRules && inviteRules.targetRoles.length === 1) {
-      form.setValue("target_role", inviteRules?.targetRoles[0]);
+      form.setValue("target_role", inviteRules.targetRoles[0]);
     }
   }, [inviteRules, form]);
+
+  useEffect(() => {
+    if (user) {
+      if (user.college_id) form.setValue("college_id", user.college_id);
+
+      // fix: ?? undefined, not ?? null
+      // TInviteForm.department_id is string | undefined — null is not assignable
+      if (user.department_id)
+        form.setValue("department_id", user.department_id ?? undefined);
+    }
+  }, [user, form]);
 
   return (
     <FormWrapper
@@ -97,7 +106,6 @@ export default function InviteUserForm({
       <div className="grid grid-cols-1 gap-x-6 gap-y-5 lg:grid-cols-2">
         <div className="col-span-2">
           <Label>Full Name</Label>
-
           <Input
             type="text"
             error={!!errors.full_name}
@@ -105,9 +113,9 @@ export default function InviteUserForm({
             {...register("full_name")}
           />
         </div>
+
         <div className="col-span-2">
           <Label>Email Address</Label>
-
           <Input
             type="email"
             error={!!errors.invite_email}
@@ -115,22 +123,25 @@ export default function InviteUserForm({
             {...register("invite_email")}
           />
         </div>
+
         {inviteRules?.showRoleSelector && roleOptions && (
           <RoleSelect
-            options={roleOptions ?? []}
+            options={roleOptions}
             error={errors.target_role?.message}
           />
         )}
+
         {colleges && inviteRules?.college?.editable && (
           <CollegeSelect
-            options={colleges ?? []}
+            options={colleges}
             rules={inviteRules.college}
             error={errors.college_id?.message}
           />
         )}
+
         {departmentList && inviteRules?.department?.editable && (
           <DepartmentSelect
-            options={departmentList ?? []}
+            options={departmentList}
             rules={inviteRules.department}
             error={errors.department_id?.message}
           />

@@ -39,7 +39,7 @@ export default function SignInForm() {
         body: JSON.stringify(formData),
       });
 
-      const data = await response.json();
+      const { data } = await response.json();
 
       if (!response.ok) {
         if (data.errors) {
@@ -55,7 +55,12 @@ export default function SignInForm() {
       }
 
       reset();
-      router.push("/dashboard");
+
+      if (data.user.role === "super_admin") {
+        router.push("/admin");
+      } else {
+        router.push("/dashboard");
+      }
       router.refresh();
     } catch (error) {
       console.error(error);

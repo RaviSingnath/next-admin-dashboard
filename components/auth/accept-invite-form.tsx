@@ -4,7 +4,7 @@ import Label from "@/components/form/Label";
 import Button from "@/components/ui/button/Button";
 import { EyeCloseIcon, EyeIcon } from "@/components/icons";
 import Link from "next/link";
-import React, { useState, useEffect } from "react";
+import { useState, useMemo } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -37,62 +37,88 @@ export default function AcceptInviteForm() {
     },
   });
 
-  useEffect(() => {
-    const hash = window.location.hash;
-    const params = new URLSearchParams(hash.slice(1));
+  const inviteSession = useMemo(() => {
+    if (typeof window === "undefined") return null;
 
-    const access_token = params.get("access_token");
-    const type = params.get("type");
+    const params = new URLSearchParams(window.location.hash.slice(1));
+
+    const accessToken = params.get("access_token");
     const refreshToken = params.get("refresh_token");
+    const type = params.get("type");
 
-    const establishSession = async () => {
-      if (access_token && refreshToken && type) {
-        const { error } = await supabase.auth.setSession({
-          access_token: access_token,
-          refresh_token: refreshToken,
-        });
+    if (!accessToken || !refreshToken || type !== "invite") {
+      return null;
+    }
 
-        if (error) {
-          return;
-        }
-
-        const response = await fetch(`/api/auth/accept-invite/?token=${token}`);
-        const data = await response.json();
-
-        if (!response.ok) {
-          setError("password", {
-            type: "server",
-            message: data.message ?? "Failed to accept invite.",
-          });
-          return;
-        }
-      }
-
-      window.history.replaceState(null, "", window.location.pathname);
+    return {
+      accessToken,
+      refreshToken,
     };
-
-    establishSession();
   }, []);
 
   async function onSubmit(formData: TAcceptInvite) {
     try {
-      const { error: updateError } = await supabase.auth.updateUser({
+      if (!inviteSession) {
+        setError("password", {
+          type: "server",
+          message: "Invitation has expired. Please request a new invitation.",
+        });
+        return;
+      }
+
+      // 1. Establish the authenticated session from the invite link
+      const { error: sessionError } = await supabase.auth.setSession({
+        access_token: inviteSession.accessToken,
+        refresh_token: inviteSession.refreshToken,
+      });
+
+      if (sessionError) {
+        setError("password", {
+          type: "server",
+          message: sessionError.message,
+        });
+        return;
+      }
+
+      // 2. Set the user's password
+      const { error: passwordError } = await supabase.auth.updateUser({
         password: formData.password,
       });
 
-      if (updateError) {
+      if (passwordError) {
         setError("password", {
           type: "server",
-          message: updateError.message,
+          message: passwordError.message,
+        });
+        return;
+      }
+
+      // 3. Finalize the invitation
+      const response = await fetch(`/api/auth/accept-invite?token=${token}`, {
+        method: "POST",
+      });
+
+      const result = await response.json();
+
+      if (!response.ok) {
+        setError("password", {
+          type: "server",
+          message: result.message ?? "Failed to complete onboarding.",
         });
         return;
       }
 
       reset();
-      router.push("/login");
+
+      router.replace("/login");
       router.refresh();
-    } catch (error) {
-      console.error(error);
+    } catch (err) {
+      console.error(err);
+
+      setError("password", {
+        type: "server",
+        message: "Something went wrong. Please try again.",
+      });
     }
   }
 

@@ -1,17 +1,12 @@
 "use server";
 
 import createClient from "@/lib/supabase/server";
-import { InvitationInsert, InviteData } from "./invite.types";
+import { InvitationInsert } from "./invite.types";
 
-export const createInvite = async (data: InviteData, expiresAt: string) => {
+export const createInvite = async (data: InvitationInsert) => {
   const supabase = await createClient();
 
-  const inviteData: InvitationInsert = {
-    ...data,
-    expires_at: expiresAt,
-  };
-
-  return supabase.from("invitations").insert(inviteData);
+  return supabase.from("invitations").insert(data);
 };
 
 export const cancelOlderInviteByEmail = async (email: string) => {

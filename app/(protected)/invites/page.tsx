@@ -13,7 +13,6 @@ export const metadata: Metadata = {
 export default async function InvitesPage() {
   const colleges = await getCollegesService();
   const invites = await getInvitesService();
-  console.log(invites);
 
   return (
     <PageWrapperBreadcrumb title="Invites">

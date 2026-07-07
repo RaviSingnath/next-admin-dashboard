@@ -77,7 +77,15 @@ export async function updateSession(request: NextRequest) {
 
   // Redirect logged-in users away from the login form only.
   if (user && isLoginPage) {
-    return redirectWithSupabaseCookies(request, supabaseResponse, "/dashboard");
+    if (user?.role !== "super_admin") {
+      return redirectWithSupabaseCookies(
+        request,
+        supabaseResponse,
+        "/dashboard",
+      );
+    } else if (user?.role === "super_admin") {
+      return redirectWithSupabaseCookies(request, supabaseResponse, "/admin");
+    }
   }
 
   return supabaseResponse;

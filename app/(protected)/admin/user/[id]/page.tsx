@@ -12,7 +12,6 @@ export default async function UserPage({
 }) {
   const { id } = await params;
   const profile: UserProfileView = await getProfile(id);
-  console.log(profile);
 
   const userSection = (profile: UserProfileView) => {
     switch (profile.role) {

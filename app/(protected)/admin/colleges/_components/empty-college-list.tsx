@@ -12,7 +12,7 @@ type EmptyCollegeListProps = {
 export default async function EmptyCollegeList({
   colleges,
 }: EmptyCollegeListProps) {
-  return colleges.length > 0 ? (
+  return colleges.length <= 0 ? (
     <div className="min-h-screen  bg-white px-5 py-7 dark:border-gray-800 dark:bg-white/[0.03] xl:px-10 xl:py-12">
       <div className="mx-auto w-full max-w-[630px] text-center">
         <div className="inline-flex items-center justify-center w-16 h-16 rounded-xl bg-gray-100 border border-gray-200 mb-6">

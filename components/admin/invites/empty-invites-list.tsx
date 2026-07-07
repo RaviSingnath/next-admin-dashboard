@@ -28,7 +28,7 @@ export default async function EmptyInvitesList({
               control access permissions.
             </Description>
 
-            <InviteCollegeAdminButton />
+            <InviteCollegeAdminButton colleges={colleges} />
           </>
         ) : (
           <>

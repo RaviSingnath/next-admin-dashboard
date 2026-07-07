@@ -19,7 +19,6 @@ const RevokeInviteButton = ({ context }: RevokeInviteButtonProps) => {
   const handleRevokeInvite = async () => {
     try {
       const result = await revokeInviteAction(context.inviteId);
-      console.log(result);
 
       if (!result.success) handleActionError(result);
     } catch (error) {

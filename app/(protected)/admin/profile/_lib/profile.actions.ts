@@ -103,7 +103,6 @@ export async function updateAddressAction(
   }
 
   try {
-    console.log("updateAddrerssService");
     const profile = await updateAddrerssService({
       ctx,
       data: validatedFields.data,

@@ -38,3 +38,13 @@ export async function getCollegeByEmailQuery(email: string) {
     .eq("official_email", email)
     .maybeSingle();
 }
+
+export async function getCollegeById(collegeId: string) {
+  const supabase = await createClient();
+
+  return supabase
+    .from("colleges")
+    .select("stripe_customer_id")
+    .eq("id", collegeId)
+    .single();
+}

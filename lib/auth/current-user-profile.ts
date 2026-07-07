@@ -10,6 +10,10 @@ export const currentUserProfile = async (profile: CurrentUserQueryResult) => {
     ? profile.colleges[0]
     : profile.colleges;
 
+  const collegeDepartments = profile.colleges
+    ? profile.colleges.departments
+    : [];
+
   const department = Array.isArray(profile.departments)
     ? profile.departments[0]
     : profile.departments;
@@ -31,6 +35,8 @@ export const currentUserProfile = async (profile: CurrentUserQueryResult) => {
     college_id: profile.college_id,
     college_name: college?.college_name ?? null,
     college_status: college?.status ?? null,
+
+    college_departments: collegeDepartments,
 
     departments: departments,
     department_id: profile.department_id,

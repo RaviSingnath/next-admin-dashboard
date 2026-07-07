@@ -266,7 +266,7 @@ export const MENU_CONFIG: Record<UserRole, MenuGroup[]> = {
       subItems: [
         {
           name: "Subscription",
-          path: "/dashboard/billing",
+          path: "/dashboard/subscriptions",
           icon: CreditCard,
         },
         {
