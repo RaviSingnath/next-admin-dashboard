@@ -1,5 +1,6 @@
 "use server";
 
+import { createAdminClient } from "@/lib/supabase/admin";
 import createClient from "@/lib/supabase/server";
 
 export async function getCollegesQuery() {
@@ -47,4 +48,13 @@ export async function getCollegeById(collegeId: string) {
     .select("stripe_customer_id")
     .eq("id", collegeId)
     .single();
+}
+
+export async function getActiveColleges() {
+  const supabase = createAdminClient();
+
+  return supabase
+    .from("colleges")
+    .select("id, college_name")
+    .eq("status", "active");
 }

@@ -1,6 +1,6 @@
-import UserAddressCard from "@/app/(protected)/admin/profile/_component/UserAddressCard";
-import UserInfoCard from "@/app/(protected)/admin/profile/_component/UserInfoCard";
-import UserMetaCard from "@/app/(protected)/admin/profile/_component/UserMetaCard";
+import UserAddressCard from "@/app/(protected)/profile/_component/UserAddressCard";
+import UserInfoCard from "@/app/(protected)/profile/_component/UserInfoCard";
+import UserMetaCard from "@/app/(protected)/profile/_component/UserMetaCard";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {

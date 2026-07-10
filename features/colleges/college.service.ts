@@ -1,7 +1,11 @@
 import { QueryData } from "@supabase/supabase-js";
 import { TCollege } from "./college.schema";
 import { createCollegeMutation } from "./college.mutations";
-import { getCollegeByEmailQuery, getCollegesQuery } from "./college.queries";
+import {
+  getActiveColleges,
+  getCollegeByEmailQuery,
+  getCollegesQuery,
+} from "./college.queries";
 import { Errors } from "@/lib/errors/error-factory";
 import { mapSupabaseError } from "@/lib/errors/supabase-error";
 import { RequestContext } from "@/lib/auth/request-context";
@@ -56,3 +60,13 @@ export async function getCollegesService() {
 
 type CollegesListResponse = Awaited<ReturnType<typeof getCollegesService>>;
 export type CollegeListItem = CollegesListResponse[number];
+
+export default async function showCollegeOnMap() {
+  const { data, error } = await getActiveColleges();
+
+  if (error) {
+    throw mapSupabaseError(error);
+  }
+
+  return data;
+}

@@ -1,12 +1,28 @@
-@import 'tailwindcss';
+@import "tailwindcss";
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
 
 @custom-variant dark (&:is(.dark *));
 
 @theme {
+  --animate-marquee: marquee 15s linear infinite;
+
+  @keyframes marquee {
+    from {
+      transform: translateX(0%);
+    }
+    to {
+      transform: translateX(-50%);
+    }
+  }
+
   --font-*: initial;
-  --font-outfit: Outfit, sans-serif;
+  /* --font-outfit: Outfit, sans-serif; */
+  /* Maps the CSS variables from next/font to Tailwind utility classes.
+     font-sans  → Inter       (body, UI)
+     font-display → Plus Jakarta Sans  (headings, hero) */
+  --font-sans: var(--font-sans);
+  --font-display: var(--font-display);
 
   --breakpoint-*: initial;
   --breakpoint-2xsm: 375px;
@@ -190,7 +206,7 @@
     cursor: pointer;
   }
   body {
-    @apply relative font-normal font-outfit z-1 bg-background text-foreground;
+    @apply relative font-normal font-display z-1 bg-background text-foreground;
   }
   * {
     @apply border-border outline-ring/50;
@@ -401,8 +417,8 @@
   font-weight: 500;
 }
 .flatpickr-month
-.flatpickr-current-month
-.flatpickr-monthDropdown-months:focus {
+  .flatpickr-current-month
+  .flatpickr-monthDropdown-months:focus {
   outline: none !important;
   border: 0 !important;
 }
@@ -432,7 +448,9 @@ span.flatpickr-weekday,
   @apply !bg-none;
 }
 .flatpickr-day.inRange {
-  box-shadow: -5px 0 0 #f9fafb, 5px 0 0 #f9fafb !important;
+  box-shadow:
+    -5px 0 0 #f9fafb,
+    5px 0 0 #f9fafb !important;
   @apply dark:!shadow-datepicker;
 }
 .flatpickr-day.inRange,
@@ -751,7 +769,8 @@ span.flatpickr-weekday,
 
 .task {
   border-radius: 0.75rem;
-  box-shadow: 0 1px 3px 0 rgba(16, 24, 40, 0.1),
+  box-shadow:
+    0 1px 3px 0 rgba(16, 24, 40, 0.1),
     0 1px 2px 0 rgba(16, 24, 40, 0.06);
   opacity: 0.8;
   cursor: grabbing; /* Changes the cursor to indicate dragging */
