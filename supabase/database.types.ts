@@ -666,6 +666,38 @@ export type Database = {
           },
         ]
       }
+      plan_features: {
+        Row: {
+          created_at: string
+          display_order: number
+          feature: string
+          id: string
+          plan_id: string
+        }
+        Insert: {
+          created_at?: string
+          display_order: number
+          feature: string
+          id?: string
+          plan_id: string
+        }
+        Update: {
+          created_at?: string
+          display_order?: number
+          feature?: string
+          id?: string
+          plan_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "plan_features_plan_id_fkey"
+            columns: ["plan_id"]
+            isOneToOne: false
+            referencedRelation: "subscription_plans"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           address_id: string | null
@@ -961,6 +993,10 @@ export type Database = {
       restore_profile: { Args: { p_user_id: string }; Returns: undefined }
       soft_delete_profile: { Args: { p_user_id: string }; Returns: undefined }
       suspend_profile: { Args: { p_user_id: string }; Returns: undefined }
+      upsert_plan_features: {
+        Args: { p_features: Json; p_plan_id: string }
+        Returns: undefined
+      }
     }
     Enums: {
       invitation_status:

@@ -50,6 +50,11 @@ export const getCurrentUserQuery = async (userID: string) => {
           id,
           department_name,
           deleted_at
+        ),
+        college_subscriptions (
+          id,
+          status,
+          plan_id
         )
       ),
       departments!department_id (

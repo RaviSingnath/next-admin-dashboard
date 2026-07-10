@@ -2,7 +2,7 @@
 
 import { RequestContext } from "@/lib/auth/request-context";
 import { TAdminPlan } from "./plan.schema";
-import { updatePlanMutation } from "./plan.mutation";
+import { updateFeaturePlanMutation, updatePlanMutation } from "./plan.mutation";
 import { mapSupabaseError } from "@/lib/errors/supabase-error";
 
 type updatePlanServiceInput = {
@@ -16,12 +16,19 @@ export async function updatePlanService({
   planId,
   formData,
 }: updatePlanServiceInput) {
-  console.log(formData);
-  const { data, error } = await updatePlanMutation(planId, formData);
+  const { error: planError } = await updatePlanMutation(
+    planId,
+    formData.display_order,
+  );
 
-  if (error) throw mapSupabaseError(error);
+  if (planError) throw mapSupabaseError(planError);
 
-  return {
-    data,
-  };
+  const { error: featurePlanError } = await updateFeaturePlanMutation(
+    planId,
+    formData.features,
+  );
+
+  if (featurePlanError) throw mapSupabaseError(featurePlanError);
+
+  return { success: true };
 }

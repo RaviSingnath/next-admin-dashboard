@@ -1,6 +1,12 @@
 import { getAvatarSignedUrlQuery } from "@/features/queries";
 import { CurrentUserQueryResult } from "@/features/queries";
 
+type CollegeSubscriptions = {
+  id: string;
+  status: string;
+  plan_id: string;
+};
+
 export const currentUserProfile = async (profile: CurrentUserQueryResult) => {
   const departments = profile?.colleges?.departments
     .filter((d) => !d.deleted_at)
@@ -9,6 +15,9 @@ export const currentUserProfile = async (profile: CurrentUserQueryResult) => {
   const college = Array.isArray(profile.colleges)
     ? profile.colleges[0]
     : profile.colleges;
+  const activeSubscription = college?.college_subscriptions.find(
+    (s: CollegeSubscriptions) => s.status === "active",
+  );
 
   const collegeDepartments = profile.colleges
     ? profile.colleges.departments
@@ -35,6 +44,8 @@ export const currentUserProfile = async (profile: CurrentUserQueryResult) => {
     college_id: profile.college_id,
     college_name: college?.college_name ?? null,
     college_status: college?.status ?? null,
+
+    subscription_plan_id: activeSubscription?.plan_id ?? null,
 
     college_departments: collegeDepartments,
 

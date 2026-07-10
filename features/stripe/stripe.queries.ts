@@ -16,14 +16,20 @@ export async function getPlansQuery() {
 
   return supabase
     .from("subscription_plans")
-    .select("id, name, amount, currency, interval")
+    .select(
+      `id, name, amount, currency, interval, display_order,
+      features:plan_features(
+        id,
+        feature,
+        display_order
+      )`,
+    )
     .eq("active", true)
     .order("display_order");
 }
-
 export type SubscriptionPlans = QueryData<ReturnType<typeof getPlansQuery>>;
-
 export type SubscriptionPlan = SubscriptionPlans[number];
+export type PlanFeature = SubscriptionPlan["features"][number];
 
 export async function getTransactionsByInvoiceId(invoiceId: string) {
   const supabase = await createClient();

@@ -37,10 +37,10 @@ export default function FormWrapper<T extends FieldValues>({
     <FormProvider {...form}>
       <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col">
         <div className="custom-scrollbar max-h-[450px] overflow-y-auto px-2 pb-3">
-          <div className="mt-7">{children}</div>
+          <div>{children}</div>
         </div>
 
-        <div className="mt-6 flex items-center gap-3 px-2 lg:justify-end">
+        <div className="mt-4 flex items-center gap-3 px-2 lg:justify-end">
           <Button
             size="sm"
             variant="outline"
