@@ -9,6 +9,7 @@ import {
 import { AddressAdd, AddressUpdate } from "./types";
 import { RequestContext } from "@/lib/auth/request-context";
 import { mapSupabaseError } from "@/lib/errors/supabase-error";
+import mapAddressFormToDb from "@/lib/helper/map-address";
 
 export async function retrieveAddress(sessionToken: string, mapboxId: string) {
   const token = process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN;
@@ -62,9 +63,9 @@ export async function updateAddrerssService({
 
   let dbData: AddressAdd | AddressUpdate = await mapAddressFormToDb(data);
 
-  if (ctx.user.address_id) {
+  if (ctx.user.college_address_id) {
     const { data: updatedProfileAddress, error: updateProfileAddressError } =
-      await updateProfileAddress(ctx.user.address_id, dbData);
+      await updateProfileAddress(ctx.user.college_address_id, dbData);
 
     if (updateProfileAddressError)
       throw mapSupabaseError(updateProfileAddressError);
@@ -91,30 +92,4 @@ export async function updateAddrerssService({
       profile: addressAdded,
     };
   }
-}
-
-async function mapAddressFormToDb(data: TEditAddress): Promise<AddressUpdate> {
-  return {
-    place_id: data.place_id ?? null,
-
-    address_line_1: data.address_line_1 ?? null,
-
-    address_line_2: data.address_line_2 ?? null,
-
-    formatted_address: data.formatted_address ?? null,
-
-    city: data.city,
-
-    state_province: data.state_province,
-
-    country: data.country,
-
-    country_code: data.country_code ?? null,
-
-    postal_code: data.postal_code,
-
-    latitude: data.latitude ?? null,
-
-    longitude: data.longitude ?? null,
-  };
 }

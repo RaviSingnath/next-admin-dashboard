@@ -45,6 +45,8 @@ export const currentUserProfile = async (profile: CurrentUserQueryResult) => {
     college_name: college?.college_name ?? null,
     college_status: college?.status ?? null,
 
+    college_address_id: college?.addresses?.id ?? null,
+
     subscription_plan_id: activeSubscription?.plan_id ?? null,
 
     college_departments: collegeDepartments,

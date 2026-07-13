@@ -1,30 +1,35 @@
+"use client";
+
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useAuth } from "@/context/AuthProvider";
 import FormWrapper from "@/components/common/form-wrapper";
 import handleFormSubmit from "@/lib/helper/handle-form-submit";
 import Input from "@/components/form/input/InputField";
 import Label from "@/components/form/Label";
 import { AddressSearch } from "@/features/address/components/address-search";
 import { TEditAddress, zEditAddress } from "@/features/address/address.schema";
-import { updateAddressAction } from "../_lib/profile.actions";
+import { updateCollegeAddressAction } from "../_lib/college-profile.action";
+import { CollegeAddress } from "@/features/colleges/queries/get-college-with-address";
 
-type EditAddressFormProps = {
+type EditCollegeAddressFormProps = {
   closeModal: () => void;
+  collegeAddress: CollegeAddress;
 };
 
-export default function EditAddressForm({ closeModal }: EditAddressFormProps) {
+export default function EditCollegeAddressForm({
+  closeModal,
+  collegeAddress,
+}: EditCollegeAddressFormProps) {
   const router = useRouter();
-  const { user } = useAuth();
 
   const form = useForm<TEditAddress>({
     resolver: zodResolver(zEditAddress),
     defaultValues: {
-      city: user?.city || "",
-      state_province: user?.state_province || "",
-      country: user?.country || "",
-      postal_code: user?.postal_code || "",
+      city: collegeAddress?.city || "",
+      state_province: collegeAddress?.state_province || "",
+      country: collegeAddress?.country || "",
+      postal_code: collegeAddress?.postal_code || "",
     },
   });
 
@@ -46,10 +51,10 @@ export default function EditAddressForm({ closeModal }: EditAddressFormProps) {
 
   const onSubmit = async (formData: TEditAddress) => {
     await handleFormSubmit({
-      action: () => updateAddressAction(formData),
+      action: () => updateCollegeAddressAction(formData),
       setError,
       router,
-      successMessage: "Address updated successfully",
+      successMessage: "College address updated successfully",
       onSuccess: () => {
         reset();
         closeModal();

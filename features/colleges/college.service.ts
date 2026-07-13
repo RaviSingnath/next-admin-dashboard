@@ -8,7 +8,11 @@ import {
 } from "./college.queries";
 import { Errors } from "@/lib/errors/error-factory";
 import { mapSupabaseError } from "@/lib/errors/supabase-error";
-import { RequestContext } from "@/lib/auth/request-context";
+import {
+  createRequestContext,
+  RequestContext,
+} from "@/lib/auth/request-context";
+import { collegeWithAddressQuery } from "./queries/get-college-with-address";
 
 type createCollegeServiceInput = {
   ctx: RequestContext;
@@ -61,8 +65,26 @@ export async function getCollegesService() {
 type CollegesListResponse = Awaited<ReturnType<typeof getCollegesService>>;
 export type CollegeListItem = CollegesListResponse[number];
 
-export default async function showCollegeOnMap() {
+export async function showCollegeOnMap() {
   const { data, error } = await getActiveColleges();
+
+  if (error) {
+    throw mapSupabaseError(error);
+  }
+
+  return data;
+}
+
+export type MapAddress = Awaited<ReturnType<typeof showCollegeOnMap>>;
+
+export async function getCollegeWithAddress() {
+  const ctx = await createRequestContext();
+
+  const collegeId = ctx.user.college_id;
+
+  if (!collegeId) throw Errors.collegeNotAssigned();
+
+  const { data, error } = await collegeWithAddressQuery(collegeId);
 
   if (error) {
     throw mapSupabaseError(error);

@@ -55,6 +55,14 @@ export async function getActiveColleges() {
 
   return supabase
     .from("colleges")
-    .select("id, college_name")
+    .select(
+      `id,
+      college_name,
+      addresses!colleges_address_id_fkey (
+        id,
+        latitude,
+        longitude
+      )`,
+    )
     .eq("status", "active");
 }

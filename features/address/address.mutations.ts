@@ -4,7 +4,7 @@ import { AddressAdd, AddressUpdate } from "./types";
 export const addAddress = async (data: AddressAdd) => {
   const supabase = await createClient();
 
-  return supabase.from("addresses").insert(data).select().single();
+  return supabase.from("addresses").insert(data).select("id").single();
 };
 
 export const addAddressToProfile = async (

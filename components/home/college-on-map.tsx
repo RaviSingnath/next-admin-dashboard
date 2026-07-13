@@ -1,13 +1,9 @@
+import { MapAddress } from "@/features/colleges/college.service";
 import Marquee from "../common/marquee";
 import Map from "./map";
 
-type College = {
-  id: string;
-  college_name: string;
-};
-
 type CollegeOnMapProps = {
-  colleges: College[];
+  colleges: MapAddress;
 };
 
 export default function CollegeOnMap({ colleges }: CollegeOnMapProps) {
@@ -23,7 +19,7 @@ export default function CollegeOnMap({ colleges }: CollegeOnMapProps) {
           </div>
         ))}
       </Marquee>
-      <Map />
+      <Map colleges={colleges} />
     </>
   );
 }

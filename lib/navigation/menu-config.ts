@@ -310,7 +310,7 @@ export const MENU_CONFIG: Record<UserRole, MenuGroup[]> = {
       subItems: [
         {
           name: "College Profile",
-          path: "/settings/profile",
+          path: "/dashboard/college-profile",
           icon: Building,
         },
         {

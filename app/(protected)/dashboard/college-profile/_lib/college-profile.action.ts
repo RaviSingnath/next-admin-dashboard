@@ -1,0 +1,43 @@
+"use server";
+
+import { TEditAddress, zEditAddress } from "@/features/address/address.schema";
+import { updateCollegeAddrerssService } from "@/features/colleges/services/update-college-address";
+import { createRequestContext } from "@/lib/auth/request-context";
+import { ERROR_CODES } from "@/lib/errors/error-codes";
+import { handleError } from "@/lib/errors/handle-error";
+import { getZodFieldErrors } from "@/lib/helper/get-zod-field-errors";
+import { ActionResponse } from "@/lib/types/action-response";
+import { revalidatePath } from "next/cache";
+
+export async function updateCollegeAddressAction(
+  formData: TEditAddress,
+): Promise<ActionResponse> {
+  const ctx = await createRequestContext();
+
+  const validatedFields = zEditAddress.safeParse(formData);
+
+  if (!validatedFields.success) {
+    return {
+      success: false,
+      code: ERROR_CODES.VALIDATION_ERROR,
+      message: "Validation failed",
+      errors: getZodFieldErrors(validatedFields.error),
+    };
+  }
+
+  try {
+    const profile = await updateCollegeAddrerssService({
+      ctx,
+      data: validatedFields.data,
+    });
+
+    revalidatePath("/dashboard/college-profile", "page");
+
+    return {
+      success: true,
+      data: profile,
+    };
+  } catch (error) {
+    return handleError(error);
+  }
+}

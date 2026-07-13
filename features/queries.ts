@@ -55,6 +55,9 @@ export const getCurrentUserQuery = async (userID: string) => {
           id,
           status,
           plan_id
+        ),
+        addresses (
+          id
         )
       ),
       departments!department_id (
