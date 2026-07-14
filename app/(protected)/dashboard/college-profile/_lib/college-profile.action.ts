@@ -1,7 +1,8 @@
 "use server";
 
 import { TEditAddress, zEditAddress } from "@/features/address/address.schema";
-import { uploadLogoService } from "@/features/colleges/college.service";
+import { TCollegeInfo, zCollegeInfo } from "@/features/colleges/college.schema";
+import { updateCollegeInfoService, uploadLogoService } from "@/features/colleges/college.service";
 import { updateCollegeAddrerssService } from "@/features/colleges/services/update-college-address";
 import { zImageFile } from "@/features/profile/profile.schema";
 import { createRequestContext } from "@/lib/auth/request-context";
@@ -73,6 +74,39 @@ export async function uploadLogoAction(
     return {
       success: true,
       data: department,
+    };
+  } catch (error) {
+    return handleError(error);
+  }
+}
+
+export async function updateCollegeInfoAction(
+  formData: TCollegeInfo,
+): Promise<ActionResponse> {
+  const ctx = await createRequestContext();
+
+  const validatedFields = zCollegeInfo.safeParse(formData);
+
+  if (!validatedFields.success) {
+    return {
+      success: false,
+      code: ERROR_CODES.VALIDATION_ERROR,
+      message: "Validation failed",
+      errors: getZodFieldErrors(validatedFields.error),
+    };
+  }
+
+  try {
+    const profile = await updateCollegeInfoService({
+      ctx,
+      data: validatedFields.data,
+    });
+
+    revalidatePath("/profile", "page");
+
+    return {
+      success: true,
+      data: profile,
     };
   } catch (error) {
     return handleError(error);

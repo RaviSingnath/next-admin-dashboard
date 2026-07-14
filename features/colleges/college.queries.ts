@@ -77,6 +77,8 @@ export const getCollegeProfileQuery = async (collegeId: string) => {
       `
       id,
       college_name,
+      official_email,
+      phone,
       status,
       logo_url,
       created_at,

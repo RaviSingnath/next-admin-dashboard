@@ -1,7 +1,8 @@
 import { QueryData } from "@supabase/supabase-js";
-import { TCollege } from "./college.schema";
+import { TCollege, TCollegeInfo } from "./college.schema";
 import {
   createCollegeMutation,
+  updatecollegeInfo,
   updateLogoPath,
   uploadLogo,
 } from "./college.mutations";
@@ -183,5 +184,30 @@ export async function uploadLogoService({
 
   return {
     profile: updatedData,
+  };
+}
+
+type updateCollegeInfoServiceInput = {
+  ctx: RequestContext;
+  data: TCollegeInfo;
+};
+
+export async function updateCollegeInfoService({
+  ctx,
+  data,
+}: updateCollegeInfoServiceInput) {
+  if (!ctx.user.college_id) throw Errors.collegeNotAssigned();
+
+  if (ctx.user.college_status !== "active") {
+    throw new Error("You can't update inactive college");
+  }
+
+  const { data: updatedProfile, error: profileUpdateError } =
+    await updatecollegeInfo(ctx.user.college_id, data);
+
+  if (profileUpdateError) throw mapSupabaseError(profileUpdateError);
+
+  return {
+    profile: updatedProfile,
   };
 }

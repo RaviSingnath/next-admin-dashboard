@@ -5,6 +5,7 @@ import {
 import CollegeAddressCard from "./_components/college-address-card";
 import { CollegeProfileProvider } from "@/context/college-profile-context";
 import CollegeMetaCard from "./_components/college-meta-card";
+import CollegeInfoCard from "./_components/college-info-card";
 
 export default async function CollegeProfilePage() {
   const data = await getCollegeWithAddress();
@@ -18,7 +19,7 @@ export default async function CollegeProfilePage() {
       <div className="space-y-6">
         <CollegeProfileProvider data={collegeProfile}>
           <CollegeMetaCard />
-          {/* <UserInfoCard /> */}
+          <CollegeInfoCard />
           <CollegeAddressCard collegeAddress={data.addresses} />
         </CollegeProfileProvider>
       </div>
