@@ -1,5 +1,6 @@
 "use server";
 
+import { COLLEGE_LOGO_BUCKET } from "@/lib/constants/db";
 import { createAdminClient } from "@/lib/supabase/admin";
 import createClient from "@/lib/supabase/server";
 
@@ -66,3 +67,51 @@ export async function getActiveColleges() {
     )
     .eq("status", "active");
 }
+
+export const getCollegeProfileQuery = async (collegeId: string) => {
+  const supabase = await createClient();
+
+  return supabase
+    .from("colleges")
+    .select(
+      `
+      id,
+      college_name,
+      status,
+      logo_url,
+      created_at,
+      address_id,
+      addresses (
+        city,
+        state_province,
+        country,
+        country_code,
+        postal_code,
+        address_line_1,
+        address_line_2
+      ),
+      departments (
+        id,
+        department_name,
+        deleted_at
+      ),
+      college_subscriptions (
+        id,
+        status,
+        plan_id,
+        current_period_end,
+        cancel_at_period_end
+      )
+    `,
+    )
+    .eq("id", collegeId)
+    .is("departments.deleted_at", null)
+    .single();
+};
+
+export const getLogoSignedUrlQuery = async (avatar: string) => {
+  const supabase = await createClient();
+  return supabase.storage
+    .from(COLLEGE_LOGO_BUCKET)
+    .createSignedUrl(avatar, 60 * 60);
+};

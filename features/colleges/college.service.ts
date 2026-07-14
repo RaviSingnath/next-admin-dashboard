@@ -1,10 +1,16 @@
 import { QueryData } from "@supabase/supabase-js";
 import { TCollege } from "./college.schema";
-import { createCollegeMutation } from "./college.mutations";
+import {
+  createCollegeMutation,
+  updateLogoPath,
+  uploadLogo,
+} from "./college.mutations";
 import {
   getActiveColleges,
   getCollegeByEmailQuery,
+  getCollegeProfileQuery,
   getCollegesQuery,
+  getLogoSignedUrlQuery,
 } from "./college.queries";
 import { Errors } from "@/lib/errors/error-factory";
 import { mapSupabaseError } from "@/lib/errors/supabase-error";
@@ -13,6 +19,8 @@ import {
   RequestContext,
 } from "@/lib/auth/request-context";
 import { collegeWithAddressQuery } from "./queries/get-college-with-address";
+import { TImageFile } from "../profile/profile.schema";
+import sharp from "sharp";
 
 type createCollegeServiceInput = {
   ctx: RequestContext;
@@ -91,4 +99,89 @@ export async function getCollegeWithAddress() {
   }
 
   return data;
+}
+
+export async function getCollegeProfileService() {
+  const ctx = await createRequestContext();
+
+  const collegeId = ctx.user.college_id;
+
+  if (!collegeId) throw Errors.collegeNotAssigned();
+
+  const { data: collegeProfile, error } =
+    await getCollegeProfileQuery(collegeId);
+
+  if (!collegeProfile) throw Errors.notFound();
+
+  if (!collegeProfile.logo_url) {
+    return {
+      ...collegeProfile,
+      avatar_url: null,
+    };
+  }
+
+  const { data: avatarData, error: bucketError } = await getLogoSignedUrlQuery(
+    collegeProfile?.logo_url,
+  );
+
+  if (bucketError) {
+    return {
+      ...collegeProfile,
+      logo_url: null,
+    };
+  }
+
+  if (error) {
+    throw mapSupabaseError(error);
+  }
+
+  return {
+    ...collegeProfile,
+    logo_url: avatarData.signedUrl,
+  };
+}
+
+export type CollegeProfile = Awaited<
+  ReturnType<typeof getCollegeProfileService>
+>;
+
+type updateAvatarServiceInput = {
+  ctx: RequestContext;
+  data: TImageFile;
+};
+export async function uploadLogoService({
+  ctx,
+  data,
+}: updateAvatarServiceInput) {
+  if (!ctx.user.college_id) throw Errors.collegeNotAssigned();
+
+  const file = data.imageFile;
+
+  const filePath = `${ctx.user.college_id}/logo.webp`;
+
+  const arrayBuffer = await file.arrayBuffer();
+  const buffer = Buffer.from(arrayBuffer);
+
+  const webpBuffer = await sharp(buffer)
+    .resize(500, 500, {
+      fit: "cover",
+      position: "centre",
+    })
+    .webp({ quality: 80 })
+    .toBuffer();
+
+  const { error: uploadError } = await uploadLogo(filePath, webpBuffer);
+
+  if (uploadError) throw uploadError;
+
+  const { data: updatedData, error: profileUpdateError } = await updateLogoPath(
+    ctx.user.college_id,
+    filePath,
+  );
+
+  if (profileUpdateError) throw mapSupabaseError(profileUpdateError);
+
+  return {
+    profile: updatedData,
+  };
 }
