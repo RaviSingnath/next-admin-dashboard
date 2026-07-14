@@ -61,12 +61,30 @@ export async function getCollegesService() {
     throw mapSupabaseError(error);
   }
 
-  const collegesData: RawCollegesResponse =
-    data?.map((college) => ({
-      ...college,
-      profiles:
-        college.profiles?.filter((profile) => profile.status == "active") ?? [],
-    })) ?? [];
+  const collegesData = await Promise.all(
+    (data ?? []).map(async (college) => {
+      const profiles =
+        college.profiles?.filter((profile) => profile.status === "active") ??
+        [];
+
+      if (!college.logo_url) {
+        return {
+          ...college,
+          profiles,
+        };
+      }
+
+      const { data: logo, error } = await getLogoSignedUrlQuery(
+        college.logo_url,
+      );
+
+      return {
+        ...college,
+        profiles,
+        logo_url: error ? null : logo.signedUrl,
+      };
+    }),
+  );
 
   return collegesData;
 }
