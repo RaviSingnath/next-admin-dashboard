@@ -164,7 +164,7 @@ export default function HeroSection() {
         >
           <div className="relative left-[calc(50%-11rem)] aspect-1155/678 w-144.5 -translate-x-1/2 rotate-30 bg-linear-to-tr from-[#feb648] to-[#feb648] opacity-30 sm:left-[calc(50%-30rem)] sm:w-288.75 dark:opacity-20"></div>
         </div>
-        <div className="py-24 sm:py-32 lg:pb-40">
+        <div className="py-24 sm:py-24 lg:pb-32">
           <div className="mx-auto max-w-7xl px-6 lg:px-8">
             <div className="mx-auto max-w-2xl text-center">
               <h1 className="text-5xl font-display font-semibold tracking-tight text-balance text-gray-900 sm:text-7xl dark:text-white">
@@ -215,12 +215,12 @@ export default function HeroSection() {
             /> */}
           </div>
         </div>
-        <div
+        {/* <div
           aria-hidden="true"
           className="absolute inset-x-0 top-[calc(100%-55rem)] -z-10 transform-gpu overflow-hidden blur-3xl sm:top-[calc(100%-30rem)]"
         >
-          <div className="relative left-[calc(50%+3rem)] aspect-1155/678 w-144.5 -translate-x-1/2 bg-linear-to-tr from-[#feb648] to-[#feb648] opacity-30 sm:left-[calc(50%+36rem)] sm:w-288.75 dark:opacity-20"></div>
-        </div>
+          <div className="relative left-[calc(50%+3rem)] bottom-[calc(50%+3rem)] aspect-1155/678 w-144.5 -translate-x-1/2 -translate-y-1/2 bg-linear-to-tr from-[#feb648] to-[#feb648] opacity-30 sm:left-[calc(50%+36rem)] sm:bottom-[calc(70%+20rem)] sm:w-288.75 dark:opacity-20"></div>
+        </div> */}
       </div>
     </div>
   );

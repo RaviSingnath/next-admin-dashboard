@@ -59,6 +59,7 @@ export async function getActiveColleges() {
     .select(
       `id,
       college_name,
+      logo_url,
       addresses!colleges_address_id_fkey (
         id,
         latitude,

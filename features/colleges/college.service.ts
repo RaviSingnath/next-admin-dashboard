@@ -99,10 +99,33 @@ export async function showCollegeOnMap() {
     throw mapSupabaseError(error);
   }
 
-  return data;
+  const colleges = await Promise.all(
+    data.map(async (college) => {
+      if (!college.logo_url) {
+        return college;
+      }
+
+      const { data: logo, error: logoError } = await getLogoSignedUrlQuery(
+        college.logo_url,
+      );
+
+      return {
+        ...college,
+        logo_url: logoError ? null : logo.signedUrl,
+      };
+    }),
+  );
+
+  return colleges;
 }
 
-export type MapAddress = Awaited<ReturnType<typeof showCollegeOnMap>>;
+type ActiveCollege = Awaited<
+  ReturnType<typeof showCollegeOnMap>
+>[number];
+
+export type MapAddress = (ActiveCollege & {
+  logo_url: string | null;
+})[];
 
 export async function getCollegeWithAddress() {
   const ctx = await createRequestContext();

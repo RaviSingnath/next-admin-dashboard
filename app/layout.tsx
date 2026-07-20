@@ -41,10 +41,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={cn("font-sans", inter.variable)}>
-      <body
-        className={`${plusJakartaSans.className} min-h-full flex flex-col dark:bg-gray-900`}
-      >
+    <html
+      lang="en"
+      className={cn("font-sans", inter.variable, plusJakartaSans.variable)}
+    >
+      <body className="min-h-full flex flex-col dark:bg-gray-900">
         <ThemeProvider>{children}</ThemeProvider>
         <Toaster richColors position="top-right" />
         <SpeedInsights />

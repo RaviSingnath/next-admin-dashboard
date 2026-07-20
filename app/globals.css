@@ -17,12 +17,6 @@
   }
 
   --font-*: initial;
-  /* --font-outfit: Outfit, sans-serif; */
-  /* Maps the CSS variables from next/font to Tailwind utility classes.
-     font-sans  → Inter       (body, UI)
-     font-display → Plus Jakarta Sans  (headings, hero) */
-  --font-sans: var(--font-sans);
-  --font-display: var(--font-display);
 
   --breakpoint-*: initial;
   --breakpoint-2xsm: 375px;
@@ -821,6 +815,13 @@ span.flatpickr-weekday,
   --radius-2xl: calc(var(--radius) * 1.8);
   --radius-3xl: calc(var(--radius) * 2.2);
   --radius-4xl: calc(var(--radius) * 2.6);
+
+  /* --font-outfit: Outfit, sans-serif; */
+  /* Maps the CSS variables from next/font to Tailwind utility classes.
+     font-sans  → Inter       (body, UI)
+     font-display → Plus Jakarta Sans  (headings, hero) */
+  --font-sans: var(--font-sans);
+  --font-display: var(--font-display);
 }
 
 /*
