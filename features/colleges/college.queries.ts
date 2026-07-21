@@ -112,8 +112,8 @@ export const getCollegeProfileQuery = async (collegeId: string) => {
     .single();
 };
 
-export const getLogoSignedUrlQuery = async (avatar: string) => {
-  const supabase = await createClient();
+export const getLogoSignedUrlQuery = (avatar: string) => {
+  const supabase = createAdminClient();
   return supabase.storage
     .from(COLLEGE_LOGO_BUCKET)
     .createSignedUrl(avatar, 60 * 60);
