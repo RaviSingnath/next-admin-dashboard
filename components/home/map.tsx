@@ -3,11 +3,8 @@
 import { useEffect, useMemo, useRef } from "react";
 import mapboxgl from "mapbox-gl";
 import type { GeoJSONSource } from "mapbox-gl";
-
 import { MapAddress } from "@/features/colleges/college.service";
-
 import type { CollegeLocation } from "@/lib/types/map-types";
-
 import {
   animateFeatureReveal,
   buildFeatureCollection,
@@ -24,13 +21,6 @@ type MapProps = {
 };
 
 export default function CollegeMap(props: MapProps) {
-  console.log("Map props:", props);
-
-  // if (!props) {
-  //   console.log("Props are undefined");
-  //   return null;
-  // }
-
   if (!props) {
     throw new Error("Map received undefined props");
   }
@@ -128,15 +118,11 @@ export default function CollegeMap(props: MapProps) {
 
     const map = new mapboxgl.Map({
       container: mapContainerRef.current,
-
       projection: "globe",
-
-      style: "mapbox://styles/mapbox/standard",
-
-      // center: [78.9629, 20.5937],
-
-      zoom: 1.3,
-
+      style: "mapbox://styles/ravisinghnath/cmrtdhqq200be01sc2t7u1st2",
+      zoom: 1.35,
+      pitch: 0,
+      bearing: 0,
       scrollZoom: true,
     });
 
@@ -146,13 +132,48 @@ export default function CollegeMap(props: MapProps) {
       popupRef.current?.remove();
     });
 
+    const nav = new mapboxgl.NavigationControl({
+      showCompass: false,
+      showZoom: false,
+    });
+
+    map.addControl(nav);
+
     map.on("style.load", () => {
-      map.setFog({
-        color: "#10141c",
-        "high-color": "#1b2535",
-        "space-color": "#04070d",
-        "horizon-blend": 0.08,
-      });
+      if (map.getProjection()?.name === "globe") {
+        map.setFog({
+          range: [-1, 1],
+          color: "#0b1522",
+          "high-color": "#27405f",
+          "space-color": [
+            "interpolate",
+            ["linear"],
+            ["zoom"],
+            0,
+            "rgba(2,5,11,0)",
+            3,
+            "rgba(0,0,0,0)",
+          ],
+          "horizon-blend": 0,
+          "star-intensity": 0.05,
+        });
+      }
+
+      map.setLights([
+        {
+          id: "sun_light",
+          type: "directional",
+          properties: {
+            color: "rgba(255.0, 0.0, 0.0, 1.0)",
+            intensity: 0.4,
+            direction: [200.0, 40.0],
+            "cast-shadows": true,
+            "shadow-intensity": 0.2,
+          },
+        },
+      ]);
+
+      map.resize();
     });
 
     map.on("load", () => {
@@ -172,30 +193,42 @@ export default function CollegeMap(props: MapProps) {
 
         layout: {
           "icon-image": ["get", "iconId"],
-
           "icon-size": [
             "interpolate",
             ["linear"],
             ["zoom"],
             1,
-            0.45,
+            0.65,
             4,
-            0.55,
-            8,
             0.75,
-            12,
-            0.95,
-            16,
-            1.15, // new — keeps growing past your fitBounds maxZoom of 14
-            20,
-            1.35,
+            8,
+            0.9,
+            14,
+            1.0,
           ],
-
           "icon-allow-overlap": true,
-
           "icon-ignore-placement": true,
         },
       });
+
+      map.addLayer(
+        {
+          id: "college-pulse",
+
+          type: "circle",
+
+          source: SOURCE_ID,
+
+          paint: {
+            "circle-radius": 16,
+
+            "circle-color": "#ffffff",
+
+            "circle-opacity": 0.25,
+          },
+        },
+        LAYER_ID,
+      );
 
       /**
        * Cursor
@@ -203,11 +236,11 @@ export default function CollegeMap(props: MapProps) {
 
       map.on("mouseenter", LAYER_ID, () => {
         map.getCanvas().style.cursor = "pointer";
-        console.log('mouseenter')
+        console.log("mouseenter");
       });
 
       map.on("mouseleave", LAYER_ID, () => {
-        console.log('mouseleave')
+        console.log("mouseleave");
         map.getCanvas().style.cursor = "";
 
         hoverMarkerRef.current?.remove();
@@ -228,17 +261,6 @@ export default function CollegeMap(props: MapProps) {
         }
 
         if (feature.id === hoveredIdRef.current) return;
-
-        // const coordinates = feature.geometry.coordinates as [number, number];
-
-        // const logoUrl = feature.properties?.logoUrl;
-
-        // hoverMarkerRef.current?.remove();
-        // hoverMarkerRef.current = null;
-
-        // if (logoUrl) {
-        //   hoverMarkerRef.current = createHoverMarker(map, coordinates, logoUrl);
-        // }
 
         hoveredIdRef.current = feature.id ?? null;
         hoverMarkerRef.current?.remove();
@@ -390,7 +412,7 @@ export default function CollegeMap(props: MapProps) {
   }, [collegeLocations]);
 
   return (
-    <div className="relative h-full w-full overflow-hidden rounded-l-3xl">
+    <div className="relative h-full w-full overflow-hidden">
       <div ref={mapContainerRef} className="h-full w-full" />
     </div>
   );

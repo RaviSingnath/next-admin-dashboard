@@ -1,0 +1,70 @@
+{
+  "version": 8,
+  "name": "College Globe",
+  "glyphs": "mapbox://fonts/mapbox/{fontstack}/{range}.pbf",
+  "sprite": "mapbox://sprites/mapbox/streets-v8",
+  "sources": {
+    "composite": {
+      "url": "mapbox://mapbox.mapbox-streets-v8",
+      "type": "vector"
+    }
+  },
+  "layers": [
+    {
+      "id": "background",
+      "type": "background",
+      "paint": {
+        "background-color": "#08121E"
+      }
+    }
+  ],
+  "background": {
+    "color": "#08121E"
+  },
+  "water": {
+    "color": "#0B1728"
+  },
+  "land": {
+    "color": "#15283B"
+  },
+  "land-outline": {
+    "color": "#22384D"
+  },
+  "admin-boundary": {
+    "visibility": "none"
+  },
+  "country-label": {
+    "visibility": "none"
+  },
+  "state-label": {
+    "visibility": "none"
+  },
+  "settlement-label": {
+    "visibility": "none"
+  },
+  "poi-label": {
+    "visibility": "none"
+  },
+  "road-label": {
+    "visibility": "none"
+  },
+  "road": {
+    "visibility": "none"
+  },
+  "transit": {
+    "visibility": "none"
+  },
+  "airport": {
+    "visibility": "none"
+  },
+  "building": {
+    "visibility": "none"
+  },
+  "hillshade": {
+    "opacity": 0.12
+  },
+  "waterway": {
+    "color": "#16324A",
+    "opacity": 0.35
+  }
+}

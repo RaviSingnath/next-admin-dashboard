@@ -2,6 +2,7 @@ import { ElDialogPanel, ElDialog } from "@tailwindplus/elements/react";
 import { Menu, X } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
+import HeroSubHeading from "./hero-sub-heading";
 
 export default function HeroSection() {
   return (
@@ -170,11 +171,7 @@ export default function HeroSection() {
               <h1 className="text-5xl font-display font-semibold tracking-tight text-balance text-gray-900 sm:text-7xl dark:text-white">
                 Run your college. Not your paperwork
               </h1>
-              <p className="mt-8 text-lg font-medium text-pretty text-gray-500 sm:text-xl/8 dark:text-gray-400">
-                The admin platform built for institutions that want more time
-                for education. College Diary brings your entire institution
-                under one roof.
-              </p>
+              <HeroSubHeading />
               <div className="mt-10 flex items-center justify-center gap-x-6">
                 <a
                   href="#"

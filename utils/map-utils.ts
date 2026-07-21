@@ -8,7 +8,10 @@ import type {
 export const SOURCE_ID = "colleges-source";
 export const LAYER_ID = "colleges-logo-layer";
 export const FALLBACK_ICON_ID = "college-fallback-icon";
-export const ICON_SIZE = 56;
+export const ICON_SIZE = 64;
+
+const DEGREES_PER_SECOND = 1;
+const AUTO_ROTATE_DELAY = 3000;
 
 export const EMPTY_FEATURE_COLLECTION: FeatureCollection<
   Point,
@@ -57,10 +60,31 @@ export function drawToFixedCanvas(img: HTMLImageElement) {
 
   const ctx = canvas.getContext("2d")!;
 
+  // Shadow
+  ctx.shadowColor = "rgba(0,0,0,.28)";
+  ctx.shadowBlur = 16;
+  ctx.shadowOffsetY = 6;
+
+  // White background
+  ctx.beginPath();
+  ctx.arc(ICON_SIZE / 2, ICON_SIZE / 2, ICON_SIZE / 2 - 2, 0, Math.PI * 2);
+  ctx.fillStyle = "#fff";
+  ctx.fill();
+
+  // White border
+  ctx.lineWidth = 3;
+  ctx.strokeStyle = "#fff";
+  ctx.stroke();
+
   ctx.save();
 
   ctx.beginPath();
   ctx.arc(ICON_SIZE / 2, ICON_SIZE / 2, ICON_SIZE / 2, 0, Math.PI * 2);
+
+  // Clip logo
+  ctx.save();
+  ctx.beginPath();
+  ctx.arc(ICON_SIZE / 2, ICON_SIZE / 2, ICON_SIZE / 2 - 5, 0, Math.PI * 2);
 
   ctx.clip();
 
@@ -193,7 +217,7 @@ export function fitToLocations(
   if (locations.length === 1) {
     map.flyTo({
       center: locations[0].coordinates,
-      zoom: 3,
+      zoom: 1.25,
     });
 
     return;
@@ -208,6 +232,7 @@ export function fitToLocations(
   map.fitBounds(bounds, {
     padding: 80,
     maxZoom: 14,
+    zoom: 1.8,
     duration: 1000,
   });
 }
@@ -218,8 +243,8 @@ export function fitToLocations(
 
 export function startAutoRotate(
   map: mapboxgl.Map,
-  degreesPerSecond = 1,
-  resumeDelayMs = 3000,
+  degreesPerSecond = DEGREES_PER_SECOND,
+  resumeDelayMs = AUTO_ROTATE_DELAY,
 ) {
   let hovering = false;
   let enabled = true;
@@ -302,21 +327,88 @@ export function createHoverMarker(
   coordinates: [number, number],
   logoUrl: string,
 ) {
+  const wrapper = document.createElement("div");
+
   const img = document.createElement("img");
+  wrapper.appendChild(img);
 
   img.src = logoUrl;
 
-  img.width = 72;
-  img.height = 72;
+  img.width = 80;
+  img.height = 80;
 
   img.style.borderRadius = "9999px";
-  img.style.boxShadow = "0 12px 30px rgba(0,0,0,.25)";
+  img.style.boxShadow =
+    "0 8px 24px rgba(0,0,0,.25), 0 0 10px rgba(255,255,255,.18)";
   img.style.transition = "all .25s ease";
-  img.style.transform = "scale(1.15)";
+  img.style.position = "relative";
   img.style.background = "#fff";
-  img.style.padding = "4px";
+  img.style.padding = "2px";
 
-  return new mapboxgl.Marker(img).setLngLat(coordinates).addTo(map);
+  img.style.transformOrigin = "center center";
+
+  img.style.transform = "scale(1)";
+
+  img.style.willChange = "transform, opacity";
+  img.style.transformOrigin = "center center";
+  img.style.backfaceVisibility = "hidden";
+
+  img.style.animation = "float 3.5s ease-in-out infinite";
+
+  img.style.transition = `transform .25s cubic-bezier(.2,.8,.2,1),
+box-shadow .25s`;
+
+  const marker = new mapboxgl.Marker(wrapper).setLngLat(coordinates).addTo(map);
+
+  img.addEventListener("mouseover", () => {
+    img.animate(
+      [
+        {
+          transform: "translateY(6px) scale(0.9) rotate(-4deg)",
+          opacity: 0,
+        },
+        {
+          transform: "translateY(-3px) scale(1.08) rotate(2deg)",
+          opacity: 1,
+          offset: 0.7,
+        },
+        {
+          transform: "translateY(0) scale(1.05) rotate(0deg)",
+          opacity: 1,
+        },
+      ],
+      {
+        duration: 320,
+        easing: "cubic-bezier(0.22, 1, 0.36, 1)",
+        fill: "forwards",
+      },
+    );
+  });
+
+  img.animate(
+    [
+      {
+        transform: "translateY(6px) scale(0.9)",
+        opacity: 0,
+      },
+      {
+        transform: "translateY(-2px) scale(1.08)",
+        opacity: 1,
+        offset: 0.7,
+      },
+      {
+        transform: "translateY(0) scale(1.05)",
+        opacity: 1,
+      },
+    ],
+    {
+      duration: 350,
+      easing: "cubic-bezier(.34,1.56,.64,1)",
+      fill: "forwards",
+    },
+  );
+
+  return marker;
 }
 
 /* -------------------------------------------------------------------------- */
