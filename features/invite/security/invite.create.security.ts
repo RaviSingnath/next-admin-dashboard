@@ -62,9 +62,11 @@ export function canInviteIntoScope(
   user: AuthUser,
   data: TInvitePayload,
 ): boolean {
+  const departmentId = "department_id" in data ? data.department_id : undefined;
+
   return (
     canInviteCollege(user, data.college_id) &&
-    canInviteDepartment(user, data.department_id)
+    canInviteDepartment(user, departmentId)
   );
 }
 
@@ -74,6 +76,8 @@ export function canInviteIntoScope(
  */
 export function assertCanInvite(ctx: RequestContext, data: TInvitePayload) {
   const { user } = ctx;
+
+  const departmentId = "department_id" in data ? data.department_id : undefined;
 
   // 1. Permission check — can this role send invites to the target role?
   if (!canInviteRole(user, data.target_role)) {
@@ -86,7 +90,7 @@ export function assertCanInvite(ctx: RequestContext, data: TInvitePayload) {
   }
 
   // 3. Department scope check
-  if (data.department_id && !canInviteDepartment(user, data.department_id)) {
+  if (departmentId && !canInviteDepartment(user, departmentId)) {
     throw Errors.forbidden("You cannot invite into this department");
   }
 }

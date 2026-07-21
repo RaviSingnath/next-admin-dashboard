@@ -58,7 +58,7 @@ export const zInviteCollegeAdmin = baseInviteSchema.extend({
 export const zInviteSupervisor = baseInviteSchema.extend({
   target_role: z.literal(UserRole.SUPERVISOR),
 
-  department_id: z.string().uuid("Select a valid department"),
+  department_id: z.uuid("Select a valid department"),
 });
 
 /**
@@ -70,7 +70,7 @@ export const zInviteSupervisor = baseInviteSchema.extend({
 export const zInviteStudent = baseInviteSchema.extend({
   target_role: z.literal(UserRole.STUDENT),
 
-  department_id: z.string().uuid("Select a valid department"),
+  department_id: z.uuid("Select a valid department"),
 });
 
 // ─────────────────────────────────────────────────────────────────────────────
