@@ -112,7 +112,7 @@ export const getCollegeProfileQuery = async (collegeId: string) => {
     .single();
 };
 
-export const getLogoSignedUrlQuery = (avatar: string) => {
+export const getLogoSignedUrlQuery = async (avatar: string) => {
   const supabase = createAdminClient();
   return supabase.storage
     .from(COLLEGE_LOGO_BUCKET)
