@@ -2,6 +2,7 @@ import HeroSection from "@/components/home/hero-section";
 import { showCollegeOnMap } from "@/features/colleges/college.service";
 import CollegeOnMap from "@/components/home/college-on-map";
 import Stats from "@/components/home/stats";
+import Pricing from "@/components/home/pricing-plan/pricing";
 
 export default async function Home() {
   const colleges = await showCollegeOnMap();
@@ -12,6 +13,7 @@ export default async function Home() {
         <HeroSection />
         <Stats />
         <CollegeOnMap colleges={colleges} />
+        <Pricing />
       </main>
     </div>
   );
