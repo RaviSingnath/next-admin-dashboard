@@ -1,9 +1,14 @@
+import { Plans } from "@/features/stripe/service/stripe.services";
 import PlanCard from "./plan-card";
 import PlanDetails from "./plan-details";
 import PlanPrice from "./plan-price";
 import PricingCard from "./pricing-card";
 
-export default function Pricing() {
+type PricingProps = {
+  plans: Plans;
+};
+
+export default function Pricing({ plans }: PricingProps) {
   return (
     <div className="bg-white w-full py-24 sm:py-32 dark:bg-gray-900">
       <div className="mx-auto max-w-7xl px-6 lg:px-8">
@@ -16,12 +21,13 @@ export default function Pricing() {
             students, supervisors, departments, and payments all in one place.
           </p>
         </div>
+
+        <PricingCard plans={plans} />
+
         <PlanCard>
           <PlanDetails />
           <PlanPrice />
         </PlanCard>
-
-        <PricingCard />
       </div>
     </div>
   );

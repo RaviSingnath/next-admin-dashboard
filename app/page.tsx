@@ -1,11 +1,13 @@
 import HeroSection from "@/components/home/hero-section";
 import { showCollegeOnMap } from "@/features/colleges/college.service";
+import { getPlansService } from "@/features/stripe/service/stripe.services";
 import CollegeOnMap from "@/components/home/college-on-map";
 import Stats from "@/components/home/stats";
 import Pricing from "@/components/home/pricing-plan/pricing";
 
 export default async function Home() {
   const colleges = await showCollegeOnMap();
+  const plans = await getPlansService();
 
   return (
     <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
@@ -13,7 +15,7 @@ export default async function Home() {
         <HeroSection />
         <Stats />
         <CollegeOnMap colleges={colleges} />
-        <Pricing />
+        <Pricing plans={plans} />
       </main>
     </div>
   );
