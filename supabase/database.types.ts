@@ -672,28 +672,28 @@ export type Database = {
           display_order: number
           feature: string
           id: string
-          plan_id: string
+          product_id: string
         }
         Insert: {
           created_at?: string
           display_order: number
           feature: string
           id?: string
-          plan_id: string
+          product_id: string
         }
         Update: {
           created_at?: string
           display_order?: number
           feature?: string
           id?: string
-          plan_id?: string
+          product_id?: string
         }
         Relationships: [
           {
-            foreignKeyName: "plan_features_plan_id_fkey"
-            columns: ["plan_id"]
+            foreignKeyName: "plan_features_product_fk"
+            columns: ["product_id"]
             isOneToOne: false
-            referencedRelation: "subscription_plans"
+            referencedRelation: "stripe_products"
             referencedColumns: ["id"]
           },
         ]
@@ -777,6 +777,42 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
+      }
+      stripe_products: {
+        Row: {
+          active: boolean
+          created_at: string
+          description: string | null
+          display_order: number
+          id: string
+          metadata: Json
+          name: string
+          stripe_product_id: string
+          updated_at: string
+        }
+        Insert: {
+          active?: boolean
+          created_at?: string
+          description?: string | null
+          display_order?: number
+          id?: string
+          metadata?: Json
+          name: string
+          stripe_product_id: string
+          updated_at?: string
+        }
+        Update: {
+          active?: boolean
+          created_at?: string
+          description?: string | null
+          display_order?: number
+          id?: string
+          metadata?: Json
+          name?: string
+          stripe_product_id?: string
+          updated_at?: string
+        }
+        Relationships: []
       }
       stripe_webhook_events: {
         Row: {
@@ -926,15 +962,12 @@ export type Database = {
           amount_minor: number
           created_at: string
           currency: string
-          display_order: number
           id: string
           interval: string
           metadata: Json
-          name: string
+          product_id: string
           stripe_price_created_at: string | null
           stripe_price_id: string
-          stripe_product_created_at: string | null
-          stripe_product_id: string | null
           synced_at: string | null
           updated_at: string
         }
@@ -944,15 +977,12 @@ export type Database = {
           amount_minor: number
           created_at?: string
           currency?: string
-          display_order?: number
           id?: string
           interval?: string
           metadata?: Json
-          name: string
+          product_id: string
           stripe_price_created_at?: string | null
           stripe_price_id: string
-          stripe_product_created_at?: string | null
-          stripe_product_id?: string | null
           synced_at?: string | null
           updated_at?: string
         }
@@ -962,19 +992,24 @@ export type Database = {
           amount_minor?: number
           created_at?: string
           currency?: string
-          display_order?: number
           id?: string
           interval?: string
           metadata?: Json
-          name?: string
+          product_id?: string
           stripe_price_created_at?: string | null
           stripe_price_id?: string
-          stripe_product_created_at?: string | null
-          stripe_product_id?: string | null
           synced_at?: string | null
           updated_at?: string
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "subscription_plans_product_fk"
+            columns: ["product_id"]
+            isOneToOne: false
+            referencedRelation: "stripe_products"
+            referencedColumns: ["id"]
+          },
+        ]
       }
     }
     Views: {
@@ -997,6 +1032,10 @@ export type Database = {
       suspend_profile: { Args: { p_user_id: string }; Returns: undefined }
       upsert_plan_features: {
         Args: { p_features: Json; p_plan_id: string }
+        Returns: undefined
+      }
+      upsert_product_features: {
+        Args: { p_features: Json; p_product_id: string }
         Returns: undefined
       }
     }

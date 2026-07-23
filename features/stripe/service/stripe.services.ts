@@ -8,6 +8,7 @@ import { updateCollegeStripeCustomerId } from "../stripe.mutations";
 import { createRequestContext } from "@/lib/auth/request-context";
 import { Errors } from "@/lib/errors/error-factory";
 import { mapSupabaseError } from "@/lib/errors/supabase-error";
+import { QueryData } from "@supabase/supabase-js";
 
 export async function ensureStripeCustomer(collegeId: string): Promise<string> {
   // 1. Return existing customer ID if already created
@@ -40,8 +41,29 @@ export async function ensureStripeCustomer(collegeId: string): Promise<string> {
 export async function getPlansService() {
   const { data, error } = await getPlansQuery();
 
-  return data;
+  if (error) throw error;
+
+  return (data ?? []).map((plan) => {
+    const monthly = plan.prices.find((p) => p.interval === "month");
+    const yearly = plan.prices.find((p) => p.interval === "year");
+
+    if (!monthly || !yearly) {
+      throw new Error(`Missing monthly or yearly price for "${plan.name}"`);
+    }
+
+    return {
+      ...plan,
+      monthly,
+      yearly,
+    };
+  });
 }
+
+export type Plans = Awaited<ReturnType<typeof getPlansService>>;
+export type Plan = Plans[number];
+export type PlanFeature = Plan["features"][number];
+export type MonthlyPrice = NonNullable<Plan["monthly"]>;
+export type YearlyPrice = NonNullable<Plan["yearly"]>;
 
 export async function getCollegeSubscription() {
   const ctx = await createRequestContext();

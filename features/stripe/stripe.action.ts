@@ -98,100 +98,199 @@ export async function syncPlansFromStripe(): Promise<{
   const supabase = createAdminClient();
   const now = new Date().toISOString();
 
-  // ── Step 1: Fetch all active products from Stripe ─────────────────────────
-  // autoPagingToArray handles pagination — safe for up to a few hundred products.
+  // ────────────────────────────────────────────────────────────────
+  // 1. Fetch Stripe Products & Prices
+  // ────────────────────────────────────────────────────────────────
+
   const products = await stripe.products
-    .list({ active: true, limit: 100 })
+    .list({
+      active: true,
+      limit: 100,
+    })
     .autoPagingToArray({ limit: 100 });
 
-  // ── Step 2: Fetch all active recurring prices from Stripe ─────────────────
   const prices = await stripe.prices
     .list({
       active: true,
       type: "recurring",
       limit: 100,
-      expand: ["data.product"], // avoids a separate product lookup per price
+      expand: ["data.product"],
     })
     .autoPagingToArray({ limit: 100 });
 
-  const productMap = new Map(products.map((p) => [p.id, p]));
+  const stripeProductMap = new Map(products.map((p) => [p.id, p]));
 
-  // ── Step 3: Upsert each active price as a plan row ────────────────────────
-  const plansToUpsert = prices
-    .filter((price) => {
-      // Skip prices whose product is inactive or archived
-      const productId =
-        typeof price.product === "string" ? price.product : price.product?.id;
-      return productId && productMap.has(productId);
-    })
-    .map((price) => {
-      const product =
-        typeof price.product === "object" && price.product !== null
-          ? price.product
-          : productMap.get(price.product as string);
+  // ────────────────────────────────────────────────────────────────
+  // 2. Sync Products
+  // ────────────────────────────────────────────────────────────────
 
-      const amountMinor = price.unit_amount ?? 0;
+  const productsToUpsert = products.map((product) => ({
+    stripe_product_id: product.id,
+    name: product.name,
+    description: product.description,
+    active: product.active,
+    metadata: product.metadata,
+  }));
 
-      return {
-        name: (product as { name: string }).name,
-        stripe_product_id:
-          typeof price.product === "string"
-            ? price.product
-            : (price.product as { id: string }).id,
-        stripe_price_id: price.id,
-        amount: amountMinor / 100,
-        amount_minor: amountMinor,
-        currency: price.currency,
-        interval: price.recurring?.interval ?? "month",
-        active: true,
-        stripe_product_created_at: product
-          ? new Date(
-              (product as { created: number }).created * 1000,
-            ).toISOString()
-          : null,
-        stripe_price_created_at: new Date(price.created * 1000).toISOString(),
-        synced_at: now,
-      };
-    });
+  if (productsToUpsert.length > 0) {
+    const { error } = await supabase
+      .from("stripe_products")
+      .upsert(productsToUpsert, {
+        onConflict: "stripe_product_id",
+      });
+
+    if (error) {
+      throw new Error(`Product sync failed: ${error.message}`);
+    }
+  }
+
+  // ────────────────────────────────────────────────────────────────
+  // 3. Load DB Product IDs
+  // ────────────────────────────────────────────────────────────────
+
+  const { data: dbProducts, error: productError } = await supabase
+    .from("stripe_products")
+    .select("id, stripe_product_id");
+
+  if (productError) {
+    throw new Error(productError.message);
+  }
+
+  const productIdMap = new Map(
+    (dbProducts ?? []).map((p) => [p.stripe_product_id, p.id]),
+  );
+
+  // ────────────────────────────────────────────────────────────────
+  // 4. Sync Prices
+  // ────────────────────────────────────────────────────────────────
+
+  const plansToUpsert = prices.flatMap((price) => {
+    const stripeProductId =
+      typeof price.product === "string" ? price.product : price.product.id;
+
+    const product = stripeProductMap.get(stripeProductId);
+
+    if (!product) {
+      return [];
+    }
+
+    const productId = productIdMap.get(stripeProductId);
+
+    if (!productId) {
+      throw new Error(
+        `Missing database product for Stripe product ${stripeProductId}`,
+      );
+    }
+
+    const amountMinor = price.unit_amount ?? 0;
+
+    return {
+      product_id: productId,
+
+      stripe_price_id: price.id,
+
+      amount: amountMinor / 100,
+      amount_minor: amountMinor,
+
+      currency: price.currency,
+
+      interval: price.recurring?.interval ?? "month",
+
+      active: true,
+
+      stripe_price_created_at: new Date(price.created * 1000).toISOString(),
+
+      synced_at: now,
+    };
+  });
 
   if (plansToUpsert.length > 0) {
     const { error } = await supabase
       .from("subscription_plans")
-      .upsert(plansToUpsert, { onConflict: "stripe_price_id" });
+      .upsert(plansToUpsert, {
+        onConflict: "stripe_price_id",
+      });
 
-    if (error) throw new Error(`Sync failed: ${error.message}`);
+    if (error) {
+      throw new Error(`Price sync failed: ${error.message}`);
+    }
   }
 
-  // ── Step 4: Deactivate plans whose Stripe price is no longer active ────────
-  // Fetch all price IDs currently active in Stripe
+  // ────────────────────────────────────────────────────────────────
+  // 5. Deactivate Removed Prices
+  // ────────────────────────────────────────────────────────────────
+
   const activePriceIds = prices.map((p) => p.id);
 
-  // Find local plans not in the active Stripe set
-  const { data: localPlans } = await supabase
+  const { data: localPlans, error: localPlanError } = await supabase
     .from("subscription_plans")
     .select("id, stripe_price_id")
     .eq("active", true);
 
-  const toDeactivate = (localPlans ?? []).filter(
-    (p) => !activePriceIds.includes(p.stripe_price_id),
+  if (localPlanError) {
+    throw new Error(localPlanError.message);
+  }
+
+  const plansToDeactivate = (localPlans ?? []).filter(
+    (plan) => !activePriceIds.includes(plan.stripe_price_id),
   );
 
-  if (toDeactivate.length > 0) {
+  if (plansToDeactivate.length > 0) {
     const { error } = await supabase
       .from("subscription_plans")
-      .update({ active: false, synced_at: now })
+      .update({
+        active: false,
+        synced_at: now,
+      })
       .in(
         "id",
-        toDeactivate.map((p) => p.id),
+        plansToDeactivate.map((p) => p.id),
       );
 
-    if (error) throw new Error(`Deactivation failed: ${error.message}`);
+    if (error) {
+      throw new Error(`Price deactivation failed: ${error.message}`);
+    }
+  }
+
+  // ────────────────────────────────────────────────────────────────
+  // 6. Deactivate Removed Products
+  // ────────────────────────────────────────────────────────────────
+
+  const activeStripeProductIds = products.map((p) => p.id);
+
+  const { data: localProducts, error: localProductError } = await supabase
+    .from("stripe_products")
+    .select("id, stripe_product_id")
+    .eq("active", true);
+
+  if (localProductError) {
+    throw new Error(localProductError.message);
+  }
+
+  const productsToDeactivate = (localProducts ?? []).filter(
+    (product) => !activeStripeProductIds.includes(product.stripe_product_id),
+  );
+
+  if (productsToDeactivate.length > 0) {
+    const { error } = await supabase
+      .from("stripe_products")
+      .update({
+        active: false,
+      })
+      .in(
+        "id",
+        productsToDeactivate.map((p) => p.id),
+      );
+
+    if (error) {
+      throw new Error(`Product deactivation failed: ${error.message}`);
+    }
   }
 
   revalidatePath("/admin/plans", "page");
 
   return {
     synced: plansToUpsert.length,
-    deactivated: toDeactivate.length,
+    deactivated: plansToDeactivate.length + productsToDeactivate.length,
   };
 }

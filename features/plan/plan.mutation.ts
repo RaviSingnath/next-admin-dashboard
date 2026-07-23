@@ -8,7 +8,7 @@ export const updatePlanMutation = async (
   const supabase = await createClient();
 
   return supabase
-    .from("subscription_plans")
+    .from("stripe_products")
     .update({ display_order: displayOrder })
     .eq("id", planId)
     .single();
@@ -20,8 +20,8 @@ export const updateFeaturePlanMutation = async (
 ) => {
   const supabase = await createClient();
 
-  return supabase.rpc("upsert_plan_features", {
-    p_plan_id: planId,
+  return supabase.rpc("upsert_product_features", {
+    p_product_id: planId,
     p_features: data,
   });
 };

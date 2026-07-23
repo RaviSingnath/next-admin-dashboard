@@ -3,10 +3,10 @@ import { Pencil } from "lucide-react";
 import { useModal } from "@/hooks/useModal";
 import EditPlanModal from "./edit-plan-modal";
 import EditPlanForm from "./edit-plan-form";
-import { SubscriptionPlan } from "@/features/stripe/stripe.queries";
+import { Plan } from "@/features/stripe/service/stripe.services";
 
 type EditPlanButtonProps = {
-  plan: SubscriptionPlan;
+  plan: Plan;
 };
 
 export default function EditPlanButton({ plan }: EditPlanButtonProps) {

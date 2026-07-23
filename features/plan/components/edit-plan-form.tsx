@@ -8,14 +8,14 @@ import Label from "@/components/form/Label";
 import { zAdminPlan, TAdminPlan } from "../plan.schema";
 import handleFormSubmit from "@/lib/helper/handle-form-submit";
 import { updatePlanAction } from "@/app/(protected)/admin/plans/_lib/plan.actions";
-import { SubscriptionPlan } from "@/features/stripe/stripe.queries";
+import { Plan } from "@/features/stripe/service/stripe.services";
 import PlanFeatureInput from "./plan-feature-input";
 import { Plus } from "lucide-react";
 import Button from "@/components/ui/button/Button";
 
 type EditPlanFormProps = {
   closeModal: () => void;
-  plan: SubscriptionPlan;
+  plan: Plan;
 };
 
 export default function EditPlanForm({ closeModal, plan }: EditPlanFormProps) {

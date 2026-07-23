@@ -1,5 +1,4 @@
 import createClient from "@/lib/supabase/server";
-import { QueryData } from "@supabase/supabase-js";
 
 export const getCollegeStripeCustomerId = async (collegeId: string) => {
   const supabase = await createClient();
@@ -15,21 +14,33 @@ export async function getPlansQuery() {
   const supabase = await createClient();
 
   return supabase
-    .from("subscription_plans")
+    .from("stripe_products")
     .select(
-      `id, name, amount, currency, interval, display_order,
+      `
+      id,
+      name,
+      description,
+      display_order,
+
+      prices:subscription_plans(
+        id,
+        stripe_price_id,
+        amount,
+        amount_minor,
+        currency,
+        interval
+      ),
+
       features:plan_features(
         id,
         feature,
         display_order
-      )`,
+      )
+    `,
     )
     .eq("active", true)
     .order("display_order");
 }
-export type SubscriptionPlans = QueryData<ReturnType<typeof getPlansQuery>>;
-export type SubscriptionPlan = SubscriptionPlans[number];
-export type PlanFeature = SubscriptionPlan["features"][number];
 
 export async function getTransactionsByInvoiceId(invoiceId: string) {
   const supabase = await createClient();

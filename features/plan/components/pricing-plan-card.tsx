@@ -5,7 +5,7 @@ import { redirect } from "next/navigation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Check } from "lucide-react";
 import Button from "@/components/ui/button/Button";
-import { SubscriptionPlan } from "@/features/stripe/stripe.queries";
+import { Plan } from "@/features/stripe/service/stripe.services";
 import { TPlan, zPlan } from "@/features/stripe/stripe.schema";
 import { createCheckoutSession } from "@/features/stripe/stripe.action";
 import { ActionGuard } from "@/lib/rbac/guard/ActionGuard";
@@ -13,7 +13,7 @@ import { Permission } from "@/lib/rbac/permissions";
 import EditPlanButton from "./edit-plan-button";
 
 type PricingPlancardProps = {
-  plan: SubscriptionPlan;
+  plan: Plan;
   activeSubscripton: string | null;
 };
 
@@ -57,11 +57,20 @@ export default function PricingPlanCard({
       </p>
       <p className="mt-6 flex items-baseline gap-x-1 group-[:not(:has([name=frequency][value=monthly]:checked))]/tiers:hidden">
         <span className="text-4xl font-semibold tracking-tight text-gray-900 dark:text-white">
-          {plan.currency}
-          {plan.amount}
+          {plan.monthly.currency}
+          {plan.monthly.amount}
         </span>
         <span className="text-sm/6 font-semibold text-gray-600 dark:text-gray-400">
-          /{plan.interval}
+          /{plan.monthly.interval}
+        </span>
+      </p>
+      <p className="mt-6 flex items-baseline gap-x-1 group-[:not(:has([name=frequency][value=monthly]:checked))]/tiers:hidden">
+        <span className="text-4xl font-semibold tracking-tight text-gray-900 dark:text-white">
+          {plan.yearly.currency}
+          {plan.yearly.amount}
+        </span>
+        <span className="text-sm/6 font-semibold text-gray-600 dark:text-gray-400">
+          /{plan.yearly.interval}
         </span>
       </p>
 
