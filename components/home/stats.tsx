@@ -11,7 +11,7 @@ export default function Stats() {
             </h2>
             <p className="mt-4 text-lg/8 text-gray-600 dark:text-gray-300">
               From small colleges to large universities — College Diary handles
-              the complexity so you don't have to.
+              the complexity so you don&apos;t have to.
             </p>
           </div>
           <dl className="mt-16 grid grid-cols-1 gap-0.5 overflow-hidden rounded-2xl text-center sm:grid-cols-2 lg:grid-cols-4">

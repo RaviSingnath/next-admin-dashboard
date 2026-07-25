@@ -4,6 +4,8 @@ import { getPlansService } from "@/features/stripe/service/stripe.services";
 import CollegeOnMap from "@/components/home/college-on-map";
 import Stats from "@/components/home/stats";
 import Pricing from "@/components/home/pricing-plan/pricing";
+import WhyOurApp from "@/components/home/why-our-app";
+import CTA from "@/components/home/cta";
 
 export default async function Home() {
   const colleges = await showCollegeOnMap();
@@ -16,6 +18,8 @@ export default async function Home() {
         <Stats />
         <CollegeOnMap colleges={colleges} />
         <Pricing plans={plans} />
+        <WhyOurApp />
+        <CTA />
       </main>
     </div>
   );
