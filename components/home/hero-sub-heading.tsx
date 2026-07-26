@@ -23,7 +23,7 @@ export default function HeroSubHeading() {
   }, []);
 
   return (
-    <div className="relative mt-8 min-h-28 overflow-hidden">
+    <div className="relative mt-8 min-h-16 overflow-hidden">
       <AnimatePresence mode="popLayout" initial={false}>
         <motion.p
           key={index}

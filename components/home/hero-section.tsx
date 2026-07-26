@@ -172,7 +172,7 @@ export default function HeroSection() {
                 Run your college. Not your paperwork
               </h1>
               <HeroSubHeading />
-              <div className="mt-10 flex items-center justify-center gap-x-6">
+              <div className="mt-8 flex items-center justify-center gap-x-6">
                 <a
                   href="#"
                   className="rounded-md bg-brand-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-xs hover:bg-brand-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-600 dark:bg-brand-500 dark:hover:bg-brand-400 dark:focus-visible:outline-brand-500"
