@@ -126,6 +126,9 @@ type ActiveCollege = Awaited<
 export type MapAddress = (ActiveCollege & {
   logo_url: string | null;
 })[];
+export type CollegeAddress = (ActiveCollege & {
+  logo_url: string | null;
+});
 
 export async function getCollegeWithAddress() {
   const ctx = await createRequestContext();

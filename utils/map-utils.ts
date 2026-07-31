@@ -232,7 +232,7 @@ export function fitToLocations(
   map.fitBounds(bounds, {
     padding: 80,
     maxZoom: 14,
-    zoom: 1.8,
+    zoom: 1.4,
     duration: 1000,
   });
 }

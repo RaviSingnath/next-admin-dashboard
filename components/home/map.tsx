@@ -3,7 +3,10 @@
 import { useEffect, useMemo, useRef } from "react";
 import mapboxgl from "mapbox-gl";
 import type { GeoJSONSource } from "mapbox-gl";
-import { MapAddress } from "@/features/colleges/college.service";
+import {
+  CollegeAddress,
+  MapAddress,
+} from "@/features/colleges/college.service";
 import type { CollegeLocation } from "@/lib/types/map-types";
 import {
   animateFeatureReveal,
@@ -18,6 +21,7 @@ import {
 
 type MapProps = {
   colleges: MapAddress;
+  selectedCollege?: CollegeAddress | null;
 };
 
 export default function CollegeMap(props: MapProps) {
@@ -25,7 +29,7 @@ export default function CollegeMap(props: MapProps) {
     throw new Error("Map received undefined props");
   }
 
-  const { colleges } = props;
+  const { colleges, selectedCollege } = props;
 
   console.log("Colleges:", colleges);
 
@@ -141,21 +145,29 @@ export default function CollegeMap(props: MapProps) {
 
     map.on("style.load", () => {
       if (map.getProjection()?.name === "globe") {
+        // map.setFog({
+        //   range: [-1, 1],
+        //   color: "#0b1522",
+        //   "high-color": "#27405f",
+        //   "space-color": [
+        //     "interpolate",
+        //     ["linear"],
+        //     ["zoom"],
+        //     0,
+        //     "rgba(2,5,11,0)",
+        //     3,
+        //     "rgba(0,0,0,0)",
+        //   ],
+        //   "horizon-blend": 0,
+        //   "star-intensity": 0.05,
+        // });
         map.setFog({
-          range: [-1, 1],
+          range: [0.8, 8],
           color: "#0b1522",
-          "high-color": "#27405f",
-          "space-color": [
-            "interpolate",
-            ["linear"],
-            ["zoom"],
-            0,
-            "rgba(2,5,11,0)",
-            3,
-            "rgba(0,0,0,0)",
-          ],
-          "horizon-blend": 0,
-          "star-intensity": 0.05,
+          "high-color": "#0d1b2e", // subtly lighter than space-color, same hue family
+          "space-color": "#071426",
+          "horizon-blend": 0.015, // keep this low
+          "star-intensity": 0.1, // slightly boost stars since space reads very flat right now
         });
       }
 
@@ -164,7 +176,7 @@ export default function CollegeMap(props: MapProps) {
           id: "sun_light",
           type: "directional",
           properties: {
-            color: "rgba(255.0, 0.0, 0.0, 1.0)",
+            color: "rgba(200, 210, 255, 1.0)",
             intensity: 0.4,
             direction: [200.0, 40.0],
             "cast-shadows": true,
@@ -364,6 +376,24 @@ export default function CollegeMap(props: MapProps) {
       cancelled = true;
     };
   }, [collegeLocations]);
+
+  useEffect(() => {
+    const map = mapRef.current;
+    if (!map || !mapLoadedRef.current || !collegeLocations.length) return;
+
+    if (
+      selectedCollege?.addresses?.latitude &&
+      selectedCollege?.addresses.longitude
+    ) {
+      map.flyTo({
+        center: [
+          selectedCollege.addresses.longitude,
+          selectedCollege.addresses?.latitude,
+        ],
+        essential: true, // this animation is considered essential with respect to prefers-reduced-motion
+      });
+    }
+  }, [selectedCollege]);
 
   /**
    * --------------------------------------------------------

@@ -63,7 +63,9 @@ export async function getActiveColleges() {
       addresses!colleges_address_id_fkey (
         id,
         latitude,
-        longitude
+        longitude,
+        city,
+        country
       )`,
     )
     .eq("status", "active");
