@@ -1,27 +1,41 @@
-import PageBreadcrumb from "@/components/common/page-breadcrumb";
-import { Metadata } from "next";
-import React from "react";
+import type { Metadata } from "next";
+import EcommerceMetrics from "./_components/ecommerce-metrics";
+import MonthlyTarget from "./_components/monthly-target";
+import MonthlySalesChart from "./_components/monthly-sales-chart";
+import StatisticsChart from "./_components/statistics-chart";
+// import RecentOrders from "@/components/ecommerce/RecentOrders";
+// import DemographicCard from "@/components/ecommerce/DemographicCard";
 
 export const metadata: Metadata = {
-  title: "Next.js Blank Page | Next.js Dashboard Template",
-  description: "This is Next.js Blank Page Dashboard Template",
+  title:
+    "Next.js E-commerce Dashboard | TailAdmin - Next.js Dashboard Template",
+  description: "This is Next.js Home for TailAdmin Dashboard Template",
 };
 
-export default function AdminDashboardPage() {
+export default function Ecommerce() {
   return (
-    <div>
-      <PageBreadcrumb pageTitle="Blank Page" />
-      <div className="min-h-screen rounded-2xl border border-gray-200 bg-white px-5 py-7 dark:border-gray-800 dark:bg-white/[0.03] xl:px-10 xl:py-12">
-        <div className="mx-auto w-full max-w-[630px] text-center">
-          <h3 className="mb-4 font-semibold text-gray-800 text-theme-xl dark:text-white/90 sm:text-2xl">
-            Card Title Here
-          </h3>
-          <p className="text-sm text-gray-500 dark:text-gray-400 sm:text-base">
-            Start putting content on grids or panels, you can also use different
-            combinations of grids.Please check out the dashboard and other pages
-          </p>
-        </div>
+    <div className="grid grid-cols-12 gap-4 md:gap-6">
+      <div className="col-span-12 space-y-6 xl:col-span-7">
+        <EcommerceMetrics />
+
+        <MonthlySalesChart />
       </div>
+
+      <div className="col-span-12 xl:col-span-5">
+        <MonthlyTarget />
+      </div>
+
+      <div className="col-span-12">
+        <StatisticsChart />
+      </div>
+
+      {/* <div className="col-span-12 xl:col-span-5">
+        <DemographicCard />
+      </div>
+
+      <div className="col-span-12 xl:col-span-7">
+        <RecentOrders />
+      </div> */}
     </div>
   );
 }
