@@ -6,10 +6,15 @@ import Button from "@/components/ui/button/Button";
 import { Check } from "lucide-react";
 import ButtonGroup from "@/components/common/button-group";
 import { useState } from "react";
-import { AnimatePresence, motion } from "motion/react";
+import { AnimatePresence, motion, type Variants } from "motion/react";
 
 type PricingCardProps = {
   plans: Plans;
+};
+
+const fadeUp: Variants = {
+  hidden: { opacity: 0, y: 20 },
+  show: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } },
 };
 
 export default function PricingCard({ plans }: PricingCardProps) {
@@ -20,16 +25,19 @@ export default function PricingCard({ plans }: PricingCardProps) {
   };
 
   return (
-    <div className="mt-16 flex items-center flex-col mx-auto max-w-md sm:mt-20 lg:mx-0 lg:max-w-none">
+    <motion.div
+      variants={fadeUp}
+      className="mx-auto mt-16 flex max-w-md flex-col items-center sm:mt-20 lg:mx-0 lg:max-w-none"
+    >
       <ButtonGroup onChange={handleToggle} payInterval={payInterval} />
 
-      <div className="isolate  mt-10 grid grid-cols-1 gap-y-8 lg:grid-cols-3">
+      <div className="isolate mt-10 grid grid-cols-1 gap-y-8 lg:grid-cols-3">
         {plans.map((plan, index) => (
           <div
             key={plan.id}
             className={cn(
               `flex flex-col justify-between rounded-3xl bg-white p-8 inset-ring inset-ring-gray-200 xl:p-10 dark:bg-gray-800/50 dark:inset-ring-gray-700`,
-              index === 1 ? "lg:rounded-b-none" : "-ml-px -mr-px  lg:mt-8",
+              index === 1 ? "lg:rounded-b-none" : "-mr-px -ml-px lg:mt-8",
               index === 0 ? "lg:rounded-r-none" : "",
               index === 2 ? "lg:rounded-l-none" : "",
             )}
@@ -43,7 +51,7 @@ export default function PricingCard({ plans }: PricingCardProps) {
                   {plan.name}
                 </h3>
                 {index === 1 && (
-                  <p className="rounded-full bg-brand-600/10 px-2.5 py-1 text-xs/5 font-semibold text-brand-600 dark:bg-brand-400/10 dark:text-brand-400">
+                  <p className="bg-brand-600/10 text-brand-600 dark:bg-brand-400/10 dark:text-brand-400 rounded-full px-2.5 py-1 text-xs/5 font-semibold">
                     Most popular
                   </p>
                 )}
@@ -52,7 +60,7 @@ export default function PricingCard({ plans }: PricingCardProps) {
                 {plan.description}
               </p>
               <p className="mt-6 flex items-baseline gap-x-1 overflow-hidden">
-                <span className="relative h-12 overflow-hidden flex items-baseline text-4xl font-semibold tracking-tight text-gray-900 dark:text-white">
+                <span className="relative flex h-12 items-baseline overflow-hidden text-4xl font-semibold tracking-tight text-gray-900 dark:text-white">
                   $
                   <AnimatePresence mode="wait" initial={false}>
                     <motion.span
@@ -98,7 +106,7 @@ export default function PricingCard({ plans }: PricingCardProps) {
                         duration: 0.15,
                         delay: 0.08,
                       }}
-                      className="inline-block ml-1"
+                      className="ml-1 inline-block"
                     >
                       {payInterval === "monthly"
                         ? plan.monthly.interval
@@ -113,7 +121,7 @@ export default function PricingCard({ plans }: PricingCardProps) {
               >
                 {plan.features.map((feature) => (
                   <li key={feature.id} className="flex gap-x-3">
-                    <Check className="h-6 w-5 flex-none text-brand-600 dark:text-brand-400" />
+                    <Check className="text-brand-600 dark:text-brand-400 h-6 w-5 flex-none" />
                     {feature.feature}
                   </li>
                 ))}
@@ -131,6 +139,6 @@ export default function PricingCard({ plans }: PricingCardProps) {
           </div>
         ))}
       </div>
-    </div>
+    </motion.div>
   );
 }

@@ -1,11 +1,32 @@
+"use client";
+
 import OurAppFeatures from "./pricing-plan/our-app-features";
+import { motion, type Variants } from "motion/react";
+
+const container: Variants = {
+  hidden: {},
+  show: {
+    transition: { staggerChildren: 0.1 },
+  },
+};
+
+const fadeUp: Variants = {
+  hidden: { opacity: 0, y: 20 },
+  show: { opacity: 1, y: 0, transition: { duration: 0.6, ease: "easeOut" } },
+};
 
 export default function WhyOurApp() {
   return (
-    <div className="overflow-hidden min-h-screen w-full bg-white py-24 sm:py-32 dark:bg-gray-900 bg-linear-180 from-brand-200 from-0% via-white to-white">
+    <motion.div
+      variants={container}
+      initial="hidden"
+      whileInView="show"
+      viewport={{ once: true, margin: "-100px" }}
+      className="from-brand-200 min-h-screen w-full bg-white bg-linear-180 from-0% via-white to-white py-24 sm:py-32 dark:bg-gray-900"
+    >
       <div className="mx-auto max-w-7xl px-6 lg:px-8">
-        <div className="mx-auto lg:mx-0">
-          <h2 className="text-base/7 font-semibold text-brand-600 dark:text-brand-400">
+        <motion.div variants={fadeUp} className="mx-auto lg:mx-0">
+          <h2 className="text-brand-600 dark:text-brand-400 text-base/7 font-semibold">
             Why College Diary?
           </h2>
           <p className="mt-2 text-4xl font-semibold tracking-tight text-pretty text-gray-900 sm:text-5xl dark:text-white">
@@ -19,14 +40,14 @@ export default function WhyOurApp() {
           <div className="mt-8">
             <a
               href="#"
-              className="inline-flex rounded-md bg-brand-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-xs hover:bg-brand-500 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-600 dark:bg-brand-500 dark:hover:bg-brand-400 dark:focus-visible:outline-brand-500"
+              className="bg-brand-600 hover:bg-brand-500 focus-visible:outline-brand-600 dark:bg-brand-500 dark:hover:bg-brand-400 dark:focus-visible:outline-brand-500 inline-flex rounded-md px-3.5 py-2.5 text-sm font-semibold text-white shadow-xs focus-visible:outline-2 focus-visible:outline-offset-2"
             >
               Get started
             </a>
           </div>
-        </div>
+        </motion.div>
       </div>
       <OurAppFeatures />
-    </div>
+    </motion.div>
   );
 }
