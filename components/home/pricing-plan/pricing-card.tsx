@@ -43,7 +43,7 @@ export default function PricingCard({ plans }: PricingCardProps) {
             )}
           >
             <div>
-              <div className="flex items-center justify-between gap-x-4">
+              <div className="flex flex-col md:flex-row items-center justify-between gap-x-4">
                 <h3
                   id="tier-freelancer"
                   className="text-lg/8 font-semibold text-gray-900 dark:text-white"

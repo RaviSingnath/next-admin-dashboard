@@ -13,7 +13,7 @@ export default function ButtonGroup({
   onChange,
 }: ButtonGroupProps) {
   return (
-    <div className="flex w-full max-w-md items-center gap-2">
+    <div className="flex flex-col md:flex-row w-full max-w-md items-center gap-2">
       <div className="flex w-full max-w-xs rounded-3xl bg-black-200 p-1 shadow-md">
         {(["monthly", "yearly"] as const).map((interval) => {
           const active = payInterval === interval;
@@ -59,7 +59,7 @@ export default function ButtonGroup({
 
       {payInterval === "yearly" && (
         <motion.span
-          className="rounded-3xl bg-yellow-200 px-2 py-1 text-xs/tight"
+          className="rounded-3xl max-md:mt-2 bg-yellow-200 px-2 py-1 text-xs/tight"
           animate={{
             scale: payInterval === "yearly" ? [1, 1.08, 1] : 1,
           }}

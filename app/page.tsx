@@ -6,20 +6,22 @@ import Stats from "@/components/home/stats";
 import Pricing from "@/components/home/pricing-plan/pricing";
 import WhyOurApp from "@/components/home/why-our-app";
 import CTA from "@/components/home/cta";
+import Footer from "@/components/common/footer";
 
 export default async function Home() {
   const colleges = await showCollegeOnMap();
   const plans = await getPlansService();
 
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full h-full flex-col items-center justify-between bg-white dark:bg-black sm:items-start">
+    <div className="flex flex-1 flex-col items-center justify-center bg-zinc-50 font-sans dark:bg-black">
+      <main className="flex h-full w-full flex-1 flex-col items-center justify-between bg-white sm:items-start dark:bg-black">
         <HeroSection />
         <Stats />
         <CollegeOnMap colleges={colleges} />
         <Pricing plans={plans} />
         <WhyOurApp />
         <CTA />
+        <Footer />
       </main>
     </div>
   );
