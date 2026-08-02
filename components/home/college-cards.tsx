@@ -20,7 +20,7 @@ type CollegeCardsProps = {
   onShowOnMap: (college: CollegeAddress) => void;
 };
 
-const AUTO_SLIDE_DURATION = 5000000;
+const AUTO_SLIDE_DURATION = 5000;
 const WHEEL_THRESHOLD = 35;
 const WHEEL_COOLDOWN = 700;
 const SWIPE_THRESHOLD = 30;
