@@ -63,14 +63,14 @@ export default function OurAppFeatures() {
                 className={cn(
                   "relative w-full rounded-xl px-5 py-6 text-left transition-all duration-300",
                   isActive
-                    ? "bg-brand-50 shadow-sm dark:bg-brand-500/10"
+                    ? "bg-brand-50 dark:bg-brand-500/10 shadow-sm"
                     : "hover:bg-gray-50 dark:hover:bg-gray-800",
                 )}
               >
                 {isActive && (
                   <motion.div
                     layoutId="feature-indicator"
-                    className="absolute left-0 top-5 bottom-5 w-1 rounded-full bg-brand-500"
+                    className="bg-brand-500 absolute top-5 bottom-5 left-0 w-1 rounded-full"
                     transition={{
                       type: "spring",
                       stiffness: 450,
@@ -80,7 +80,7 @@ export default function OurAppFeatures() {
                 )}
 
                 <div className="pl-5">
-                  <p className="text-sm font-semibold text-brand-600 dark:text-brand-400">
+                  <p className="text-brand-600 dark:text-brand-400 text-sm font-semibold">
                     {item.eyebrow}
                   </p>
 
@@ -136,7 +136,7 @@ export default function OurAppFeatures() {
           {/* Progress */}
           <div className="mt-1 ml-2 h-0.5 overflow-hidden rounded-full bg-gray-200 dark:bg-gray-700">
             <motion.div
-              className="h-full origin-left bg-brand-500"
+              className="bg-brand-500 h-full origin-left"
               style={{
                 scaleX: progress,
               }}
@@ -144,7 +144,7 @@ export default function OurAppFeatures() {
           </div>
 
           {/* Screenshot */}
-          <div className="mt-8 relative overflow-hidden min-h-76 rounded-2xl">
+          <div className="relative mt-8 min-h-76 overflow-hidden rounded-2xl">
             <AnimatePresence mode="wait">
               <motion.div
                 key={active}
@@ -165,13 +165,22 @@ export default function OurAppFeatures() {
                   ease: "easeOut",
                 }}
               >
+                {/* <Image
+                  src={feature.imageLight}
+                  alt={feature.title}
+                  width={2432}
+                  height={1442}
+                  priority
+                  className="absolute w-xl max-w-none rounded-xl shadow-xl ring-1 ring-gray-300/10 sm:w-4xl dark:ring-white/10"
+                /> */}
                 <Image
                   src={feature.imageLight}
                   alt={feature.title}
                   width={2432}
                   height={1442}
                   priority
-                  className="w-4xl max-w-none absolute rounded-xl shadow-xl ring-1 ring-gray-300/10 dark:ring-white/10"
+                  sizes="(max-width: 768px) 100vw, 70vw"
+                  className="absolute h-auto w-full max-w-5xl rounded-xl shadow-xl ring-1 ring-gray-300/10 dark:ring-white/10"
                 />
               </motion.div>
             </AnimatePresence>

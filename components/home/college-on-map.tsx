@@ -33,8 +33,8 @@ export default function CollegeOnMap({ colleges }: CollegeOnMapProps) {
 
   return (
     <>
-      <div className="relative w-full gap-8 bg-[#071426] px-8 pr-0 lg:flex">
-        <div className="mt-5 py-20 pl-20 lg:w-1/2">
+      <div className="lg;px-8 relative w-full gap-8 bg-[#071426] pr-0 lg:flex">
+        <div className="mt-5 px-6 py-20 lg:w-1/2 lg:pl-20">
           <motion.div
             variants={container}
             initial="hidden"
@@ -53,12 +53,12 @@ export default function CollegeOnMap({ colleges }: CollegeOnMapProps) {
             </motion.p>
           </motion.div>
 
-          <div className="flex flex-col gap-5 pt-16 pr-10">
+          <div className="flex flex-col gap-5 pt-8 lg:pt-16 lg:pr-10">
             <CollegeCards colleges={colleges} onShowOnMap={handleShowOnMap} />
           </div>
         </div>
 
-        <div className="lg:w-1/2">
+        <div className="hiddenn md:block lg:w-1/2">
           <CollegeMap colleges={colleges} selectedCollege={selectedCollege} />
         </div>
       </div>

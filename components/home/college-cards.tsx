@@ -1,6 +1,12 @@
 "use client";
 
-import { useCallback, useEffect, useRef, useState } from "react";
+import {
+  useCallback,
+  useEffect,
+  useRef,
+  useState,
+  useSyncExternalStore,
+} from "react";
 import { motion } from "motion/react";
 import {
   CollegeAddress,
@@ -14,11 +20,39 @@ type CollegeCardsProps = {
   onShowOnMap: (college: CollegeAddress) => void;
 };
 
-const AUTO_SLIDE_DURATION = 5000;
+const AUTO_SLIDE_DURATION = 5000000;
 const WHEEL_THRESHOLD = 35;
 const WHEEL_COOLDOWN = 700;
 const SWIPE_THRESHOLD = 30;
-const MAX_VISIBLE_OFFSET = 1; // was 2 — only the active card + one neighbor on each side render now
+const MAX_VISIBLE_OFFSET = 1; // only the active card + one neighbor on each side render
+
+// Below this width we drop neighbor cards entirely and show just the active card,
+// since two 0.86-scaled neighbors offset 58% each start crowding the mask edges.
+const COMPACT_BREAKPOINT = "(max-width: 400px)";
+
+function subscribeToCompact(callback: () => void) {
+  const mq = window.matchMedia(COMPACT_BREAKPOINT);
+  mq.addEventListener("change", callback);
+  return () => mq.removeEventListener("change", callback);
+}
+
+function getCompactSnapshot() {
+  return window.matchMedia(COMPACT_BREAKPOINT).matches;
+}
+
+function getCompactServerSnapshot() {
+  // No viewport on the server — default to the non-compact layout so SSR
+  // markup matches the common case and avoids a layout jump on hydration.
+  return false;
+}
+
+function useIsCompact() {
+  return useSyncExternalStore(
+    subscribeToCompact,
+    getCompactSnapshot,
+    getCompactServerSnapshot,
+  );
+}
 
 export default function CollegeCards({
   colleges,
@@ -30,6 +64,10 @@ export default function CollegeCards({
   const sliderRef = useRef<HTMLDivElement>(null);
   const wheelDelta = useRef(0);
   const lastWheelTime = useRef(0);
+
+  const isCompact = useIsCompact();
+  const visibleOffset = isCompact ? 0 : MAX_VISIBLE_OFFSET;
+  const offsetSpread = isCompact ? 0 : 58;
 
   const safeActive =
     colleges.length > 0
@@ -124,8 +162,10 @@ export default function CollegeCards({
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
-      <div className="relative overflow-hidden [mask-image:linear-gradient(to_right,transparent,black_12%,black_88%,transparent)] pt-4">
-        <div aria-hidden className="invisible w-56 sm:w-70">
+      <div className="relative overflow-hidden pt-4 lg:mask-[linear-gradient(to_right,transparent,black_12%,black_88%,transparent)]">
+        {/* Sizer width must match the real card width classes exactly at every breakpoint,
+            or the reserved height jitters when the viewport crosses a breakpoint. */}
+        <div aria-hidden className="xs:w-[210px] invisible sm:w-70">
           <CollegeCard
             college={colleges[safeActive]}
             isActive
@@ -138,8 +178,7 @@ export default function CollegeCards({
           {colleges.map((college, index) => {
             const offset = getOffset(index);
 
-            // Only active + immediate left/right neighbor now render at all
-            if (Math.abs(offset) > MAX_VISIBLE_OFFSET) {
+            if (Math.abs(offset) > visibleOffset) {
               return null;
             }
 
@@ -148,16 +187,13 @@ export default function CollegeCards({
             return (
               <motion.div
                 key={college.id}
-                className="absolute w-[210px] overflow-visible rounded-3xl sm:w-[270px]"
+                className="xs:w-[210px] absolute overflow-visible rounded-3xl sm:w-70"
+                style={{ touchAction: isActive ? "pan-y" : "auto" }}
                 initial={false}
                 animate={{
-                  x: `${offset * 58}%`,
+                  x: `${offset * offsetSpread}%`,
                   scale: isActive ? 1 : 0.86,
                   opacity: isActive ? 1 : 0.55,
-                  // rotateY and filter:blur removed — both are expensive to
-                  // composite (blur especially, doubly so alongside a 3D
-                  // transform), and scale + opacity + offset alone already
-                  // read clearly as "receding" without the extra GPU cost
                   zIndex: isActive ? 10 : 5,
                 }}
                 drag={isActive ? "x" : false}
@@ -166,7 +202,10 @@ export default function CollegeCards({
                   right: 0,
                 }}
                 dragElastic={0.2}
+                onDragStart={() => setIsHovered(true)}
                 onDragEnd={(_, info) => {
+                  setIsHovered(false);
+
                   if (info.offset.x < -SWIPE_THRESHOLD) {
                     next();
                   }
@@ -193,7 +232,7 @@ export default function CollegeCards({
         </div>
       </div>
 
-      {/* Progress dots — unchanged */}
+      {/* Progress dots — visual dot stays small, tap target grows on touch sizes */}
       {colleges.length > 1 && (
         <div className="mt-3 flex justify-center gap-1.5">
           {colleges.map((college, index) => {
@@ -205,7 +244,7 @@ export default function CollegeCards({
                 type="button"
                 aria-label={`Show ${college.college_name}`}
                 onClick={() => setActive(index)}
-                className="flex h-4 items-center"
+                className="flex h-9 items-center px-1 sm:h-4 sm:px-0"
               >
                 <motion.span
                   animate={{

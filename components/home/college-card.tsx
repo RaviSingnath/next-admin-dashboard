@@ -32,7 +32,7 @@ export default function CollegeCard({
   return (
     <motion.div
       tabIndex={-1}
-      className="group/card relative flex w-60 flex-col overflow-hidden rounded-4xl bg-[#071426] shadow-[0_1px_0_rgba(255,255,255,0.06)_inset,0_30px_80px_-20px_rgba(7,20,38,0.55)] ring-1 ring-white/10 outline-none sm:w-70"
+      className="group/card xs:w-52 relative flex w-62 flex-col overflow-hidden rounded-4xl bg-[#071426] shadow-[0_1px_0_rgba(255,255,255,0.06)_inset,0_30px_80px_-20px_rgba(7,20,38,0.55)] ring-1 ring-white/10 outline-none sm:w-70"
       whileHover={{
         y: isActive ? -4 : 0,
       }}
@@ -103,7 +103,7 @@ export default function CollegeCard({
             />
           ) : (
             <div className="flex h-full items-center justify-center">
-              <div className="flex h-20 w-20 items-center justify-center rounded-full bg-linear-to-b from-[#0F2540] to-[#071426] text-2xl font-semibold text-[#C9A66B] ring-1 ring-[#0F2540]/10">
+              <div className="flex h-16 w-16 items-center justify-center rounded-full bg-linear-to-b from-[#0F2540] to-[#071426] text-xl font-semibold text-[#C9A66B] ring-1 ring-[#0F2540]/10 sm:h-20 sm:w-20 sm:text-2xl">
                 {college.college_name.charAt(0)}
               </div>
             </div>
@@ -114,7 +114,7 @@ export default function CollegeCard({
       {/* =========================================================
           CONTENT PANEL
       ========================================================= */}
-      <div className="relative z-20 -mt-6 flex flex-col rounded-t-[28px] border-t border-[#C9A66B]/65 bg-[#071426] px-6 pt-6 pb-5 text-white">
+      <div className="relative z-20 -mt-6 flex flex-col rounded-t-[28px] border-t border-[#C9A66B]/65 bg-[#071426] px-4 pt-5 pb-4 text-white sm:px-6 sm:pt-6 sm:pb-5">
         {/* =======================================================
             GOLD SEPARATOR GLOW
         ======================================================= */}
@@ -132,7 +132,7 @@ export default function CollegeCard({
         {/* =======================================================
             COLLEGE NAME
         ======================================================= */}
-        <h3 className="relative z-10 line-clamp-2 font-serif text-[1.3rem] leading-tight font-medium tracking-tight text-white/95">
+        <h3 className="relative z-10 line-clamp-2 font-serif text-[1.05rem] leading-tight font-medium tracking-tight text-white/95 sm:text-[1.3rem]">
           {college.college_name}
         </h3>
 
@@ -140,7 +140,7 @@ export default function CollegeCard({
             LOCATION
         ======================================================= */}
         {location && (
-          <div className="relative z-10 mt-2 flex items-center gap-1.5 text-[0.8rem] text-slate-400">
+          <div className="relative z-10 mt-2 flex items-center gap-1.5 text-[0.75rem] text-slate-400 sm:text-[0.8rem]">
             <MapPin className="h-3.5 w-3.5 flex-none text-[#C9A66B]" />
 
             <span className="truncate">{location}</span>
@@ -175,7 +175,7 @@ export default function CollegeCard({
               event.stopPropagation();
               onShowOnMap(college);
             }}
-            className="group/btn text-brand-400 hover:text-brand-300 focus-visible:ring-brand-400/60 inline-flex items-center gap-1 rounded-full text-xs font-medium transition-colors outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-[#071426]"
+            className="group/btn text-brand-400 hover:text-brand-300 focus-visible:ring-brand-400/60 hidden md:inline-flex items-center gap-1 rounded-full text-xs font-medium transition-colors outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-[#071426]"
           >
             View on map
             <ArrowUpRight className="h-3.5 w-3.5 transition-transform group-hover/btn:translate-x-0.5 group-hover/btn:-translate-y-0.5" />
