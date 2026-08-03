@@ -31,8 +31,6 @@ export default function CollegeMap(props: MapProps) {
 
   const { colleges, selectedCollege } = props;
 
-  console.log("Colleges:", colleges);
-
   const mapContainerRef = useRef<HTMLDivElement>(null);
 
   const mapRef = useRef<mapboxgl.Map | null>(null);

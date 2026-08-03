@@ -12,10 +12,32 @@ const protectedRoutes = [
   "/supervisor",
 ];
 
+// route -> roles allowed to access it
+const roleRoutes: Record<string, string[]> = {
+  "/admin": ["super_admin"],
+  "/college-admin": ["college_admin"],
+  "/dashboard": ["college_admin"],
+  "/supervisor": ["supervisor"],
+};
+
+interface AppClaims {
+  sub: string;
+  user_role?: "super_admin" | "college_admin" | "supervisor" | "student";
+  college_id?: string | null;
+  department_id?: string | null;
+}
+
 function isProtectedRoute(pathname: string) {
   return protectedRoutes.some(
     (route) => pathname === route || pathname.startsWith(`${route}/`),
   );
+}
+
+function getRequiredRoles(pathname: string): string[] | null {
+  const match = Object.keys(roleRoutes).find(
+    (route) => pathname === route || pathname.startsWith(`${route}/`),
+  );
+  return match ? roleRoutes[match] : null;
 }
 
 function redirectWithSupabaseCookies(
@@ -34,8 +56,20 @@ function redirectWithSupabaseCookies(
   return redirectResponse;
 }
 
+function homeForRole(role?: string) {
+  switch (role) {
+    case "super_admin":
+      return "/admin/dashboard";
+    case "college_admin":
+      return "/college-admin";
+    case "supervisor":
+      return "/supervisor";
+    default:
+      return "/dashboard";
+  }
+}
+
 export async function updateSession(request: NextRequest) {
-  // Create an unmodified response
   let supabaseResponse = NextResponse.next({
     request: {
       headers: request.headers,
@@ -63,28 +97,43 @@ export async function updateSession(request: NextRequest) {
     },
   });
 
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
   const { pathname } = request.nextUrl;
   const isLoginPage = pathname === "/login";
+  const routeIsProtected = isProtectedRoute(pathname);
 
-  // Redirect unauthenticated users
-  if (!user && isProtectedRoute(pathname)) {
+  // Only decode/verify the JWT when we actually need to know who the user is
+  let claims: AppClaims | null = null;
+  if (routeIsProtected || isLoginPage) {
+    const { data, error } = await supabase.auth.getClaims();
+    if (!error && data) {
+      claims = data.claims as AppClaims;
+    }
+  }
+  
+
+  // Redirect unauthenticated users away from protected routes
+  if (!claims && routeIsProtected) {
     return redirectWithSupabaseCookies(request, supabaseResponse, "/login");
   }
 
-  // Redirect logged-in users away from the login form only.
-  if (user && isLoginPage) {
-    if (user?.role !== "super_admin") {
+  // Redirect logged-in users away from the login page, to their role's home
+  if (claims && isLoginPage) {
+    return redirectWithSupabaseCookies(
+      request,
+      supabaseResponse,
+      homeForRole(claims.user_role),
+    );
+  }
+
+  // Role-gate specific protected routes
+  if (claims && routeIsProtected) {
+    const requiredRoles = getRequiredRoles(pathname);
+    if (requiredRoles && !requiredRoles.includes(claims.user_role ?? "")) {
       return redirectWithSupabaseCookies(
         request,
         supabaseResponse,
-        "/dashboard",
+        "/unauthorized",
       );
-    } else if (user?.role === "super_admin") {
-      return redirectWithSupabaseCookies(request, supabaseResponse, "/admin");
     }
   }
 

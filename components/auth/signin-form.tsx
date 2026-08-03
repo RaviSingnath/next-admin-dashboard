@@ -57,7 +57,7 @@ export default function SignInForm() {
       reset();
 
       if (data.user.role === "super_admin") {
-        router.push("/admin");
+        router.push("/admin/dashboard");
       } else {
         router.push("/dashboard");
       }

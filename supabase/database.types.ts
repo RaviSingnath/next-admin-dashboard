@@ -1025,6 +1025,7 @@ export type Database = {
         Args: never
         Returns: Database["public"]["Enums"]["user_role"]
       }
+      custom_access_token_hook: { Args: { event: Json }; Returns: Json }
       hard_delete_profile: { Args: { p_user_id: string }; Returns: undefined }
       is_super_admin: { Args: never; Returns: boolean }
       restore_profile: { Args: { p_user_id: string }; Returns: undefined }
