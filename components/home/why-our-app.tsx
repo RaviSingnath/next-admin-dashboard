@@ -22,6 +22,7 @@ export default function WhyOurApp() {
       initial="hidden"
       whileInView="show"
       viewport={{ once: true, margin: "-100px" }}
+      id="why-our-app"
       className="from-brand-200 min-h-screen w-full bg-white bg-linear-180 from-0% via-white to-white py-24 sm:py-32 dark:bg-gray-900"
     >
       <div className="mx-auto max-w-7xl px-6 lg:px-8">
@@ -42,7 +43,7 @@ export default function WhyOurApp() {
               href="#"
               className="bg-brand-600 hover:bg-brand-500 focus-visible:outline-brand-600 dark:bg-brand-500 dark:hover:bg-brand-400 dark:focus-visible:outline-brand-500 inline-flex rounded-md px-3.5 py-2.5 text-sm font-semibold text-white shadow-xs focus-visible:outline-2 focus-visible:outline-offset-2"
             >
-              Get started
+              Request a demo
             </a>
           </div>
         </motion.div>

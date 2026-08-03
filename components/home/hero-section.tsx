@@ -3,8 +3,17 @@ import { Menu, X } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import HeroSubHeading from "./hero-sub-heading";
+import { AppClaims } from "@/lib/auth/parseUser";
+import UserRole from "@/lib/rbac/roles";
+import LearnMoreButton from "./learn-more-button";
 
-export default function HeroSection() {
+type HeroSectionProps = {
+  claimsData: AppClaims | null;
+};
+
+export default function HeroSection({ claimsData }: HeroSectionProps) {
+  const isLoggedIn = !!claimsData;
+
   return (
     <div className="w-full bg-white dark:bg-gray-900">
       <header className="absolute inset-x-0 top-0 z-50">
@@ -69,12 +78,25 @@ export default function HeroSection() {
             </a>
           </div> */}
           <div className="hidden lg:flex lg:flex-1 lg:justify-end">
-            <Link
-              href="/login"
-              className="text-sm/6 font-semibold text-gray-900 dark:text-white"
-            >
-              Log in <span aria-hidden="true">&rarr;</span>
-            </Link>
+            {isLoggedIn ? (
+              <Link
+                href={
+                  UserRole.SUPER_ADMIN === claimsData.claims.user_role
+                    ? "/admin/dashboard"
+                    : "/dashboard"
+                }
+                className="text-sm/6 font-semibold text-gray-900 dark:text-white"
+              >
+                Dashboard <span aria-hidden="true">&rarr;</span>
+              </Link>
+            ) : (
+              <Link
+                href="/login"
+                className="text-sm/6 font-semibold text-gray-900 dark:text-white"
+              >
+                Log in <span aria-hidden="true">&rarr;</span>
+              </Link>
+            )}
           </div>
         </nav>
         <ElDialog>
@@ -177,14 +199,9 @@ export default function HeroSection() {
                   href="#"
                   className="bg-brand-600 hover:bg-brand-500 focus-visible:outline-brand-600 dark:bg-brand-500 dark:hover:bg-brand-400 dark:focus-visible:outline-brand-500 rounded-md px-3.5 py-2.5 text-sm font-semibold text-white shadow-xs focus-visible:outline-2 focus-visible:outline-offset-2"
                 >
-                  Get started
+                  Request a demo
                 </a>
-                <a
-                  href="#"
-                  className="text-sm/6 font-semibold text-gray-900 dark:text-white"
-                >
-                  Learn more <span aria-hidden="true">→</span>
-                </a>
+                <LearnMoreButton />
               </div>
             </div>
 

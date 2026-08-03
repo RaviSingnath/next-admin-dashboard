@@ -22,3 +22,17 @@ export function parseUser(user: User | null): UserContext | null {
 
   return userContext;
 }
+
+export type AppClaims = {
+  claims: {
+    sub: string;
+    email?: string;
+    role: string; // Postgres role, always "authenticated"
+    user_role?: "super_admin" | "college_admin" | "supervisor" | "student";
+    college_id?: string | null;
+    department_id?: string | null;
+    exp: number;
+    iat: number;
+    [key: string]: unknown; // other standard JWT claims you don't need typed
+  };
+};
