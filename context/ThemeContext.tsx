@@ -1,7 +1,7 @@
 "use client";
 
 import type React from "react";
-import { createContext, useState, useContext, useEffect } from "react";
+import { createContext, useState, useContext, useLayoutEffect } from "react";
 
 type Theme = "light" | "dark";
 
@@ -34,9 +34,9 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({
   const [theme, setTheme] = useState<Theme>(getInitialTheme);
 
   // Sync theme to localStorage and <html> class whenever it changes
-  useEffect(() => {
-    localStorage.setItem("theme", theme);
+  useLayoutEffect(() => {
     document.documentElement.classList.toggle("dark", theme === "dark");
+    localStorage.setItem("theme", theme);
   }, [theme]);
 
   const toggleTheme = () => {
