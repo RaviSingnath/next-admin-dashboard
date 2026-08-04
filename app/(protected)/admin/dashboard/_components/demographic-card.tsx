@@ -1,14 +1,20 @@
 "use client";
 
-import Image from "next/image";
 import { useState } from "react";
 import { Ellipsis } from "lucide-react";
 import { Dropdown } from "@/components/ui/dropdown/Dropdown";
 import { DropdownItem } from "@/components/ui/dropdown/DropdownItem";
 import WorldMap from "./country-map";
+import { DEFAULT_MARKERS } from "../_lib/constants";
+import CountryFlag from "@/components/common/country-flag";
 
 export default function DemographicCard() {
   const [isOpen, setIsOpen] = useState(false);
+
+  const totalCustomers = DEFAULT_MARKERS.reduce(
+    (accumulator, currentItem) => accumulator + currentItem.customers,
+    0,
+  );
 
   function toggleDropdown() {
     setIsOpen(!isOpen);
@@ -61,67 +67,41 @@ export default function DemographicCard() {
       </div>
 
       <div className="space-y-5">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="w-full max-w-8 items-center rounded-full">
-              <Image
-                width={48}
-                height={48}
-                src="/images/country/country-01.svg"
-                alt="usa"
-                className="w-full"
-              />
+        {DEFAULT_MARKERS.map((country) => (
+          <div key={country.id} className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="w-full max-w-8 items-center rounded-full">
+                <CountryFlag
+                  iso2={country.id}
+                  title={country.country}
+                  className="size-8 shrink-0 rounded-full"
+                />
+              </div>
+              <div>
+                <p className="text-theme-sm font-semibold text-gray-800 dark:text-white/90">
+                  {country.country}
+                </p>
+                <span className="text-theme-xs block text-gray-500 dark:text-gray-400">
+                  {country.customers} Customers
+                </span>
+              </div>
             </div>
-            <div>
-              <p className="text-theme-sm font-semibold text-gray-800 dark:text-white/90">
-                USA
+
+            <div className="flex w-full max-w-[140px] items-center gap-3">
+              <div className="relative block h-2 w-full max-w-[100px] rounded-sm bg-gray-200 dark:bg-gray-800">
+                <div
+                  className="bg-brand-500 absolute top-0 left-0 flex h-full items-center justify-center rounded-sm text-xs font-medium text-white"
+                  style={{
+                    width: `${(country.customers / totalCustomers) * 100}%`,
+                  }}
+                ></div>
+              </div>
+              <p className="text-theme-sm font-medium text-gray-800 dark:text-white/90">
+                {((country.customers / totalCustomers) * 100).toFixed(2)}%
               </p>
-              <span className="text-theme-xs block text-gray-500 dark:text-gray-400">
-                2,379 Customers
-              </span>
             </div>
           </div>
-
-          <div className="flex w-full max-w-[140px] items-center gap-3">
-            <div className="relative block h-2 w-full max-w-[100px] rounded-sm bg-gray-200 dark:bg-gray-800">
-              <div className="bg-brand-500 absolute top-0 left-0 flex h-full w-[79%] items-center justify-center rounded-sm text-xs font-medium text-white"></div>
-            </div>
-            <p className="text-theme-sm font-medium text-gray-800 dark:text-white/90">
-              79%
-            </p>
-          </div>
-        </div>
-
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="w-full max-w-8 items-center rounded-full">
-              <Image
-                width={48}
-                height={48}
-                className="w-full"
-                src="/images/country/country-02.svg"
-                alt="france"
-              />
-            </div>
-            <div>
-              <p className="text-theme-sm font-semibold text-gray-800 dark:text-white/90">
-                France
-              </p>
-              <span className="text-theme-xs block text-gray-500 dark:text-gray-400">
-                589 Customers
-              </span>
-            </div>
-          </div>
-
-          <div className="flex w-full max-w-[140px] items-center gap-3">
-            <div className="relative block h-2 w-full max-w-[100px] rounded-sm bg-gray-200 dark:bg-gray-800">
-              <div className="bg-brand-500 absolute top-0 left-0 flex h-full w-[23%] items-center justify-center rounded-sm text-xs font-medium text-white"></div>
-            </div>
-            <p className="text-theme-sm font-medium text-gray-800 dark:text-white/90">
-              23%
-            </p>
-          </div>
-        </div>
+        ))}
       </div>
     </div>
   );
