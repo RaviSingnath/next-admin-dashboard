@@ -4,7 +4,7 @@ import MonthlyTarget from "./_components/monthly-target";
 import MonthlySalesChart from "./_components/monthly-sales-chart";
 import StatisticsChart from "./_components/statistics-chart";
 // import RecentOrders from "@/components/ecommerce/RecentOrders";
-// import DemographicCard from "@/components/ecommerce/DemographicCard";
+import DemographicCard from "./_components/demographic-card";
 
 export const metadata: Metadata = {
   title:
@@ -29,13 +29,11 @@ export default function Ecommerce() {
         <StatisticsChart />
       </div>
 
-      {/* <div className="col-span-12 xl:col-span-5">
+      <div className="col-span-12 xl:col-span-5">
         <DemographicCard />
       </div>
 
-      <div className="col-span-12 xl:col-span-7">
-        <RecentOrders />
-      </div> */}
+      <div className="col-span-12 xl:col-span-7">{/* <RecentOrders /> */}</div>
     </div>
   );
 }
