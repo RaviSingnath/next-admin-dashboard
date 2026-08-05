@@ -123,10 +123,13 @@ export async function getSubscriptionByCollegeId(collegeId: string) {
       trial_end,
       plan:subscription_plans (
         id,
-        name,
         amount,
         currency,
-        interval
+        interval,
+        product:stripe_products (
+          name,
+          description
+        )
       )
     `,
       )
