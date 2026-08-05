@@ -3,12 +3,13 @@ import {
   getCollegeStripeCustomerId,
   getPlansQuery,
   getSubscriptionByCollegeId,
+  getRecentSubscriptionsQuery,
 } from "../stripe.queries";
 import { updateCollegeStripeCustomerId } from "../stripe.mutations";
 import { createRequestContext } from "@/lib/auth/request-context";
 import { Errors } from "@/lib/errors/error-factory";
 import { mapSupabaseError } from "@/lib/errors/supabase-error";
-import { QueryData } from "@supabase/supabase-js";
+import { getLogoSignedUrlQuery } from "@/features/colleges/college.queries";
 
 export async function ensureStripeCustomer(collegeId: string): Promise<string> {
   // 1. Return existing customer ID if already created
@@ -76,3 +77,38 @@ export async function getCollegeSubscription() {
 
   return data;
 }
+
+export async function getRecentSubscriptions() {
+  const { data, error } = await getRecentSubscriptionsQuery();
+
+  if (error) throw mapSupabaseError(error);
+
+  const subscriptions = await Promise.all(
+    data.map(async (subscription) => {
+      const college = subscription.colleges;
+
+      if (!college?.logo_url) {
+        return subscription;
+      }
+
+      const { data: logo, error: logoError } = await getLogoSignedUrlQuery(
+        college.logo_url,
+      );
+
+      return {
+        ...subscription,
+        colleges: {
+          ...college,
+          logo_url: logoError ? null : logo.signedUrl,
+        },
+      };
+    }),
+  );
+
+  return subscriptions;
+}
+
+type RecentSubscriptionsResponse = Awaited<
+  ReturnType<typeof getRecentSubscriptions>
+>;
+export type RecentSubscriptions = RecentSubscriptionsResponse[number];

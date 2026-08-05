@@ -62,6 +62,40 @@ export async function getSubscriptionBySubscriptionId(subscriptionId: string) {
     .maybeSingle();
 }
 
+export async function getRecentSubscriptionsQuery() {
+  const supabase = await createClient();
+
+  return supabase
+    .from("college_subscriptions")
+    .select(
+      `
+    id,
+    stripe_subscription_id,
+    status,
+    created_at,
+    created_at,
+    plan:subscription_plans (
+      id,
+      amount,
+      currency,
+      interval,
+      product:stripe_products (
+        name,
+        description
+      )
+    ),
+    colleges!college_subscriptions_college_id_fkey (
+      id,
+      college_name,
+      logo_url,
+      country
+    )
+  `,
+    )
+    .order("created_at", { ascending: false })
+    .limit(10);
+}
+
 export async function getCollegeByCustomerId(customerId: string) {
   const supabase = await createClient();
 
