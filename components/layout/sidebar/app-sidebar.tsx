@@ -35,7 +35,7 @@ const AppSidebar: React.FC = () => {
           {isExpanded || isHovered || isMobileOpen ? (
             <div className="flex items-center gap-2">
               <Image
-                className="h-auto w-auto max-w-32 dark:hidden"
+                className="h-auto w-auto max-w-32"
                 src="/images/logo/logo.svg"
                 alt="Logo"
                 width={150}
@@ -43,7 +43,7 @@ const AppSidebar: React.FC = () => {
                 unoptimized
                 loading="eager"
               />
-              <Image
+              {/* <Image
                 className="hidden h-auto w-auto dark:block"
                 src="/images/logo/logo.svg"
                 alt="Logo"
@@ -51,7 +51,7 @@ const AppSidebar: React.FC = () => {
                 height={40}
                 unoptimized
                 loading="eager"
-              />
+              /> */}
             </div>
           ) : (
             <Image

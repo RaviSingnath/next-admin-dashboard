@@ -77,6 +77,9 @@ export async function getCollegeSubscription() {
 
   return data;
 }
+export type CollegeSubscription = Awaited<
+  ReturnType<typeof getCollegeSubscription>
+>;
 
 export async function getRecentSubscriptions() {
   const { data, error } = await getRecentSubscriptionsQuery();

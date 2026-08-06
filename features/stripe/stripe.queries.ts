@@ -118,6 +118,7 @@ export async function getSubscriptionByCollegeId(collegeId: string) {
       stripe_subscription_id,
       status,
       current_period_end,
+      current_period_start,
       cancel_at_period_end,
       canceled_at,
       trial_end,
