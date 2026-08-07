@@ -116,3 +116,15 @@ export async function resolveCollegeIdFromInvoice(
 
   throw new Error(`Cannot resolve college_id for invoice: ${invoice.id}`);
 }
+
+/**
+ * Extracts the subscription ID from an Invoice under the dahlia-era
+ * `parent.subscription_details` shape (invoice.subscription was removed).
+ *
+ * Canonical version — previously duplicated (one live copy, one dead copy)
+ * across the subscription and invoice handler files. Both now import this.
+ */
+export function getSubscriptionId(invoice: Stripe.Invoice): string | null {
+  if (invoice.parent?.type !== "subscription_details") return null;
+  return extractId(invoice.parent.subscription_details?.subscription) ?? null;
+}

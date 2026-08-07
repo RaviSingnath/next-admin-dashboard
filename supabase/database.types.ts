@@ -227,15 +227,21 @@ export type Database = {
           cancel_at_period_end: boolean
           cancel_reason: string | null
           canceled_at: string | null
+          collection_method: string
           college_id: string
           created_at: string
+          currency: string
           current_period_end: string | null
           current_period_start: string | null
+          ended_at: string | null
           id: string
+          latest_invoice_id: string | null
+          latest_invoice_url: string | null
           metadata: Json
           plan_id: string
           status: string
           stripe_customer_id: string
+          stripe_event_created_at: number | null
           stripe_subscription_id: string
           trial_end: string | null
           trial_start: string | null
@@ -245,15 +251,21 @@ export type Database = {
           cancel_at_period_end?: boolean
           cancel_reason?: string | null
           canceled_at?: string | null
+          collection_method?: string
           college_id: string
           created_at?: string
+          currency?: string
           current_period_end?: string | null
           current_period_start?: string | null
+          ended_at?: string | null
           id?: string
+          latest_invoice_id?: string | null
+          latest_invoice_url?: string | null
           metadata?: Json
           plan_id: string
           status?: string
           stripe_customer_id: string
+          stripe_event_created_at?: number | null
           stripe_subscription_id: string
           trial_end?: string | null
           trial_start?: string | null
@@ -263,15 +275,21 @@ export type Database = {
           cancel_at_period_end?: boolean
           cancel_reason?: string | null
           canceled_at?: string | null
+          collection_method?: string
           college_id?: string
           created_at?: string
+          currency?: string
           current_period_end?: string | null
           current_period_start?: string | null
+          ended_at?: string | null
           id?: string
+          latest_invoice_id?: string | null
+          latest_invoice_url?: string | null
           metadata?: Json
           plan_id?: string
           status?: string
           stripe_customer_id?: string
+          stripe_event_created_at?: number | null
           stripe_subscription_id?: string
           trial_end?: string | null
           trial_start?: string | null
@@ -1019,6 +1037,22 @@ export type Database = {
       activate_profile: { Args: { p_user_id: string }; Returns: undefined }
       auth_college_id: { Args: never; Returns: string }
       auth_role: { Args: never; Returns: string }
+      claim_stripe_event: {
+        Args: {
+          p_api_version: string
+          p_event_type: string
+          p_lease_seconds?: number
+          p_livemode: boolean
+          p_locked_by: string
+          p_payload: Json
+          p_stripe_event_id: string
+        }
+        Returns: string
+      }
+      complete_stripe_event: {
+        Args: { p_locked_by: string; p_stripe_event_id: string }
+        Returns: boolean
+      }
       current_college_id: { Args: never; Returns: string }
       current_department_id: { Args: never; Returns: string }
       current_role: {
@@ -1026,6 +1060,14 @@ export type Database = {
         Returns: Database["public"]["Enums"]["user_role"]
       }
       custom_access_token_hook: { Args: { event: Json }; Returns: Json }
+      fail_stripe_event: {
+        Args: {
+          p_error: string
+          p_locked_by: string
+          p_stripe_event_id: string
+        }
+        Returns: undefined
+      }
       hard_delete_profile: { Args: { p_user_id: string }; Returns: undefined }
       is_super_admin: { Args: never; Returns: boolean }
       restore_profile: { Args: { p_user_id: string }; Returns: undefined }
