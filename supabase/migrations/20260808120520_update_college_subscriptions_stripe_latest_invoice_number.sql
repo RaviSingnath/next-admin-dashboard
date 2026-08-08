@@ -1,0 +1,2 @@
+alter table public.college_subscriptions
+add column stripe_latest_invoice_number text;

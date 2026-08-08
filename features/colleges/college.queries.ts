@@ -120,3 +120,71 @@ export const getLogoSignedUrlQuery = async (avatar: string) => {
     .from(COLLEGE_LOGO_BUCKET)
     .createSignedUrl(avatar, 60 * 60);
 };
+
+export async function getAllSubscriptionsQuery(collegeId: string) {
+  const supabase = await createClient();
+
+  return supabase
+    .from("college_subscriptions")
+    .select(
+      `
+      id,
+      stripe_subscription_id,
+      status,
+      current_period_end,
+      current_period_start,
+      cancel_at_period_end,
+      canceled_at,
+      trial_end,
+      latest_invoice_id,
+      stripe_latest_invoice_number,
+      latest_invoice_url,
+      created_at,
+      status,
+      plan:subscription_plans (
+        id,
+        amount,
+        currency,
+        interval,
+        product:stripe_products (
+          name,
+          description
+        )
+      )
+    `,
+    )
+    .eq("college_id", collegeId)
+    .order("created_at", { ascending: false });
+}
+
+export async function getActiveSubscriptionQuery(collegeId: string) {
+  const supabase = await createClient();
+
+  return supabase
+    .from("college_subscriptions")
+    .select(
+      `
+      id,
+      stripe_subscription_id,
+      status,
+      current_period_end,
+      current_period_start,
+      cancel_at_period_end,
+      canceled_at,
+      trial_end,
+      plan:subscription_plans (
+        id,
+        amount,
+        currency,
+        interval,
+        product:stripe_products (
+          name,
+          description
+        )
+      )
+    `,
+    )
+    .eq("college_id", collegeId)
+    .eq("status", "active")
+    .maybeSingle();
+}

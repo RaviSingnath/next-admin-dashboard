@@ -239,9 +239,10 @@ export type Database = {
           latest_invoice_url: string | null
           metadata: Json
           plan_id: string
-          status: string
+          status: Database["public"]["Enums"]["subscription_status"]
           stripe_customer_id: string
           stripe_event_created_at: number | null
+          stripe_latest_invoice_number: string | null
           stripe_subscription_id: string
           trial_end: string | null
           trial_start: string | null
@@ -263,9 +264,10 @@ export type Database = {
           latest_invoice_url?: string | null
           metadata?: Json
           plan_id: string
-          status?: string
+          status?: Database["public"]["Enums"]["subscription_status"]
           stripe_customer_id: string
           stripe_event_created_at?: number | null
+          stripe_latest_invoice_number?: string | null
           stripe_subscription_id: string
           trial_end?: string | null
           trial_start?: string | null
@@ -287,9 +289,10 @@ export type Database = {
           latest_invoice_url?: string | null
           metadata?: Json
           plan_id?: string
-          status?: string
+          status?: Database["public"]["Enums"]["subscription_status"]
           stripe_customer_id?: string
           stripe_event_created_at?: number | null
+          stripe_latest_invoice_number?: string | null
           stripe_subscription_id?: string
           trial_end?: string | null
           trial_start?: string | null
@@ -1099,6 +1102,15 @@ export type Database = {
         | "succeeded"
         | "partially_refunded"
         | "disputed"
+      subscription_status:
+        | "incomplete"
+        | "incomplete_expired"
+        | "trialing"
+        | "active"
+        | "past_due"
+        | "canceled"
+        | "unpaid"
+        | "paused"
       user_role: "super_admin" | "college_admin" | "supervisor" | "student"
       user_status: "active" | "inactive" | "suspended" | "deleted"
     }
@@ -1245,6 +1257,16 @@ export const Constants = {
         "succeeded",
         "partially_refunded",
         "disputed",
+      ],
+      subscription_status: [
+        "incomplete",
+        "incomplete_expired",
+        "trialing",
+        "active",
+        "past_due",
+        "canceled",
+        "unpaid",
+        "paused",
       ],
       user_role: ["super_admin", "college_admin", "supervisor", "student"],
       user_status: ["active", "inactive", "suspended", "deleted"],

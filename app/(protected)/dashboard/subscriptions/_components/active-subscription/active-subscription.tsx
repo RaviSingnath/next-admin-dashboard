@@ -1,18 +1,21 @@
-import {
-  CollegeSubscription,
-  type RecentSubscriptions,
-} from "@/features/stripe/service/stripe.services";
+import type {
+  ActiveSubscription,
+  AllSubscription,
+} from "@/features/colleges/college.service";
 import SubscriptionCard from "./subscription-card";
 import UsageCard from "./usage-card";
 import SubscriptionTimeline from "./subscription-timeline";
 import BillingHistory from "../billing-history";
 
 type ActiveSubscriptionProps = {
-  subscription: CollegeSubscription;
-  subscriptions: RecentSubscriptions[];
+  subscription: ActiveSubscription;
+  subscriptions: AllSubscription;
 };
 
-export function ActiveSubscription({ subscription }: ActiveSubscriptionProps) {
+export function ActiveSubscription({
+  subscription,
+  subscriptions,
+}: ActiveSubscriptionProps) {
   return (
     <div className="grid grid-cols-12 gap-4 md:gap-6">
       <div className="col-span-12 xl:col-span-6">
@@ -33,7 +36,7 @@ export function ActiveSubscription({ subscription }: ActiveSubscriptionProps) {
         <SubscriptionTimeline />
       </div>
       <div className="col-span-12 xl:col-span-8">
-        <BillingHistory />
+        <BillingHistory subscriptions={subscriptions} />
       </div>
     </div>
   );

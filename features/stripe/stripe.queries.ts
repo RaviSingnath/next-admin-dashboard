@@ -106,38 +106,3 @@ export async function getCollegeByCustomerId(customerId: string) {
     .maybeSingle();
 }
 
-export async function getSubscriptionByCollegeId(collegeId: string) {
-  const supabase = await createClient();
-
-  return (
-    supabase
-      .from("college_subscriptions")
-      .select(
-        `
-      id,
-      stripe_subscription_id,
-      status,
-      current_period_end,
-      current_period_start,
-      cancel_at_period_end,
-      canceled_at,
-      trial_end,
-      plan:subscription_plans (
-        id,
-        amount,
-        currency,
-        interval,
-        product:stripe_products (
-          name,
-          description
-        )
-      )
-    `,
-      )
-      .eq("college_id", collegeId)
-      // Exclude terminal statuses — only fetch the live subscription
-      .not("status", "in", '("canceled","incomplete_expired")')
-      .order("created_at", { ascending: false })
-      .maybeSingle()
-  );
-}

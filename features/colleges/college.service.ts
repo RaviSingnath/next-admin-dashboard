@@ -12,6 +12,8 @@ import {
   getCollegeProfileQuery,
   getCollegesQuery,
   getLogoSignedUrlQuery,
+  getAllSubscriptionsQuery,
+  getActiveSubscriptionQuery,
 } from "./college.queries";
 import { Errors } from "@/lib/errors/error-factory";
 import { mapSupabaseError } from "@/lib/errors/supabase-error";
@@ -119,16 +121,14 @@ export async function showCollegeOnMap() {
   return colleges;
 }
 
-type ActiveCollege = Awaited<
-  ReturnType<typeof showCollegeOnMap>
->[number];
+type ActiveCollege = Awaited<ReturnType<typeof showCollegeOnMap>>[number];
 
 export type MapAddress = (ActiveCollege & {
   logo_url: string | null;
 })[];
-export type CollegeAddress = (ActiveCollege & {
+export type CollegeAddress = ActiveCollege & {
   logo_url: string | null;
-});
+};
 
 export async function getCollegeWithAddress() {
   const ctx = await createRequestContext();
@@ -255,3 +255,31 @@ export async function updateCollegeInfoService({
     profile: updatedProfile,
   };
 }
+
+export async function getAllSubscriptions() {
+  const ctx = await createRequestContext();
+  if (!ctx.user.college_id) {
+    throw Errors.collegeNotAssigned();
+  }
+  const { data, error } = await getAllSubscriptionsQuery(ctx.user.college_id);
+
+  if (error) throw mapSupabaseError(error);
+
+  return data;
+}
+export type AllSubscription = Awaited<ReturnType<typeof getAllSubscriptions>>;
+
+export async function getActiveSubscription() {
+  const ctx = await createRequestContext();
+  if (!ctx.user.college_id) {
+    throw Errors.collegeNotAssigned();
+  }
+  const { data, error } = await getActiveSubscriptionQuery(ctx.user.college_id);
+
+  if (error) throw mapSupabaseError(error);
+
+  return data;
+}
+export type ActiveSubscription = Awaited<
+  ReturnType<typeof getActiveSubscription>
+>;

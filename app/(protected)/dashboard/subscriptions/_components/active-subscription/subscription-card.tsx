@@ -1,6 +1,6 @@
 "use client";
 
-import { CollegeSubscription } from "@/features/stripe/service/stripe.services";
+import { type ActiveSubscription } from "@/features/colleges/college.service";
 import { motion } from "motion/react";
 import { formatDate } from "@/utils/date";
 
@@ -18,7 +18,7 @@ import { formatDate } from "@/utils/date";
 // }
 
 type SubscriptionCardProps = {
-  subscription: CollegeSubscription;
+  subscription: ActiveSubscription;
 };
 
 const statusStyles = {

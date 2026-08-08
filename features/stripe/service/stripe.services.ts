@@ -3,12 +3,9 @@ import { stripe } from "@/lib/stripe/client";
 import {
   getCollegeStripeCustomerId,
   getPlansQuery,
-  getSubscriptionByCollegeId,
   getRecentSubscriptionsQuery,
 } from "../stripe.queries";
 import { updateCollegeStripeCustomerId } from "../stripe.mutations";
-import { createRequestContext } from "@/lib/auth/request-context";
-import { Errors } from "@/lib/errors/error-factory";
 import { mapSupabaseError } from "@/lib/errors/supabase-error";
 import { getLogoSignedUrlQuery } from "@/features/colleges/college.queries";
 
@@ -100,21 +97,6 @@ export type Plan = Plans[number];
 export type PlanFeature = Plan["features"][number];
 export type MonthlyPrice = NonNullable<Plan["monthly"]>;
 export type YearlyPrice = NonNullable<Plan["yearly"]>;
-
-export async function getCollegeSubscription() {
-  const ctx = await createRequestContext();
-  if (!ctx.user.college_id) {
-    throw Errors.collegeNotAssigned();
-  }
-  const { data, error } = await getSubscriptionByCollegeId(ctx.user.college_id);
-
-  if (error) throw mapSupabaseError(error);
-
-  return data;
-}
-export type CollegeSubscription = Awaited<
-  ReturnType<typeof getCollegeSubscription>
->;
 
 export async function getRecentSubscriptions() {
   const { data, error } = await getRecentSubscriptionsQuery();

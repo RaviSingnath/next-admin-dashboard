@@ -69,6 +69,7 @@ export async function onInvoicePaid(invoice: Stripe.Invoice): Promise<void> {
     .from("college_subscriptions")
     .update({
       latest_invoice_id: invoice.id,
+      stripe_latest_invoice_number: invoice.number,
       latest_invoice_url: invoice.hosted_invoice_url ?? null,
       currency: invoice.currency,
       updated_at: new Date().toISOString(),
@@ -127,6 +128,7 @@ export async function onInvoicePaymentFailed(
     .from("college_subscriptions")
     .update({
       latest_invoice_id: invoice.id,
+      stripe_latest_invoice_number: invoice.number,
       latest_invoice_url: invoice.hosted_invoice_url ?? null,
       updated_at: new Date().toISOString(),
     })

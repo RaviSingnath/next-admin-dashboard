@@ -1,28 +1,24 @@
 "use server";
 
 import { PlanList } from "@/components/stripe/plan-list";
-import {
-  getCollegeSubscription,
-  getPlansService,
-  getRecentSubscriptions,
-} from "@/features/stripe/service/stripe.services";
+import { getPlansService } from "@/features/stripe/service/stripe.services";
+import { getAllSubscriptions } from "@/features/colleges/college.service";
+import { getActiveSubscription } from "@/features/colleges/college.service";
 import { ActiveSubscription } from "./_components/active-subscription/active-subscription";
 
 export default async function PlansPage() {
   const plans = await getPlansService();
-  const subscription = await getCollegeSubscription();
-  const subscriptions = await getRecentSubscriptions();
-
-  console.log(subscription);
+  const activeSubscription = await getActiveSubscription();
+  const allSubscriptions = await getAllSubscriptions();
 
   if (!plans) return;
 
   return (
     <>
-      {subscription?.id ? (
+      {activeSubscription?.id ? (
         <ActiveSubscription
-          subscription={subscription}
-          subscriptions={subscriptions}
+          subscription={activeSubscription}
+          subscriptions={allSubscriptions}
         />
       ) : (
         <PlanList plans={plans} />
