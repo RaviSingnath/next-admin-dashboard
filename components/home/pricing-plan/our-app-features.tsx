@@ -26,7 +26,7 @@ export default function OurAppFeatures() {
       title: "Collect tuition fees and track every payment in real time",
       description:
         "Students pay tuition securely via Stripe, directly to your college's account. Admins and supervisors can monitor payment status, send reminders, and download invoices and receipts — all from one dashboard. No spreadsheets, no chasing.",
-      imageLight: "/images/dashboard-screenshot/supervisors.png",
+      imageLight: "/images/dashboard-screenshot/subscription-plan.png",
     },
     {
       eyebrow: "Full accountability",
