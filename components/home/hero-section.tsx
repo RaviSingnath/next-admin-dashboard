@@ -189,7 +189,7 @@ export default function HeroSection({ claimsData }: HeroSectionProps) {
         </div>
         <div className="py-24 sm:py-24 lg:pb-32">
           <div className="mx-auto max-w-7xl px-6 lg:px-8">
-            <div className="mx-auto max-w-2xl text-center">
+            <div className="mx-auto max-w-5xl text-center">
               <h1 className="font-display text-5xl font-semibold tracking-tight text-balance text-gray-900 sm:text-7xl dark:text-white">
                 Run your college. Not your paperwork
               </h1>
@@ -213,12 +213,13 @@ export default function HeroSection({ claimsData }: HeroSectionProps) {
               className="mt-16 rounded-md bg-gray-50 shadow-xl ring-1 ring-gray-900/10 sm:mt-24 dark:hidden"
             /> */}
             <Image
-              width="2432"
-              height="1442"
-              sizes="100vw"
-              src="/images/dashboard-screenshot/admin-dashboard.png"
-              alt="App screenshot"
-              className="mt-16 rounded-md bg-gray-50 shadow-xl ring-1 ring-gray-900/10 sm:mt-24 dark:hidden"
+              src="/images/dashboard-screenshot/admin-dashboard.webp"
+              alt="College Diary admin dashboard"
+              width={2432}
+              height={1442}
+              sizes="(max-width: 1024px) 100vw, 1024px"
+              priority
+              className="mt-16 w-full rounded-md bg-gray-50 shadow-xl ring-1 ring-gray-900/10 sm:mt-24 dark:hidden"
             />
             {/* <img
               width="2432"
