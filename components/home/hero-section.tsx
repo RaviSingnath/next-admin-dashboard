@@ -198,8 +198,8 @@ export default function HeroSection({ claimsData }: HeroSectionProps) {
             <Image
               src="/images/dashboard-screenshot/admin-dashboard.webp"
               alt="College Diary admin dashboard"
-              width={2432}
-              height={1442}
+              width={0}
+              height={0}
               sizes="(max-width: 1024px) 100vw, 1024px"
               priority
               className="mt-16 w-full rounded-md bg-gray-50 shadow-xl ring-1 ring-gray-900/10 sm:mt-24 dark:hidden"
@@ -207,8 +207,8 @@ export default function HeroSection({ claimsData }: HeroSectionProps) {
             <Image
               src="/images/dashboard-screenshot/admin-dashboard-dark.webp"
               alt="College Diary admin dashboard"
-              width={2432}
-              height={1442}
+              width={0}
+              height={0}
               sizes="(max-width: 1024px) 100vw, 1024px"
               priority
               className="mt-16 w-full rounded-md bg-gray-50 shadow-xl ring-1 ring-gray-900/10 not-dark:hidden sm:mt-24"
