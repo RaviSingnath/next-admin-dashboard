@@ -33,7 +33,7 @@ export default function HeroSection({ claimsData }: HeroSectionProps) {
               width="0"
               height="0"
               sizes="100vw"
-              src="./images/logo/logo.svg"
+              src="/images/logo/logo.svg"
               alt=""
               className="h-10 w-auto"
             />
@@ -111,7 +111,7 @@ export default function HeroSection({ claimsData }: HeroSectionProps) {
                       width="0"
                       height="0"
                       sizes="100vw"
-                      src="./images/logo/logo.svg"
+                      src="/images/logo/logo.svg"
                       alt=""
                       className="h-8 w-auto"
                     />
@@ -210,7 +210,6 @@ export default function HeroSection({ claimsData }: HeroSectionProps) {
               width={0}
               height={0}
               sizes="(max-width: 1024px) 100vw, 1024px"
-              priority
               className="mt-16 w-full rounded-md bg-gray-50 shadow-xl ring-1 ring-gray-900/10 not-dark:hidden sm:mt-24"
             />
           </div>

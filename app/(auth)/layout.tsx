@@ -25,7 +25,7 @@ export default function RootLayout({
               <Image
                 width={231}
                 height={48}
-                src="./images/logo/auth-logo.svg"
+                src="/images/logo/auth-logo.svg"
                 alt="Logo"
               />
               <p className="text-center text-2xl font-bold text-gray-400 dark:text-white/60">
