@@ -138,9 +138,9 @@ export default function RecentSubscriptions({
                   <Badge
                     size="sm"
                     color={
-                      subscription.status === "Delivered"
+                      subscription.status === "active"
                         ? "success"
-                        : subscription.status === "Pending"
+                        : subscription.status === "incomplete"
                           ? "warning"
                           : "error"
                     }
