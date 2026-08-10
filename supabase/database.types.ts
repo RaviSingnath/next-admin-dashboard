@@ -222,6 +222,64 @@ export type Database = {
           },
         ]
       }
+      college_subscription_events: {
+        Row: {
+          amount_minor: number | null
+          college_id: string
+          currency: string | null
+          event_type: string
+          from_plan_id: string | null
+          id: string
+          metadata: Json
+          occurred_at: string
+          to_plan_id: string | null
+        }
+        Insert: {
+          amount_minor?: number | null
+          college_id: string
+          currency?: string | null
+          event_type: string
+          from_plan_id?: string | null
+          id?: string
+          metadata?: Json
+          occurred_at?: string
+          to_plan_id?: string | null
+        }
+        Update: {
+          amount_minor?: number | null
+          college_id?: string
+          currency?: string | null
+          event_type?: string
+          from_plan_id?: string | null
+          id?: string
+          metadata?: Json
+          occurred_at?: string
+          to_plan_id?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "college_subscription_events_college_id_fkey"
+            columns: ["college_id"]
+            isOneToOne: false
+            referencedRelation: "colleges"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "college_subscription_events_from_plan_id_fkey"
+            columns: ["from_plan_id"]
+            isOneToOne: false
+            referencedRelation: "subscription_plans"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "college_subscription_events_to_plan_id_fkey"
+            columns: ["to_plan_id"]
+            isOneToOne: false
+            referencedRelation: "subscription_plans"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       college_subscriptions: {
         Row: {
           cancel_at_period_end: boolean
@@ -1062,6 +1120,7 @@ export type Database = {
         Args: never
         Returns: Database["public"]["Enums"]["user_role"]
       }
+      current_user_role: { Args: never; Returns: string }
       custom_access_token_hook: { Args: { event: Json }; Returns: Json }
       fail_stripe_event: {
         Args: {

@@ -1,6 +1,11 @@
 import Stripe from "stripe";
 import { createAdminClient } from "@/lib/supabase/admin";
 import { toIso, extractId } from "@/lib/stripe/helpers";
+import {
+  recordSubscriptionEvent,
+  resolvePlanChangeDirection,
+} from "@/lib/helper/subscription-events";
+import { SUBSCRIPTION_EVENT_TYPES } from "@/lib/constants/subscription-event-types";
 
 // ── Shared helpers ────────────────────────────────────────────────────────────
 
@@ -72,6 +77,12 @@ function buildSubscriptionPayload(
  *
  * We always read-then-decide whether to insert or update, and skip writes
  * older than what's already stored (stripe_event_created_at).
+ * 
+ * Also responsible for diffing the incoming subscription against whatever
+ * was stored before overwriting it, and writing narrative rows to
+ * college_subscription_events for anything current-state columns can't
+ * reconstruct later (plan changes, trial conversion, cancellation
+ * scheduling/reversal).
  */
 async function upsertSubscriptionFromStripe(
   subscription: Stripe.Subscription,
@@ -87,7 +98,9 @@ async function upsertSubscriptionFromStripe(
 
   const { data: existing, error: fetchError } = await supabase
     .from("college_subscriptions")
-    .select("id, stripe_event_created_at")
+    .select(
+      "id, college_id, plan_id, status, cancel_at_period_end, stripe_event_created_at",
+    )
     .eq("stripe_subscription_id", subscription.id)
     .maybeSingle();
 
@@ -98,8 +111,10 @@ async function upsertSubscriptionFromStripe(
     planId,
     eventCreatedAt,
   );
+  const occurredAt = new Date(eventCreatedAt * 1000).toISOString();
 
-  // Row doesn't exist yet — insert. Handles `updated` arriving before `created`.
+  // ── Row doesn't exist yet — insert. Handles `updated` arriving before
+  //    `created`, which is also just the normal first-write path. ─────────
   if (!existing) {
     const collegeId = subscription.metadata?.college_id;
     if (!collegeId) {
@@ -116,11 +131,23 @@ async function upsertSubscriptionFromStripe(
     });
 
     if (error) throw error;
+
+    if (subscription.status === "trialing") {
+      await recordSubscriptionEvent(supabase, {
+        collegeId,
+        eventType: SUBSCRIPTION_EVENT_TYPES.TRIAL_STARTED,
+        toPlanId: planId,
+        occurredAt,
+      });
+    }
+
     return;
   }
 
-  // Row exists but this event is older than what's already stored — skip.
-  // Handles `created` (or a retried/delayed event) arriving after a newer state.
+  // ── Row exists but this event is older than what's already stored — skip.
+  //    Handles `created` (or a retried/delayed event) arriving after a
+  //    newer state. Must happen BEFORE diffing, since a stale event's
+  //    "changes" aren't real changes relative to current truth. ──────────
   if (
     existing.stripe_event_created_at !== null &&
     existing.stripe_event_created_at >= eventCreatedAt
@@ -132,12 +159,87 @@ async function upsertSubscriptionFromStripe(
     return;
   }
 
+  // ── Diff against prior state before it gets overwritten. Deferred as
+  //    closures so nothing gets logged unless the state write below
+  //    actually succeeds. ──────────────────────────────────────────────
+  const pendingEvents: Array<() => Promise<void>> = [];
+
+  if (existing.plan_id && existing.plan_id !== planId) {
+    const direction = await resolvePlanChangeDirection(
+      supabase,
+      existing.plan_id,
+      planId,
+    );
+
+    if (direction) {
+      pendingEvents.push(() =>
+        recordSubscriptionEvent(supabase, {
+          collegeId: existing.college_id,
+          eventType:
+            direction === "upgraded"
+              ? SUBSCRIPTION_EVENT_TYPES.PLAN_UPGRADED
+              : SUBSCRIPTION_EVENT_TYPES.PLAN_DOWNGRADED,
+          fromPlanId: existing.plan_id,
+          toPlanId: planId,
+          occurredAt,
+        }),
+      );
+    }
+  }
+
+  if (existing.status === "trialing" && subscription.status === "active") {
+    pendingEvents.push(() =>
+      recordSubscriptionEvent(supabase, {
+        collegeId: existing.college_id,
+        eventType: SUBSCRIPTION_EVENT_TYPES.TRIAL_CONVERTED,
+        toPlanId: planId,
+        occurredAt,
+      }),
+    );
+  } else if (
+    existing.status === "trialing" &&
+    subscription.status !== "trialing" &&
+    subscription.status !== "active"
+  ) {
+    pendingEvents.push(() =>
+      recordSubscriptionEvent(supabase, {
+        collegeId: existing.college_id,
+        eventType: SUBSCRIPTION_EVENT_TYPES.TRIAL_ENDED_WITHOUT_CONVERSION,
+        occurredAt,
+      }),
+    );
+  }
+
+  if (!existing.cancel_at_period_end && subscription.cancel_at_period_end) {
+    pendingEvents.push(() =>
+      recordSubscriptionEvent(supabase, {
+        collegeId: existing.college_id,
+        eventType: SUBSCRIPTION_EVENT_TYPES.CANCELLATION_SCHEDULED,
+        occurredAt,
+      }),
+    );
+  } else if (
+    existing.cancel_at_period_end &&
+    !subscription.cancel_at_period_end
+  ) {
+    pendingEvents.push(() =>
+      recordSubscriptionEvent(supabase, {
+        collegeId: existing.college_id,
+        eventType: SUBSCRIPTION_EVENT_TYPES.CANCELLATION_REVERSED,
+        occurredAt,
+      }),
+    );
+  }
+
   const { error } = await supabase
     .from("college_subscriptions")
     .update(payload)
     .eq("stripe_subscription_id", subscription.id);
 
   if (error) throw error;
+
+  // Only log events once the actual state write is confirmed successful.
+  await Promise.all(pendingEvents.map((fn) => fn()));
 }
 
 // ── Service methods ───────────────────────────────────────────────────────────
@@ -164,7 +266,7 @@ export async function onSubscriptionDeleted(
 
   const { data: existing, error: fetchError } = await supabase
     .from("college_subscriptions")
-    .select("stripe_event_created_at")
+    .select("college_id, stripe_event_created_at")
     .eq("stripe_subscription_id", subscription.id)
     .maybeSingle();
 
@@ -194,4 +296,12 @@ export async function onSubscriptionDeleted(
     .eq("stripe_subscription_id", subscription.id);
 
   if (error) throw error;
+
+  if (existing?.college_id) {
+    await recordSubscriptionEvent(supabase, {
+      collegeId: existing.college_id,
+      eventType: SUBSCRIPTION_EVENT_TYPES.SUBSCRIPTION_ENDED,
+      occurredAt: new Date(eventCreatedAt * 1000).toISOString(),
+    });
+  }
 }
