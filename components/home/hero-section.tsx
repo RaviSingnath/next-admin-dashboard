@@ -7,6 +7,12 @@ import { AppClaims } from "@/lib/auth/parseUser";
 import UserRole from "@/lib/rbac/roles";
 import LearnMoreButton from "./learn-more-button";
 
+// import sharp from "sharp";
+
+// await sharp("public/images/dashboard-screenshot/admin-dashboard-dark.png")
+//   .webp({ quality: 80 })
+//   .toFile("public/images/dashboard-screenshot/admin-dashboard-dark.webp");
+
 type HeroSectionProps = {
   claimsData: AppClaims | null;
 };
@@ -29,16 +35,8 @@ export default function HeroSection({ claimsData }: HeroSectionProps) {
               sizes="100vw"
               src="./images/logo/logo.svg"
               alt=""
-              className="h-10 w-auto dark:hidden"
+              className="h-10 w-auto"
             />
-            {/* <Image
-                width="0"
-                height="0"
-                sizes="100vw"
-                src="https://tailwindcss.com/plus-assets/img/logos/mark.svg?color=indigo&shade=500"
-                alt=""
-                className="h-8 w-auto not-dark:hidden"
-              /> */}
           </div>
           <div className="flex lg:hidden">
             <button
@@ -115,16 +113,8 @@ export default function HeroSection({ claimsData }: HeroSectionProps) {
                       sizes="100vw"
                       src="./images/logo/logo.svg"
                       alt=""
-                      className="h-8 w-auto dark:hidden"
+                      className="h-8 w-auto"
                     />
-                    {/* <Image
-                      width="0"
-                      height="0"
-                      sizes="100vw"
-                      src="https://tailwindcss.com/plus-assets/img/logos/mark.svg?color=indigo&shade=500"
-                      alt=""
-                      className="h-8 w-auto not-dark:hidden"
-                    /> */}
                   </a>
                   <button
                     type="button"
@@ -205,13 +195,6 @@ export default function HeroSection({ claimsData }: HeroSectionProps) {
               </div>
             </div>
 
-            {/* <img
-              width="2432"
-              height="1442"
-              src="https://tailwindcss.com/plus-assets/img/component-images/project-app-screenshot.png"
-              alt="App screenshot"
-              className="mt-16 rounded-md bg-gray-50 shadow-xl ring-1 ring-gray-900/10 sm:mt-24 dark:hidden"
-            /> */}
             <Image
               src="/images/dashboard-screenshot/admin-dashboard.webp"
               alt="College Diary admin dashboard"
@@ -221,21 +204,17 @@ export default function HeroSection({ claimsData }: HeroSectionProps) {
               priority
               className="mt-16 w-full rounded-md bg-gray-50 shadow-xl ring-1 ring-gray-900/10 sm:mt-24 dark:hidden"
             />
-            {/* <img
-              width="2432"
-              height="1442"
-              src="https://tailwindcss.com/plus-assets/img/component-images/dark-project-app-screenshot.png"
-              alt="App screenshot"
-              className="mt-16 rounded-md bg-white/5 shadow-2xl ring-1 ring-white/10 not-dark:hidden sm:mt-24"
-            /> */}
+            <Image
+              src="/images/dashboard-screenshot/admin-dashboard-dark.webp"
+              alt="College Diary admin dashboard"
+              width={2432}
+              height={1442}
+              sizes="(max-width: 1024px) 100vw, 1024px"
+              priority
+              className="mt-16 w-full rounded-md bg-gray-50 shadow-xl ring-1 ring-gray-900/10 not-dark:hidden sm:mt-24"
+            />
           </div>
         </div>
-        {/* <div
-          aria-hidden="true"
-          className="absolute inset-x-0 top-[calc(100%-55rem)] -z-10 transform-gpu overflow-hidden blur-3xl sm:top-[calc(100%-30rem)]"
-        >
-          <div className="relative left-[calc(50%+3rem)] bottom-[calc(50%+3rem)] aspect-1155/678 w-144.5 -translate-x-1/2 -translate-y-1/2 bg-linear-to-tr from-[#feb648] to-[#feb648] opacity-30 sm:left-[calc(50%+36rem)] sm:bottom-[calc(70%+20rem)] sm:w-288.75 dark:opacity-20"></div>
-        </div> */}
       </div>
     </div>
   );
