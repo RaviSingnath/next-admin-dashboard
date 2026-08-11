@@ -3,8 +3,9 @@ import {
   SUBSCRIPTION_EVENT_TYPES,
   type SubscriptionEventType,
 } from "../constants/subscription-event-types";
+import { insertCollegeEvents } from "@/features/colleges/college.mutations";
 
-interface RecordSubscriptionEventInput {
+export interface RecordSubscriptionEventInput {
   collegeId: string;
   eventType: SubscriptionEventType;
   fromPlanId?: string | null;
@@ -23,16 +24,9 @@ interface RecordSubscriptionEventInput {
  * they're visible without being fatal.
  */
 export async function recordSubscriptionEvent(
-  supabase: ReturnType<typeof createAdminClient>,
   input: RecordSubscriptionEventInput,
 ): Promise<void> {
-  const { error } = await supabase.from("college_subscription_events").insert({
-    college_id: input.collegeId,
-    event_type: input.eventType,
-    from_plan_id: input.fromPlanId ?? null,
-    to_plan_id: input.toPlanId ?? null,
-    occurred_at: input.occurredAt ?? new Date().toISOString(),
-  });
+  const { error } = await insertCollegeEvents(input);
 
   if (error) {
     console.error(

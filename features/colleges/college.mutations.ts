@@ -2,6 +2,8 @@ import createClient from "@/lib/supabase/server";
 import { TCollege, TCollegeInfo } from "./college.schema";
 import { AddressUpdate } from "../address/types";
 import { COLLEGE_LOGO_BUCKET } from "@/lib/constants/db";
+import { createAdminClient } from "@/lib/supabase/admin";
+import { RecordSubscriptionEventInput } from "@/lib/helper/subscription-events";
 
 export const createCollegeMutation = async (data: TCollege) => {
   const supabase = await createClient();
@@ -69,4 +71,18 @@ export const updatecollegeInfo = async (
     .update(data)
     .eq("id", collegeId)
     .maybeSingle();
+};
+
+export const insertCollegeEvents = async (
+  input: RecordSubscriptionEventInput,
+) => {
+  const supabase = createAdminClient();
+
+  return supabase.from("college_subscription_events").insert({
+    college_id: input.collegeId,
+    event_type: input.eventType,
+    from_plan_id: input.fromPlanId ?? null,
+    to_plan_id: input.toPlanId ?? null,
+    occurred_at: input.occurredAt ?? new Date().toISOString(),
+  });
 };

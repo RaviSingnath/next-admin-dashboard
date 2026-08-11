@@ -24,6 +24,10 @@ import {
 import { collegeWithAddressQuery } from "./queries/get-college-with-address";
 import { TImageFile } from "../profile/profile.schema";
 import sharp from "sharp";
+import {
+  recordSubscriptionEvent,
+  SUBSCRIPTION_EVENT_TYPES,
+} from "@/lib/helper/subscription-events";
 
 type createCollegeServiceInput = {
   ctx: RequestContext;
@@ -48,6 +52,11 @@ export async function createCollegeService({
   if (error) {
     throw mapSupabaseError(error);
   }
+
+  await recordSubscriptionEvent({
+    collegeId: college.id,
+    eventType: SUBSCRIPTION_EVENT_TYPES.COLLEGE_CREATED,
+  });
 
   return college;
 }
@@ -76,14 +85,12 @@ export async function getCollegesService() {
         };
       }
 
-      const { data: logo, error } = await getLogoSignedUrlQuery(
-        college.logo_url,
-      );
+      const { data: logo } = await getLogoSignedUrlQuery(college.logo_url);
 
       return {
         ...college,
         profiles,
-        logo_url: error ? null : logo.signedUrl,
+        logo_url: logo.publicUrl,
       };
     }),
   );
@@ -107,13 +114,11 @@ export async function showCollegeOnMap() {
         return college;
       }
 
-      const { data: logo, error: logoError } = await getLogoSignedUrlQuery(
-        college.logo_url,
-      );
+      const { data: logo } = await getLogoSignedUrlQuery(college.logo_url);
 
       return {
         ...college,
-        logo_url: logoError ? null : logo.signedUrl,
+        logo_url: logo.publicUrl,
       };
     }),
   );
@@ -165,24 +170,13 @@ export async function getCollegeProfileService() {
     };
   }
 
-  const { data: avatarData, error: bucketError } = await getLogoSignedUrlQuery(
+  const { data: avatarData } = await getLogoSignedUrlQuery(
     collegeProfile?.logo_url,
   );
 
-  if (bucketError) {
-    return {
-      ...collegeProfile,
-      logo_url: null,
-    };
-  }
-
-  if (error) {
-    throw mapSupabaseError(error);
-  }
-
   return {
     ...collegeProfile,
-    logo_url: avatarData.signedUrl,
+    logo_url: avatarData.publicUrl,
   };
 }
 

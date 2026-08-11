@@ -32,7 +32,7 @@ export default function HeroSubHeading() {
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -24 }}
           transition={{
-            duration: 0.70,
+            duration: 0.50,
             ease: "easeInOut",
           }}
         >

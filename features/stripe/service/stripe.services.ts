@@ -111,7 +111,7 @@ export async function getRecentSubscriptions() {
         return subscription;
       }
 
-      const { data: logo, error: logoError } = await getLogoSignedUrlQuery(
+      const { data: logo } = await getLogoSignedUrlQuery(
         college.logo_url,
       );
 
@@ -119,7 +119,7 @@ export async function getRecentSubscriptions() {
         ...subscription,
         colleges: {
           ...college,
-          logo_url: logoError ? null : logo.signedUrl,
+          logo_url: logo.publicUrl,
         },
       };
     }),

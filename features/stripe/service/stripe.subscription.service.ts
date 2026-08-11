@@ -77,7 +77,7 @@ function buildSubscriptionPayload(
  *
  * We always read-then-decide whether to insert or update, and skip writes
  * older than what's already stored (stripe_event_created_at).
- * 
+ *
  * Also responsible for diffing the incoming subscription against whatever
  * was stored before overwriting it, and writing narrative rows to
  * college_subscription_events for anything current-state columns can't
@@ -133,7 +133,7 @@ async function upsertSubscriptionFromStripe(
     if (error) throw error;
 
     if (subscription.status === "trialing") {
-      await recordSubscriptionEvent(supabase, {
+      await recordSubscriptionEvent({
         collegeId,
         eventType: SUBSCRIPTION_EVENT_TYPES.TRIAL_STARTED,
         toPlanId: planId,
@@ -173,7 +173,7 @@ async function upsertSubscriptionFromStripe(
 
     if (direction) {
       pendingEvents.push(() =>
-        recordSubscriptionEvent(supabase, {
+        recordSubscriptionEvent({
           collegeId: existing.college_id,
           eventType:
             direction === "upgraded"
@@ -189,7 +189,7 @@ async function upsertSubscriptionFromStripe(
 
   if (existing.status === "trialing" && subscription.status === "active") {
     pendingEvents.push(() =>
-      recordSubscriptionEvent(supabase, {
+      recordSubscriptionEvent({
         collegeId: existing.college_id,
         eventType: SUBSCRIPTION_EVENT_TYPES.TRIAL_CONVERTED,
         toPlanId: planId,
@@ -202,7 +202,7 @@ async function upsertSubscriptionFromStripe(
     subscription.status !== "active"
   ) {
     pendingEvents.push(() =>
-      recordSubscriptionEvent(supabase, {
+      recordSubscriptionEvent({
         collegeId: existing.college_id,
         eventType: SUBSCRIPTION_EVENT_TYPES.TRIAL_ENDED_WITHOUT_CONVERSION,
         occurredAt,
@@ -212,7 +212,7 @@ async function upsertSubscriptionFromStripe(
 
   if (!existing.cancel_at_period_end && subscription.cancel_at_period_end) {
     pendingEvents.push(() =>
-      recordSubscriptionEvent(supabase, {
+      recordSubscriptionEvent({
         collegeId: existing.college_id,
         eventType: SUBSCRIPTION_EVENT_TYPES.CANCELLATION_SCHEDULED,
         occurredAt,
@@ -223,7 +223,7 @@ async function upsertSubscriptionFromStripe(
     !subscription.cancel_at_period_end
   ) {
     pendingEvents.push(() =>
-      recordSubscriptionEvent(supabase, {
+      recordSubscriptionEvent({
         collegeId: existing.college_id,
         eventType: SUBSCRIPTION_EVENT_TYPES.CANCELLATION_REVERSED,
         occurredAt,
@@ -298,7 +298,7 @@ export async function onSubscriptionDeleted(
   if (error) throw error;
 
   if (existing?.college_id) {
-    await recordSubscriptionEvent(supabase, {
+    await recordSubscriptionEvent({
       collegeId: existing.college_id,
       eventType: SUBSCRIPTION_EVENT_TYPES.SUBSCRIPTION_ENDED,
       occurredAt: new Date(eventCreatedAt * 1000).toISOString(),

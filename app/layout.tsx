@@ -1,19 +1,12 @@
 import type { Metadata } from "next";
-import { Outfit, Geist, Inter, Plus_Jakarta_Sans } from "next/font/google";
+import { Inter, Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
-import "react-tooltip/dist/react-tooltip.css";
 import "mapbox-gl/dist/mapbox-gl.css";
 import { ThemeProvider } from "@/context/ThemeContext";
 import { Toaster } from "sonner";
 import { cn } from "@/lib/utils";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Analytics } from "@vercel/analytics/next";
-
-const geist = Geist({ subsets: ["latin"], variable: "--font-sans" });
-
-const outfit = Outfit({
-  subsets: ["latin"],
-});
 
 // UI font — used for body text, tables, forms, labels
 const inter = Inter({
@@ -43,9 +36,9 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={cn("font-sans", inter.variable, plusJakartaSans.variable)}
+      className={cn(inter.variable, plusJakartaSans.variable)}
     >
-      <body className="min-h-full flex flex-col dark:bg-gray-900">
+      <body className="flex min-h-full flex-col dark:bg-gray-900">
         <ThemeProvider>{children}</ThemeProvider>
         <Toaster richColors position="top-right" />
         <SpeedInsights />
