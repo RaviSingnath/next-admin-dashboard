@@ -96,11 +96,12 @@ export default function CollegeCard({
             <Image
               src={college.logo_url}
               alt={`${college.college_name} logo`}
-              width={400}
-              height={220}
+              width={150}
+              height={150}
+              sizes="(max-width: 640px) 260px, 294px"
               loading="lazy"
               fetchPriority="low"
-              className="h-auto max-h-full w-auto max-w-full object-contain drop-shadow-[0_8px_18px_rgba(15,23,42,0.14)]"
+              className="h-full w-full object-contain"
               draggable={false}
             />
           ) : (
