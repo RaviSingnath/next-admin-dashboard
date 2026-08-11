@@ -98,6 +98,8 @@ export default function CollegeCard({
               alt={`${college.college_name} logo`}
               width={400}
               height={220}
+              loading="lazy"
+              fetchPriority="low"
               className="h-auto max-h-full w-auto max-w-full object-contain drop-shadow-[0_8px_18px_rgba(15,23,42,0.14)]"
               draggable={false}
             />
@@ -175,7 +177,7 @@ export default function CollegeCard({
               event.stopPropagation();
               onShowOnMap(college);
             }}
-            className="group/btn text-brand-400 hover:text-brand-300 focus-visible:ring-brand-400/60 hidden md:inline-flex items-center gap-1 rounded-full text-xs font-medium transition-colors outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-[#071426]"
+            className="group/btn text-brand-400 hover:text-brand-300 focus-visible:ring-brand-400/60 hidden items-center gap-1 rounded-full text-xs font-medium transition-colors outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-[#071426] md:inline-flex"
           >
             View on map
             <ArrowUpRight className="h-3.5 w-3.5 transition-transform group-hover/btn:translate-x-0.5 group-hover/btn:-translate-y-0.5" />
