@@ -1,9 +1,7 @@
 import type { Metadata } from "next";
 import { Inter, Plus_Jakarta_Sans } from "next/font/google";
 import "./globals.css";
-import "mapbox-gl/dist/mapbox-gl.css";
 import { ThemeProvider } from "@/context/ThemeContext";
-import { Toaster } from "sonner";
 import { cn } from "@/lib/utils";
 import { SpeedInsights } from "@vercel/speed-insights/next";
 import { Analytics } from "@vercel/analytics/next";
@@ -34,13 +32,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html
-      lang="en"
-      className={cn(inter.variable, plusJakartaSans.variable)}
-    >
+    <html lang="en" className={cn(inter.variable, plusJakartaSans.variable)}>
       <body className="flex min-h-full flex-col dark:bg-gray-900">
         <ThemeProvider>{children}</ThemeProvider>
-        <Toaster richColors position="top-right" />
         <SpeedInsights />
         <Analytics />
       </body>

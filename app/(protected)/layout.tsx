@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { redirect } from "next/navigation";
 import "react-tooltip/dist/react-tooltip.css";
+import { Toaster } from "sonner";
 import { AuthProvider } from "@/context/AuthProvider";
 import { SidebarProvider } from "@/context/SidebarContext";
 import AdminLayoutClient from "@/app/(protected)/AdminLayoutClient";
@@ -26,6 +27,7 @@ export default async function AdminLayout({
     <SidebarProvider>
       <AuthProvider initialUser={profile}>
         <AdminLayoutClient>{children}</AdminLayoutClient>
+        <Toaster richColors position="top-right" />
       </AuthProvider>
     </SidebarProvider>
   );
