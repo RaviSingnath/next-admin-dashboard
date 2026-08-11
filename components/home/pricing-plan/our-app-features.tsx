@@ -178,7 +178,8 @@ export default function OurAppFeatures() {
                   alt={feature.title}
                   width={2432}
                   height={1442}
-                  priority
+                  loading="lazy"
+                  fetchPriority="low"
                   sizes="(max-width: 768px) 100vw, 70vw"
                   className="absolute h-auto w-full max-w-5xl rounded-xl shadow-xl ring-1 ring-gray-300/10 dark:ring-white/10"
                 />
