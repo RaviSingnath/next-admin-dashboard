@@ -16,7 +16,7 @@ const protectedRoutes = [
 const roleRoutes: Record<string, string[]> = {
   "/admin": ["super_admin"],
   "/college-admin": ["college_admin"],
-  "/dashboard": ["college_admin"],
+  "/dashboard": ["college_admin", "supervisor"],
   "/supervisor": ["supervisor"],
 };
 
@@ -56,16 +56,18 @@ function redirectWithSupabaseCookies(
   return redirectResponse;
 }
 
-function homeForRole(role?: string) {
+function homeForRole(role?: string): string | null {
   switch (role) {
     case "super_admin":
       return "/admin/dashboard";
     case "college_admin":
       return "/college-admin";
     case "supervisor":
-      return "/supervisor";
-    default:
       return "/dashboard";
+    case "student":
+      return "/dashboard";
+    default:
+      return null;
   }
 }
 
@@ -109,7 +111,6 @@ export async function updateSession(request: NextRequest) {
       claims = data.claims as AppClaims;
     }
   }
-  
 
   // Redirect unauthenticated users away from protected routes
   if (!claims && routeIsProtected) {
@@ -118,10 +119,16 @@ export async function updateSession(request: NextRequest) {
 
   // Redirect logged-in users away from the login page, to their role's home
   if (claims && isLoginPage) {
+    const home = homeForRole(claims.user_role);
+
+    if (home) {
+      return redirectWithSupabaseCookies(request, supabaseResponse, home);
+    }
+
     return redirectWithSupabaseCookies(
       request,
       supabaseResponse,
-      homeForRole(claims.user_role),
+      "/unauthorized",
     );
   }
 

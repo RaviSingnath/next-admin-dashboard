@@ -34,12 +34,12 @@ export default function DepartmentsTable({
       includeDeleted: checked ? true : null,
     });
 
-    router.push(`/departments?${query}`);
+    router.push(`/dashboard/departments?${query}`);
   };
 
   return (
     <>
-      <div className="flex justify-end items-center gap-2">
+      <div className="flex items-center justify-end gap-2">
         <CheckboxField
           checked={includeDeleted}
           onChange={handleIncludeDeleted}
@@ -53,25 +53,25 @@ export default function DepartmentsTable({
             <TableRow>
               <TableCell
                 isHeader
-                className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
+                className="text-theme-xs px-5 py-3 text-start font-medium text-gray-500 dark:text-gray-400"
               >
                 Name
               </TableCell>
               <TableCell
                 isHeader
-                className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
+                className="text-theme-xs px-5 py-3 text-start font-medium text-gray-500 dark:text-gray-400"
               >
                 Created By
               </TableCell>
               <TableCell
                 isHeader
-                className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
+                className="text-theme-xs px-5 py-3 text-start font-medium text-gray-500 dark:text-gray-400"
               >
                 Created At
               </TableCell>
               <TableCell
                 isHeader
-                className="px-5 py-3 font-medium text-gray-500 text-start text-theme-xs dark:text-gray-400"
+                className="text-theme-xs px-5 py-3 text-start font-medium text-gray-500 dark:text-gray-400"
               >
                 Action
               </TableCell>
@@ -81,17 +81,17 @@ export default function DepartmentsTable({
           <TableBody className="divide-y divide-gray-100 dark:divide-white/[0.05]">
             {departments.map((department) => (
               <TableRow key={department.id}>
-                <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
+                <TableCell className="text-theme-sm px-4 py-3 text-start text-gray-500 dark:text-gray-400">
                   {department.department_name}
                 </TableCell>
-                <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
+                <TableCell className="text-theme-sm px-4 py-3 text-start text-gray-500 dark:text-gray-400">
                   {department.creator?.full_name}
                 </TableCell>
-                <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
+                <TableCell className="text-theme-sm px-4 py-3 text-start text-gray-500 dark:text-gray-400">
                   {department.created_at &&
                     formatDateTime(department.created_at)}
                 </TableCell>
-                <TableCell className="px-4 py-3 text-gray-500 text-start text-theme-sm dark:text-gray-400">
+                <TableCell className="text-theme-sm px-4 py-3 text-start text-gray-500 dark:text-gray-400">
                   <div className="flex gap-2">
                     {department.deleted_at ? (
                       <RevertDepartmentButton departmentID={department.id} />

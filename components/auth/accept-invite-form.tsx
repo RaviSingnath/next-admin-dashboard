@@ -108,6 +108,12 @@ export default function AcceptInviteForm() {
         return;
       }
 
+      // 4. NOW refresh — profiles row is guaranteed to exist, hook will find it
+      const { error: refreshError } = await supabase.auth.refreshSession();
+      if (refreshError) {
+        console.error("Failed to refresh auth session:", refreshError);
+      }
+
       reset();
 
       router.replace("/login");
@@ -123,10 +129,10 @@ export default function AcceptInviteForm() {
   }
 
   return (
-    <div className="flex flex-col flex-1 lg:w-1/2 w-full">
-      <div className="flex flex-col justify-center flex-1 w-full max-w-md mx-auto">
+    <div className="flex w-full flex-1 flex-col lg:w-1/2">
+      <div className="mx-auto flex w-full max-w-md flex-1 flex-col justify-center">
         <div className="mb-5 sm:mb-8">
-          <h1 className="mb-2 font-semibold text-gray-800 text-title-sm dark:text-white/90 sm:text-title-md">
+          <h1 className="text-title-sm sm:text-title-md mb-2 font-semibold text-gray-800 dark:text-white/90">
             Set your password
           </h1>
           <p className="text-sm text-gray-500 dark:text-gray-400">
@@ -151,7 +157,7 @@ export default function AcceptInviteForm() {
                   />
                   <span
                     onClick={() => setShowPassword(!showPassword)}
-                    className="absolute z-30 -translate-y-1/2 cursor-pointer right-4 top-1/2"
+                    className="absolute top-1/2 right-4 z-30 -translate-y-1/2 cursor-pointer"
                   >
                     {showPassword ? (
                       <EyeIcon className="fill-gray-500 dark:fill-gray-400" />
@@ -176,7 +182,7 @@ export default function AcceptInviteForm() {
                   />
                   <span
                     onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                    className="absolute z-30 -translate-y-1/2 cursor-pointer right-4 top-1/2"
+                    className="absolute top-1/2 right-4 z-30 -translate-y-1/2 cursor-pointer"
                   >
                     {showConfirmPassword ? (
                       <EyeIcon className="fill-gray-500 dark:fill-gray-400" />
@@ -187,7 +193,7 @@ export default function AcceptInviteForm() {
                 </div>
               </div>
               <div className="mt-5">
-                <p className="text-sm font-normal text-center text-gray-700 dark:text-gray-400 sm:text-start">
+                <p className="text-center text-sm font-normal text-gray-700 sm:text-start dark:text-gray-400">
                   Remember your password?{" "}
                   <Link
                     href="/login"
