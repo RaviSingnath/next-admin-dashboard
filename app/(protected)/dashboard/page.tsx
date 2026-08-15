@@ -1,27 +1,46 @@
-import PageBreadcrumb from "@/components/common/page-breadcrumb";
 import { Metadata } from "next";
-import React from "react";
+import { redirect } from "next/navigation";
+
+import { getCurrentUserServer } from "@/lib/auth/getCurrentUserServer";
+
+import SupervisorDashboard from "@/features/dashboard/components/supervisor-dashboard";
+import { getSupervisorDashboardService } from "@/features/dashboard/services/supervisor-dashboard.service";
 
 export const metadata: Metadata = {
-  title: "Next.js Blank Page | Next.js Dashboard Template",
-  description: "This is Next.js Blank Page Dashboard Template",
+  title: "Dashboard",
+  description: "College Diary Dashboard",
 };
 
-export default function DashboardPage() {
-  return (
-    <div>
-      <PageBreadcrumb pageTitle="Blank Page" />
-      <div className="min-h-screen rounded-2xl border border-gray-200 bg-white px-5 py-7 dark:border-gray-800 dark:bg-white/[0.03] xl:px-10 xl:py-12">
-        <div className="mx-auto w-full max-w-[630px] text-center">
-          <h3 className="mb-4 font-semibold text-gray-800 text-theme-xl dark:text-white/90 sm:text-2xl">
-            College admin dashboard
-          </h3>
-          <p className="text-sm text-gray-500 dark:text-gray-400 sm:text-base">
-            Start putting content on grids or panels, you can also use different
-            combinations of grids.Please check out the dashboard and other pages
-          </p>
-        </div>
-      </div>
-    </div>
-  );
+export default async function DashboardPage() {
+  const user = await getCurrentUserServer();
+
+  if (!user) {
+    redirect("/login");
+  }
+
+  switch (user.role) {
+    case "supervisor": {
+      const data = await getSupervisorDashboardService();
+
+      return <SupervisorDashboard user={user} data={data} />;
+    }
+
+    // case "college_admin": {
+    //   const data = await getCollegeAdminDashboard();
+    //   return <CollegeAdminDashboard user={user} data={data} />;
+    // }
+
+    // case "super_admin": {
+    //   const data = await getSuperAdminDashboard();
+    //   return <SuperAdminDashboard user={user} data={data} />;
+    // }
+
+    // case "student": {
+    //   const data = await getStudentDashboard();
+    //   return <StudentDashboard user={user} data={data} />;
+    // }
+
+    default:
+      redirect("/unauthorized");
+  }
 }

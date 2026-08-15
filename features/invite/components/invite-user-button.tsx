@@ -8,7 +8,7 @@ import InviteUserForm from "./invite-user-form";
 import { AppSelectOption } from "@/lib/types/app-types";
 
 type InviteCollegeAdminButtonProps = {
-  colleges: AppSelectOption[];
+  colleges?: AppSelectOption[];
 };
 
 export default function InviteUserButton({
