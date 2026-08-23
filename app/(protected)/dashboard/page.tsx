@@ -4,6 +4,7 @@ import { redirect } from "next/navigation";
 import { getCurrentUserServer } from "@/lib/auth/getCurrentUserServer";
 
 import SupervisorDashboard from "@/features/dashboard/components/supervisor-dashboard";
+import CollegeAdminDashboard from "@/features/dashboard/components/college-admin-dashboard";
 import { getSupervisorDashboardService } from "@/features/dashboard/services/supervisor-dashboard.service";
 
 export const metadata: Metadata = {
@@ -25,10 +26,10 @@ export default async function DashboardPage() {
       return <SupervisorDashboard user={user} data={data} />;
     }
 
-    // case "college_admin": {
-    //   const data = await getCollegeAdminDashboard();
-    //   return <CollegeAdminDashboard user={user} data={data} />;
-    // }
+    case "college_admin": {
+      // const data = await getCollegeAdminDashboard();
+      return <CollegeAdminDashboard user={user} />;
+    }
 
     // case "super_admin": {
     //   const data = await getSuperAdminDashboard();
