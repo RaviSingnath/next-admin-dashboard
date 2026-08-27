@@ -1,7 +1,7 @@
 import HeroSection from "@/components/home/hero-section";
 import { showCollegeOnMap } from "@/features/colleges/college.service";
 import { getPlansService } from "@/features/stripe/service/stripe.services";
-import CollegeOnMap from "@/components/home/college-on-map";
+import CollegeOnMap from "@/components/home/map-section/college-on-map";
 import Stats from "@/components/home/stats-section/stats";
 import Pricing from "@/components/home/pricing-plan/pricing";
 import WhyOurApp from "@/components/home/why-our-app";

@@ -1,7 +1,7 @@
 "use client";
 
 import { motion, type Variants } from "motion/react";
-import Counter from "../Counter";
+import Counter from "./Counter";
 
 const stats = [
   { label: "Colleges on the platform", value: 8000, suffix: "+", prefix: "" },
