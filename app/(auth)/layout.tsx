@@ -1,12 +1,7 @@
 import type { Metadata } from "next";
 import Image from "next/image";
-import dynamic from "next/dynamic";
 import GridShape from "@/components/common/grid-shape";
-
-const ThemeTogglerTwo = dynamic(
-  () => import("@/components/common/ThemeTogglerTwo"),
-  { ssr: false },
-);
+import ThemeTogglerTwo from "@/components/common/ThemeTogglerTwo";
 
 export const metadata: Metadata = {
   title: "Login to College Diary",
