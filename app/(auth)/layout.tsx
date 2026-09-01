@@ -1,11 +1,16 @@
 import type { Metadata } from "next";
 import Image from "next/image";
+import dynamic from "next/dynamic";
 import GridShape from "@/components/common/grid-shape";
-import ThemeTogglerTwo from "@/components/common/ThemeTogglerTwo";
+
+const ThemeTogglerTwo = dynamic(
+  () => import("@/components/common/ThemeTogglerTwo"),
+  { ssr: false },
+);
 
 export const metadata: Metadata = {
-  title: "Login to college diary",
-  description: "The college diary app",
+  title: "Login to College Diary",
+  description: "The College Diary app",
 };
 
 export default function RootLayout({
@@ -14,23 +19,28 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <div className="relative p-6 bg-white z-1 dark:bg-gray-900 sm:p-0">
-      <div className="relative flex lg:flex-row w-full h-screen justify-center flex-col  dark:bg-gray-900 sm:p-0">
+    <div className="relative z-1 bg-white p-6 sm:p-0 dark:bg-gray-900">
+      <div className="relative flex min-h-screen w-full flex-col justify-center lg:flex-row">
         {children}
-        <div className="lg:w-1/2 w-full h-full bg-brand-950 dark:bg-white/5 lg:grid items-center hidden">
-          <div className="relative items-center justify-center  flex z-1">
-            {/* <!-- ===== Common Grid Shape Start ===== --> */}
+
+        <aside className="bg-brand-950 hidden w-full items-center lg:grid lg:w-1/2 dark:bg-white/5">
+          <div className="relative z-1 flex items-center justify-center">
             <GridShape />
-            <div className="flex flex-col items-center max-w-xs lg:max-w-xl gap-2">
+
+            <div className="flex max-w-xs flex-col items-center gap-2 lg:max-w-xl">
               <Image
+                preload
+                src="/images/logo/auth-logo.svg"
                 width={231}
                 height={48}
-                src="/images/logo/auth-logo.svg"
-                alt="Logo"
+                alt="College Diary"
+                className="h-auto w-[231px]"
               />
+
               <p className="text-center text-2xl font-bold text-gray-400 dark:text-white/60">
                 Smart Campus Management Starts Here
               </p>
+
               <p className="text-center text-gray-400 dark:text-white/60">
                 Manage attendance, assignments, notices, student records,
                 faculty workflows, and academic operations from one centralized
@@ -38,8 +48,9 @@ export default function RootLayout({
               </p>
             </div>
           </div>
-        </div>
-        <div className="fixed bottom-6 right-6 z-50 hidden sm:block">
+        </aside>
+
+        <div className="fixed right-6 bottom-6 z-50 hidden sm:block">
           <ThemeTogglerTwo />
         </div>
       </div>
