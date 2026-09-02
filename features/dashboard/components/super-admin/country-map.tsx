@@ -6,8 +6,15 @@ import mapboxgl from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
 import updateMapTheme from "@/app/(protected)/dashboard/_lib/map-theme";
 import { markersToGeoJSON } from "@/app/(protected)/dashboard/_lib/map-utils";
-import { MapState, WorldMapProps } from "@/app/(protected)/dashboard/_lib/map-types";
-import { DEFAULT_MARKERS, BLANK_STYLE, WORLD_BOUNDS } from "@/app/(protected)/dashboard/_lib/constants";
+import {
+  MapState,
+  WorldMapProps,
+} from "@/app/(protected)/dashboard/_lib/map-types";
+import {
+  DEFAULT_MARKERS,
+  BLANK_STYLE,
+  WORLD_BOUNDS,
+} from "@/app/(protected)/dashboard/_lib/constants";
 import {
   addLayerCountryFill,
   addLayerCountryOutline,
@@ -15,7 +22,10 @@ import {
   addLayerMarkerHalo,
   addSourceCountriesGeojson,
 } from "@/app/(protected)/dashboard/_lib/map-layers";
-import { createCountryPopup, createMarkerPopup } from "@/app/(protected)/dashboard/_lib/map-popups";
+import {
+  createCountryPopup,
+  createMarkerPopup,
+} from "@/app/(protected)/dashboard/_lib/map-popups";
 import {
   setupCountryHover,
   setupCountryLeave,
@@ -178,8 +188,10 @@ export default function WorldMap({ markers = DEFAULT_MARKERS }: WorldMapProps) {
     if (!map) return;
 
     // Wait until the <html> class has been updated
-    requestAnimationFrame(() => {
-      updateMapTheme(map);
+    new ResizeObserver(() => {
+      requestAnimationFrame(() => {
+        updateMapTheme(map);
+      });
     });
   }, [theme]);
 

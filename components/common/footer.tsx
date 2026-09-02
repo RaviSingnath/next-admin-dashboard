@@ -73,7 +73,7 @@ export default function Footer() {
         </div>
 
         {/* Divider */}
-        <div className="mt-12 h-px bg-gradient-to-r from-transparent via-gray-200 to-transparent" />
+        <div className="mt-12 h-px bg-gradient-to-r from-transparent via-[#f5b754] to-transparent dark:via-gray-200" />
       </div>
 
       {/* Decorative Text */}
@@ -81,7 +81,7 @@ export default function Footer() {
         aria-hidden
         className="pointer-events-none absolute inset-x-0 bottom-[-5.5rem] flex justify-center overflow-hidden"
       >
-        <span className="from-brand-500/[0.07] via-brand-500/[0.035] bg-gradient-to-b to-transparent [mask-image:linear-gradient(to_top,transparent,black_35%)] bg-clip-text text-[clamp(9rem,24vw,22rem)] dark:text-gray-200/2 font-black tracking-[-0.08em] whitespace-nowrap text-transparent">
+        <span className="from-brand-500/[0.07] via-brand-500/[0.035] bg-gradient-to-b to-transparent [mask-image:linear-gradient(to_top,transparent,black_35%)] bg-clip-text text-[clamp(9rem,24vw,22rem)] font-black tracking-[-0.08em] whitespace-nowrap text-transparent dark:text-gray-200/2">
           College Diary
         </span>
       </div>
