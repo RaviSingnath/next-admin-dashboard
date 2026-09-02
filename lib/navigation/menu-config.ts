@@ -61,7 +61,7 @@ export const MENU_CONFIG: Record<UserRole, MenuGroup[]> = {
       subItems: [
         {
           name: "Dashboard",
-          path: "/admin/dashboard",
+          path: "/dashboard",
           icon: LayoutDashboard,
         },
         {

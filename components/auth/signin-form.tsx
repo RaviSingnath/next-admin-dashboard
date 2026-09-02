@@ -56,11 +56,13 @@ export default function SignInForm() {
 
       reset();
 
-      if (data.user.role === "super_admin") {
-        router.push("/admin/dashboard");
-      } else {
-        router.push("/dashboard");
-      }
+      // if (data.user.role === "super_admin") {
+      //   router.push("/admin/dashboard");
+      // } else {
+      //   router.push("/dashboard");
+      // }
+
+      router.push("/dashboard");
       router.refresh();
     } catch (error) {
       console.error(error);

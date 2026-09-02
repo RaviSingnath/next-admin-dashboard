@@ -16,7 +16,7 @@ const protectedRoutes = [
 const roleRoutes: Record<string, string[]> = {
   "/admin": ["super_admin"],
   "/college-admin": ["college_admin"],
-  "/dashboard": ["college_admin", "supervisor"],
+  "/dashboard": ["super_admin", "college_admin", "supervisor"],
   "/supervisor": ["supervisor"],
 };
 
@@ -59,7 +59,7 @@ function redirectWithSupabaseCookies(
 function homeForRole(role?: string): string | null {
   switch (role) {
     case "super_admin":
-      return "/admin/dashboard";
+      return "/dashboard";
     case "college_admin":
       return "/college-admin";
     case "supervisor":

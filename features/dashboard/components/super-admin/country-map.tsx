@@ -4,24 +4,24 @@ import { useEffect, useMemo, useRef } from "react";
 import { useTheme } from "@/context/ThemeContext";
 import mapboxgl from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
-import updateMapTheme from "../_lib/map-theme";
-import { markersToGeoJSON } from "../_lib/map-utils";
-import { MapState, WorldMapProps } from "../_lib/map-types";
-import { DEFAULT_MARKERS, BLANK_STYLE, WORLD_BOUNDS } from "../_lib/constants";
+import updateMapTheme from "@/app/(protected)/dashboard/_lib/map-theme";
+import { markersToGeoJSON } from "@/app/(protected)/dashboard/_lib/map-utils";
+import { MapState, WorldMapProps } from "@/app/(protected)/dashboard/_lib/map-types";
+import { DEFAULT_MARKERS, BLANK_STYLE, WORLD_BOUNDS } from "@/app/(protected)/dashboard/_lib/constants";
 import {
   addLayerCountryFill,
   addLayerCountryOutline,
   addLayerMarkerDot,
   addLayerMarkerHalo,
   addSourceCountriesGeojson,
-} from "../_lib/map-layers";
-import { createCountryPopup, createMarkerPopup } from "../_lib/map-popups";
+} from "@/app/(protected)/dashboard/_lib/map-layers";
+import { createCountryPopup, createMarkerPopup } from "@/app/(protected)/dashboard/_lib/map-popups";
 import {
   setupCountryHover,
   setupCountryLeave,
   setupMarkerHover,
   setupMarkerLeave,
-} from "../_lib/map-events";
+} from "@/app/(protected)/dashboard/_lib/map-events";
 
 const mapboxToken = process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN;
 

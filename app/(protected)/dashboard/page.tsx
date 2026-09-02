@@ -6,6 +6,7 @@ import { getCurrentUserServer } from "@/lib/auth/getCurrentUserServer";
 import SupervisorDashboard from "@/features/dashboard/components/supervisor-dashboard";
 import CollegeAdminDashboard from "@/features/dashboard/components/college-admin-dashboard";
 import { getSupervisorDashboardService } from "@/features/dashboard/services/supervisor-dashboard.service";
+import SuperAdminDashboard from "@/features/dashboard/components/super-admin-dashboard";
 
 export const metadata: Metadata = {
   title: "Dashboard",
@@ -31,10 +32,10 @@ export default async function DashboardPage() {
       return <CollegeAdminDashboard user={user} />;
     }
 
-    // case "super_admin": {
-    //   const data = await getSuperAdminDashboard();
-    //   return <SuperAdminDashboard user={user} data={data} />;
-    // }
+    case "super_admin": {
+      // const data = await getSuperAdminDashboard();
+      return <SuperAdminDashboard user={user} />;
+    }
 
     // case "student": {
     //   const data = await getStudentDashboard();

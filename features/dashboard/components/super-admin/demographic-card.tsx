@@ -5,7 +5,7 @@ import { Ellipsis } from "lucide-react";
 import { Dropdown } from "@/components/ui/dropdown/Dropdown";
 import { DropdownItem } from "@/components/ui/dropdown/DropdownItem";
 import WorldMap from "./country-map";
-import { DEFAULT_MARKERS } from "../_lib/constants";
+import { DEFAULT_MARKERS } from "@/app/(protected)/dashboard/_lib/constants";
 import CountryFlag from "@/components/common/country-flag";
 
 export default function DemographicCard() {

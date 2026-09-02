@@ -77,12 +77,18 @@ export default function HeroSection({ claimsData }: HeroSectionProps) {
           </div> */}
           <div className="hidden lg:flex lg:flex-1 lg:justify-end">
             {isLoggedIn ? (
+              // <Link
+              //   href={
+              //     UserRole.SUPER_ADMIN === claimsData.claims.user_role
+              //       ? "/admin/dashboard"
+              //       : "/dashboard"
+              //   }
+              //   className="text-sm/6 font-semibold text-gray-900 dark:text-white"
+              // >
+              //   Dashboard <span aria-hidden="true">&rarr;</span>
+              // </Link>
               <Link
-                href={
-                  UserRole.SUPER_ADMIN === claimsData.claims.user_role
-                    ? "/admin/dashboard"
-                    : "/dashboard"
-                }
+                href="/dashboard"
                 className="text-sm/6 font-semibold text-gray-900 dark:text-white"
               >
                 Dashboard <span aria-hidden="true">&rarr;</span>
