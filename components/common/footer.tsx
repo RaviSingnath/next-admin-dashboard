@@ -21,7 +21,7 @@ const socialLinks = [
 
 export default function Footer() {
   return (
-    <footer className="relative w-full overflow-hidden bg-white pt-16 pb-20">
+    <footer className="relative w-full overflow-hidden bg-white pt-16 pb-20 dark:bg-gray-900">
       {/* Transition from CTA */}
       <div
         aria-hidden
@@ -81,7 +81,7 @@ export default function Footer() {
         aria-hidden
         className="pointer-events-none absolute inset-x-0 bottom-[-5.5rem] flex justify-center overflow-hidden"
       >
-        <span className="from-brand-500/[0.07] via-brand-500/[0.035] bg-gradient-to-b to-transparent [mask-image:linear-gradient(to_top,transparent,black_35%)] bg-clip-text text-[clamp(9rem,24vw,22rem)] font-black tracking-[-0.08em] whitespace-nowrap text-transparent">
+        <span className="from-brand-500/[0.07] via-brand-500/[0.035] bg-gradient-to-b to-transparent [mask-image:linear-gradient(to_top,transparent,black_35%)] bg-clip-text text-[clamp(9rem,24vw,22rem)] dark:text-gray-200/2 font-black tracking-[-0.08em] whitespace-nowrap text-transparent">
           College Diary
         </span>
       </div>

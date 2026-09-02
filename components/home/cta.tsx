@@ -35,7 +35,7 @@ export default function CTA() {
       initial="hidden"
       whileInView="show"
       viewport={{ once: true, margin: "-100px" }}
-      className="bg-brand-700 relative isolate w-full overflow-hidden"
+      className="bg-brand-700 relative isolate w-full overflow-hidden dark:bg-gray-900"
     >
       {/* Background glow */}
       <div aria-hidden className="pointer-events-none absolute inset-0">
@@ -68,7 +68,7 @@ export default function CTA() {
             administration.
           </p>
 
-          <div className="mx-auto mt-10 grid max-w-md grid-cols-3 gap-2 rounded-2xl bg-white p-2 shadow-xl shadow-black/10">
+          <div className="mx-auto mt-10 grid max-w-md grid-cols-3 gap-2 rounded-2xl bg-white p-2 shadow-xl shadow-black/10 dark:bg-gray-900">
             <span className="col-span-3 md:col-span-2">
               <Input
                 className="border-0 bg-transparent focus:border-0 focus:ring-transparent"

@@ -6,11 +6,13 @@ const IMAGES = {
     src: "/images/dashboard-screenshot/admin-dashboard.webp",
     width: 3354,
     height: 1724,
+    alt: "College Diary admin dashboard",
   },
   dark: {
     src: "/images/dashboard-screenshot/admin-dashboard-dark.webp",
     width: 3352,
     height: 1742,
+    alt: "College Diary admin dashboard dark",
   },
 } as const;
 
@@ -23,7 +25,7 @@ export default async function HeroDashboardImage() {
     <Image
       key={theme}
       src={img.src}
-      alt={`College Diary admin dashboard${theme === "dark" ? " dark" : ""}`}
+      alt={img.alt}
       width={img.width}
       height={img.height}
       sizes="(max-width: 1024px) calc(100vw - 3rem), 1152px"

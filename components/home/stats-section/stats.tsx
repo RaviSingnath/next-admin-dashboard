@@ -2,7 +2,7 @@ import StatsCardList from "./stats-card-list";
 
 export default function Stats() {
   return (
-    <div className="w-full rounded-t-[50px] bg-white bg-linear-180 from-[#fff6e9] from-0% via-white to-white py-24 sm:py-32 dark:bg-gray-900">
+    <div className="w-full rounded-t-[50px] bg-white bg-linear-180 from-[#fff6e9] from-0% via-white to-white py-24 sm:py-32 dark:from-[#f5b754] dark:via-gray-900 dark:via-8% dark:to-black">
       <div className="mx-auto max-w-7xl px-6 lg:px-8">
         <div className="mx-auto max-w-2xl lg:max-w-none">
           <div className="text-center">

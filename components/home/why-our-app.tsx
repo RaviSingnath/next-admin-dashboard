@@ -23,7 +23,7 @@ export default function WhyOurApp() {
       whileInView="show"
       viewport={{ once: true, margin: "-100px" }}
       id="why-our-app"
-      className="from-brand-200 min-h-screen w-full bg-white bg-linear-180 from-0% via-white to-white py-24 sm:py-32 dark:bg-gray-900"
+      className="from-brand-200 relative min-h-screen w-full bg-white bg-linear-180 from-0% via-white to-white py-24 sm:py-32 dark:bg-slate-950 dark:bg-none dark:before:pointer-events-none dark:before:absolute dark:before:inset-0 dark:before:bg-[radial-gradient(ellipse_70%_50%_at_50%_0%,rgba(218,166,93,0.15)_0%,transparent_70%)]"
     >
       <div className="mx-auto max-w-7xl px-6 lg:px-8">
         <motion.div variants={fadeUp} className="mx-auto lg:mx-0">
