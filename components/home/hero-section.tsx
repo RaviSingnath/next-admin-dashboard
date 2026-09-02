@@ -4,7 +4,6 @@ import Image from "next/image";
 import Link from "next/link";
 import HeroSubHeading from "./hero-sub-heading";
 import { AppClaims } from "@/lib/auth/parseUser";
-import UserRole from "@/lib/rbac/roles";
 import LearnMoreButton from "./learn-more-button";
 
 // import sharp from "sharp";
@@ -204,21 +203,21 @@ export default function HeroSection({ claimsData }: HeroSectionProps) {
             <Image
               src="/images/dashboard-screenshot/admin-dashboard.webp"
               alt="College Diary admin dashboard"
-              width={1200}
-              height={710}
-              sizes="(max-width: 1024px) 100vw, 1024px"
+              width={3354}
+              height={1724}
+              sizes="(max-width: 1024px) calc(100vw - 3rem), 1152px"
               preload
-              className="mt-16 w-full rounded-md bg-gray-50 shadow-xl ring-1 ring-gray-900/10 sm:mt-24 dark:hidden"
+              fetchPriority="high"
+              className="mt-12 w-full rounded-md bg-gray-50 shadow-xl ring-1 ring-gray-900/10 sm:mt-16 dark:hidden"
             />
             <Image
               src="/images/dashboard-screenshot/admin-dashboard-dark.webp"
-              alt="College Diary admin dashboard"
-              width={0}
-              height={0}
-              sizes="(max-width: 1024px) 100vw, 1024px"
+              alt="College Diary admin dashboard dark"
+              width={3352}
+              height={1742}
+              sizes="(max-width: 1024px) calc(100vw - 3rem), 1152px"
               loading="lazy"
-              fetchPriority="low"
-              className="mt-16 w-full rounded-md bg-gray-50 shadow-xl ring-1 ring-gray-900/10 not-dark:hidden sm:mt-24"
+              className="mt-12 w-full rounded-md bg-gray-50 shadow-xl ring-1 ring-gray-900/10 not-dark:hidden sm:mt-16"
             />
           </div>
         </div>

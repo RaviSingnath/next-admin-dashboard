@@ -4,11 +4,11 @@ import { useEffect, useState } from "react";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
 
 const SUB_HEADINGS = [
-  "The admin platform built for institutions that want more time for education. College Diary brings your entire institution under one roof.",
   "College Diary brings your entire institution under one roof.",
   "Manage students, staff, and billing — without the chaos.",
   "The modern admin platform for forward-thinking institutions.",
   "Trusted administration tools for institutions that take operations seriously.",
+  "The admin platform built for institutions that want more time for education. College Diary brings your entire institution under one roof.",
 ];
 
 export default function HeroSubHeading() {
