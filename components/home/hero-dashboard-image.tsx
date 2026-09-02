@@ -27,7 +27,8 @@ export default async function HeroDashboardImage() {
       width={img.width}
       height={img.height}
       sizes="(max-width: 1024px) calc(100vw - 3rem), 1152px"
-      priority
+      preload
+      fetchPriority="high"
       className="mt-12 w-full rounded-md bg-gray-50 shadow-xl ring-1 ring-gray-900/10 sm:mt-16"
     />
   );
