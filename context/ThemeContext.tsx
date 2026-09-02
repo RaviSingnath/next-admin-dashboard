@@ -27,6 +27,10 @@ function getInitialTheme(): Theme {
   return "light";
 }
 
+function setThemeCookie(theme: Theme) {
+  document.cookie = `theme=${theme}; path=/; max-age=31536000; SameSite=Lax`;
+}
+
 export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
@@ -37,6 +41,7 @@ export const ThemeProvider: React.FC<{ children: React.ReactNode }> = ({
   useLayoutEffect(() => {
     document.documentElement.classList.toggle("dark", theme === "dark");
     localStorage.setItem("theme", theme);
+    setThemeCookie(theme);
   }, [theme]);
 
   const toggleTheme = () => {

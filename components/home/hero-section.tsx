@@ -5,6 +5,7 @@ import Link from "next/link";
 import HeroSubHeading from "./hero-sub-heading";
 import { AppClaims } from "@/lib/auth/parseUser";
 import LearnMoreButton from "./learn-more-button";
+import HeroDashboardImage from "./hero-dashboard-image";
 
 // import sharp from "sharp";
 
@@ -200,25 +201,7 @@ export default function HeroSection({ claimsData }: HeroSectionProps) {
               </div>
             </div>
 
-            <Image
-              src="/images/dashboard-screenshot/admin-dashboard.webp"
-              alt="College Diary admin dashboard"
-              width={3354}
-              height={1724}
-              sizes="(max-width: 1024px) calc(100vw - 3rem), 1152px"
-              preload
-              fetchPriority="high"
-              className="mt-12 w-full rounded-md bg-gray-50 shadow-xl ring-1 ring-gray-900/10 sm:mt-16 dark:hidden"
-            />
-            <Image
-              src="/images/dashboard-screenshot/admin-dashboard-dark.webp"
-              alt="College Diary admin dashboard dark"
-              width={3352}
-              height={1742}
-              sizes="(max-width: 1024px) calc(100vw - 3rem), 1152px"
-              loading="lazy"
-              className="mt-12 w-full rounded-md bg-gray-50 shadow-xl ring-1 ring-gray-900/10 not-dark:hidden sm:mt-16"
-            />
+            <HeroDashboardImage />
           </div>
         </div>
       </div>
